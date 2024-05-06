@@ -26,20 +26,20 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
         {
             // Arrange
             var nonExistentId = Guid.NewGuid();
+            // Configureer de mock repository om null terug te geven voor dit ID
             _mockDayRepository.Setup(repo => repo.GetByIdAsync(nonExistentId))
                               .ReturnsAsync((Day)null);
 
-            var expectedErrorMessages = new List<string> { "Dag niet gevonden." };
+            var expectedErrorMessages = new List<string> { "Dag niet gevonden." }; // Verwachte foutmelding voor dit scenario
 
             // Act
-            var result = await _dayService.IsToggledAsync(nonExistentId);
+            var result = await _dayService.IsToggledAsync(nonExistentId); // Voer de methode uit die getest wordt
 
             // Assert
-            Assert.False(result.IsSucces);
-            Assert.False(result.Value);
-            Assert.Equal(expectedErrorMessages, result.Errors);
+            Assert.False(result.IsSucces); // Controleer of de operatie niet succesvol was
+            Assert.False(result.Value); // Controleer of de status van de dag niet is veranderd
+            Assert.Equal(expectedErrorMessages, result.Errors); // Controleer of de verwachte foutmelding wordt geretourneerd
         }
-
 
 
         [Fact]
@@ -49,19 +49,20 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
             var existingId = Guid.NewGuid();
             var existingDay = new Day { Id = existingId, IsOpen = false };
 
-            _mockDayRepository.Setup(repo => repo.GetByIdAsync(existingId))
+            _mockDayRepository.Setup(repo => repo.GetByIdAsync(existingId)) // Configureer de mock repository om de bestaande dag terug te geven voor dit ID
                               .ReturnsAsync(existingDay);
-            _mockDayRepository.Setup(repo => repo.UpdateAsync(existingDay))
+            _mockDayRepository.Setup(repo => repo.UpdateAsync(existingDay)) // Configureer de mock repository om true terug te geven om de update te bevestigen
                               .ReturnsAsync(true);
 
             // Act
-            var result = await _dayService.IsToggledAsync(existingId);
+            var result = await _dayService.IsToggledAsync(existingId); // Voer de methode uit die getest wordt
 
             // Assert
-            Assert.True(result.IsSucces);
-            Assert.True(result.Value);
-            Assert.True(existingDay.IsOpen);
+            Assert.True(result.IsSucces); // Controleer of de operatie succesvol was
+            Assert.True(result.Value); // Controleer of de status van de dag is omgekeerd
+            Assert.True(existingDay.IsOpen); // Controleer of de status van de dag correct is bijgewerkt in de mock repository
         }
+
 
         [Fact]
         public async Task IsToggledAsync_UpdateFailed_ReturnsError()
