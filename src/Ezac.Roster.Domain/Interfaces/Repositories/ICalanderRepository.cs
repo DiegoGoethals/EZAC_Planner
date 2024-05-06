@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ezac.Roster.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Ezac.Roster.Domain.Interfaces.Repositories
 {
-    public class ICalanderRepository
+    public interface ICalanderRepository : IBaseRepository<ApplicationCalendar>
     {
+
     }
 }
