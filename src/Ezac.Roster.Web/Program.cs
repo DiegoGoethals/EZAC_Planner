@@ -1,4 +1,6 @@
+using Ezac.Roster.Infrastructure.Data;
 using Ezac.Roster.Web.Components;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ezac.Roster.Web
 {
@@ -7,6 +9,11 @@ namespace Ezac.Roster.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Add database service
+            builder.Services.AddDbContext<ApplicationDbContext>
+                (options => options
+                .UseSqlServer(builder.Configuration.GetConnectionString("DefaultDb")));
 
             // Add services to the container.
             builder.Services.AddRazorComponents()

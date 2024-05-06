@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ezac.Roster.Domain.Entities
 {
-    public class User
+    public class User : BaseEntity
     {
         public string Email { get; set; }
         public double Scaling { get; set; }
