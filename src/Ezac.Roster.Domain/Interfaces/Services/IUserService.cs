@@ -11,9 +11,9 @@ namespace Ezac.Roster.Domain.Interfaces.Services
     public interface IUserService
     {
         Task<IEnumerable<User>> GetAllAsync();
-        Task<User> GetByIdAsync(int id);
+        Task<User> GetByIdAsync(Guid id);
         Task AddAsync(User addUser);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Guid id);
         Task UpdateAsync(User updateUser);
         Task<IEnumerable<User>> SearchByNameAsync(string userName);
     }
