@@ -23,4 +23,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\src\Ezac.Roster.Domain\Ezac.Roster.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
