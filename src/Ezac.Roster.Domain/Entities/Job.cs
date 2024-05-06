@@ -13,6 +13,7 @@ namespace Ezac.Roster.Domain.Entities
         //public ICollection<User> Users { get; set; }
         //public ICollection<Dayperiod> Dayperiods { get; set; }
         //public ICollection<Preference> Preferences { get; set; }
-        //public ICollection<Permission> Permissions { get; set; }
+        //public Permission Permission { get; set; }
+        public Guid PermissionId { get; set; }
     }
 }
