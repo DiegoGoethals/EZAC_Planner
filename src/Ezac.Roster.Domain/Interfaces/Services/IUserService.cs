@@ -10,11 +10,11 @@ namespace Ezac.Roster.Domain.Interfaces.Services
 {
     public interface IUserService
     {
-        IEnumerable<User> GetAll();
-        User GetById(int id);
-        void Add(User addUser);
-        void Delete(int id);
-        void Update(User updateUser);
-        IEnumerable<User> SearchByName(string userName);
+        Task<IEnumerable<User>> GetAllAsync();
+        Task<User> GetByIdAsync(int id);
+        Task AddAsync(User addUser);
+        Task DeleteAsync(int id);
+        Task UpdateAsync(User updateUser);
+        Task<IEnumerable<User>> SearchByNameAsync(string userName);
     }
 }
