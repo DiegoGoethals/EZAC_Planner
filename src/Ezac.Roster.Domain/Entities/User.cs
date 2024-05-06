@@ -13,5 +13,6 @@ namespace Ezac.Roster.Domain.Entities
         public bool IsAdmin { get; set; }
         //public ICollection<Permission> Permissions { get; set; }
         //public ICollection<Preference> Preferences { get; set; }
+        //public ICollection<Job> Jobs { get; set; }
     }
 }
