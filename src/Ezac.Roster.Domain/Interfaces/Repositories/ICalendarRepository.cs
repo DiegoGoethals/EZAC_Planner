@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ezac.Roster.Domain.Interfaces.Repositories
 {
-    public interface ICalanderRepository : IBaseRepository<ApplicationCalendar>
+    public interface ICalendarRepository : IBaseRepository<ApplicationCalendar>
     {
 
     }
