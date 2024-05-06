@@ -10,9 +10,6 @@ namespace Ezac.Roster.Domain.Interfaces.Services
 {
     public interface IDayService
     {
-        Task<ResultModel<Day>> GetByIdAsync(Guid id);
-        Task<ResultModel<Day>> AddAsync(Day addDay);
-        Task<ResultModel<bool>> DeleteAsync(Guid id);
-        Task<ResultModel<Day>> UpdateAsync(Day updateDay);
+        Task<ResultModel<bool>> IsToggledAsync(Guid id);
     }
 }
