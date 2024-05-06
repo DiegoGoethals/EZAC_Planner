@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ezac.Roster.Domain.Interfaces.Services
 {
-    public interface ICalanderService
+    public interface ICalendarService
     {
         Task<ApplicationCalendar> GetByIdAsync(Guid id);
         Task<ApplicationCalendar> AddAsync(ApplicationCalendar calendar);
