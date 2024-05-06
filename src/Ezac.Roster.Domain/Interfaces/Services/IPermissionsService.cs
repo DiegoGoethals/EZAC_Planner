@@ -9,10 +9,10 @@ namespace Ezac.Roster.Domain.Interfaces.Services
 {
     public interface IPermissionsService
     {
-        Task<IEnumerable<Permission>> GetAllByUserIdAsync(int userId);
-        Task<Permission> GetByIdAsync(int id);
+        Task<IEnumerable<Permission>> GetAllByUserIdAsync(Guid userId);
+        Task<Permission> GetByIdAsync(Guid id);
         Task AddAsync(Permission permission);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Guid id);
         Task UpdateAsync(Permission permission);
         Task<IEnumerable<Permission>> SearchByNameAsync(string name);
     }
