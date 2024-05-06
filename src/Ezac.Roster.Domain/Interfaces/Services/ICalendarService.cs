@@ -11,8 +11,8 @@ namespace Ezac.Roster.Domain.Interfaces.Services
     public interface ICalendarService
     {
         Task<ResultModel<ApplicationCalendar>> GetByIdAsync(Guid id);
-        Task<ResultModel<ApplicationCalendar>> AddAsync(ApplicationCalendar calendar);
-        Task<ResultModel<bool>> DeleteAsync(Guid id);
-        Task<ResultModel<bool>> UpdateAsync(ApplicationCalendar calendar);
+        Task<ResultModel<ApplicationCalendar>> AddAsync(ApplicationCalendarCreateRequestModel applicationCalendarCreateRequestModel);
+        Task<ResultModel<ApplicationCalendar>> DeleteAsync(Guid id);
+        Task<ResultModel<ApplicationCalendar>> UpdateAsync(ApplicationCalendarUpdateRequestModel applicationCalendarUpdateRequestModel);
     }
 }
