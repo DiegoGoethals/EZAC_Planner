@@ -8,7 +8,7 @@ namespace Ezac.Roster.Domain.Entities
 {
     public class ApplicationCalendar : BaseEntity
     {
-        public ICollection<Day> Days { get; set; }
+        public IEnumerable<Day> Days { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
     }
