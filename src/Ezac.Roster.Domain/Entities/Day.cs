@@ -11,8 +11,9 @@ namespace Ezac.Roster.Domain.Entities
     {
         public DateTime Date {  get; set; }
         public ICollection<Preference> Preferences { get; set; }
-        public Calendar Calendar { get; set; }
-        public Guid CalanderId { get; set; }
+        public ApplicationCalendar Calendar { get; set; }
+        public Guid CalendarId { get; set; }
         public bool IsOpen { get; set; }
+        public ICollection<DayPeriod> DayPeriods { get; set; }
     }
 }
