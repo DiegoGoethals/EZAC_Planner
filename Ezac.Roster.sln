@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ezac.Roster.Domain.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ezac.Roster.Domain", "src\Ezac.Roster.Domain\Ezac.Roster.Domain.csproj", "{0B66F0D1-D87A-4549-8A4D-D3A783BF5B16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ezac.Roster.Infrastructure", "Ezac.Roster.Infrastructure\Ezac.Roster.Infrastructure.csproj", "{7AB5059D-F579-4C9D-A723-228CFEC9267D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{0B66F0D1-D87A-4549-8A4D-D3A783BF5B16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B66F0D1-D87A-4549-8A4D-D3A783BF5B16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B66F0D1-D87A-4549-8A4D-D3A783BF5B16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AB5059D-F579-4C9D-A723-228CFEC9267D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AB5059D-F579-4C9D-A723-228CFEC9267D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AB5059D-F579-4C9D-A723-228CFEC9267D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AB5059D-F579-4C9D-A723-228CFEC9267D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
