@@ -1,20 +1,20 @@
 ﻿using Ezac.Roster.Domain.Entities;
+using Ezac.Roster.Domain.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Ezac.Roster.Domain.Interfaces.Services
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> GetAllAsync();
-        Task<User> GetByIdAsync(Guid id);
-        Task AddAsync(User addUser);
-        Task DeleteAsync(Guid id);
-        Task UpdateAsync(User updateUser);
-        Task<IEnumerable<User>> SearchByNameAsync(string userName);
+        Task<ResultModel<IEnumerable<User>>> GetAllAsync();
+        Task<ResultModel<User>> GetByIdAsync(Guid id);
+        Task<ResultModel<User>> AddAsync(User addUser);
+        Task<ResultModel<User>> DeleteAsync(Guid id);
+        Task<ResultModel<User>> UpdateAsync(User updateUser);
+        Task<ResultModel<IEnumerable<User>>> SearchByNameAsync(string userName);
     }
 }
