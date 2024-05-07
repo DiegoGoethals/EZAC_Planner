@@ -82,6 +82,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
             // Assert
             Assert.False(result.IsSucces);
             Assert.False(result.Value);
+            Assert.Contains("Kan de dagstatus niet wijzigen.", result.Errors);
         }
 
         [Fact]
@@ -104,6 +105,28 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
             Assert.True(result.Value);
             Assert.True(existingDay.IsOpen);
         }
+
+        [Fact]
+        public async Task IsToggledAsync_ToggleSuccess_WithInitialOpenStatus()
+        {
+            // Arrange
+            var existingId = Guid.NewGuid();
+            var existingDay = new Day { Id = existingId, IsOpen = true };
+
+            _mockDayRepository.Setup(repo => repo.GetByIdAsync(existingId))
+                              .ReturnsAsync(existingDay);
+            _mockDayRepository.Setup(repo => repo.UpdateAsync(existingDay))
+                              .ReturnsAsync(true);
+
+            // Act
+            var result = await _dayService.IsToggledAsync(existingId);
+
+            // Assert
+            Assert.True(result.IsSucces);
+            Assert.False(result.Value); // Omdat de initiële status open was, zou deze na het omschakelen gesloten moeten zijn
+            Assert.False(existingDay.IsOpen); // Zorg ervoor dat de status van de dag correct wordt bijgewerkt
+        }
+
 
     }
 }
