@@ -45,7 +45,7 @@
 		{
 			using var stream = file.OpenReadStream();
 
-			await FileService.ImportFile(stream);
+			await FileService.ImportUsers(stream);
 		}
 	}
 }

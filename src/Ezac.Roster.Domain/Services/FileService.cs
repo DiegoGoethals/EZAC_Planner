@@ -21,7 +21,7 @@ namespace Ezac.Roster.Domain.Services
             return reader.GetValue(columnIndex)?.ToString();
         }
 
-        public async Task ImportFile(Stream fileStream)
+        public async Task ImportUsers(Stream fileStream)
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
@@ -45,7 +45,6 @@ namespace Ezac.Roster.Domain.Services
                     Scaling = Double.Parse(GetColumnValue(reader, columnNames, "Inschaling")),
                     IsAdmin = false
                 };
-
                 await _userRepository.AddAsync(user);
             }
 		}

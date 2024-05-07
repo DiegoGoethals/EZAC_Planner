@@ -8,6 +8,6 @@ namespace Ezac.Roster.Domain.Interfaces.Services
 {
     public interface IFileService
     {
-        Task ImportFile(Stream fileStream);
+        Task ImportUsers(Stream fileStream);
     }
 }

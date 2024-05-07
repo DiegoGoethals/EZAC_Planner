@@ -29,19 +29,19 @@ namespace Ezac.Roster.Web
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-            //builder.Services.AddScoped<IDayPeriodService, DayPeriodService>();
-            //builder.Services.AddScoped<IDayPeriodRepository, DayPeriodRepository>();
+            builder.Services.AddScoped<IDayPeriodService, DayPeriodService>();
+            builder.Services.AddScoped<IDayperiodRepository, DayPeriodRepository>();
 
             builder.Services.AddScoped<IDayService, DayService>();
             builder.Services.AddScoped<IDayRepository, DayRepository>();
 
-            //builder.Services.AddScoped<IPreferenceService, PreferenceService>();
+            builder.Services.AddScoped<IPreferenceService, PreferenceService>();
             builder.Services.AddScoped<IPreferenceRepository, PreferenceRepository>();
 
-            //builder.Services.AddScoped<IPermissionsService, PermissionsService>();
-            //builder.Services.AddScoped<IPermissionsRepository, PermissionsRepository>();
+            builder.Services.AddScoped<IPermissionsService, PermissionService>();
+            builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 
-            //builder.Services.AddScoped<IJobService, JobService>();
+            builder.Services.AddScoped<IJobService, JobService>();
             builder.Services.AddScoped<IJobRepository, JobRepository>();
 
             builder.Services.AddScoped<IFileService, FileService>();
