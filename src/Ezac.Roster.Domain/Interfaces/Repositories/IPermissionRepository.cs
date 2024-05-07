@@ -9,5 +9,6 @@ namespace Ezac.Roster.Domain.Interfaces.Repositories
 {
 	public interface IPermissionRepository: IBaseRepository<Permission>
 	{
+		Task<IEnumerable<Permission>> GetByNameAsync(string name);
 	}
 }
