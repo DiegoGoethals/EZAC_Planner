@@ -1,4 +1,5 @@
 ﻿@using Ezac.Roster.Domain
+@using Ezac.Roster.Domain.Entities
 @using Ezac.Roster.Infrastructure
 @using Ezac.Roster.Domain.Interfaces.Services
 
@@ -7,9 +8,33 @@
 @inject IDayService DayService
 @inject IDayPeriodService DayPeriodService
 
+
 <h3>Calendar</h3>
 
 
 @code {
+
+    private ApplicationCalendar calendar;
+    private List<DayPeriod> dayPeriods;
+    private List<Job> jobs;
+
+    private Guid selectedCalendarId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // get the calendar
+        var calendarResult = await CalendarService.GetByIdAsync(selectedCalendarId);
+
+        if (calendarResult.IsSucces)
+        {
+            calendar = calendarResult.Value;
+        }
+
+        jobs = (await JobService.GetAllAsync()).Value.ToList();
+        
+    }
+
+
+
 
 }
