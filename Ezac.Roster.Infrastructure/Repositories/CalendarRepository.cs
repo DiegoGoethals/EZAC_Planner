@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Ezac.Roster.Infrastructure.Repositories
 {
-    public class CalendarRepository : BaseRepository<ApplicationCalendar>, ICalanderRepository
+    public class CalendarRepository : BaseRepository<ApplicationCalendar>, ICalendarRepository
     {
         public CalendarRepository(ApplicationDbContext applicationDbContext, ILogger<IBaseRepository<ApplicationCalendar>> logger) 
             : base(applicationDbContext, logger)
