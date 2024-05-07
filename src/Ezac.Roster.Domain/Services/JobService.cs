@@ -30,7 +30,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "Something went wrong!"
+                    "Could not find any jobs!"
                 }
             };
         }
