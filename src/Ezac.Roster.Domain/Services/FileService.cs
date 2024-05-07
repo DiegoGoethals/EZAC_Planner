@@ -1,8 +1,7 @@
-﻿using ExcelDataReader;
-using Ezac.Roster.Domain.Entities;
+﻿using Ezac.Roster.Domain.Entities;
 using Ezac.Roster.Domain.Interfaces.Repositories;
 using Ezac.Roster.Domain.Interfaces.Services;
-using System.Data;
+using OfficeOpenXml;
 
 namespace Ezac.Roster.Domain.Services
 {
@@ -15,38 +14,36 @@ namespace Ezac.Roster.Domain.Services
             _userRepository = userRepository;
         }
 
-        private static string GetColumnValue(IDataReader reader, List<string> columnNames, string columnName)
-        {
-            var columnIndex = columnNames.IndexOf(columnName);
-            return reader.GetValue(columnIndex)?.ToString();
-        }
-
         public async Task ImportUsers(Stream fileStream)
         {
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
-			using var reader = ExcelReaderFactory.CreateReader(fileStream);
-			var columnNames = new List<string>();
-
-			reader.Read();
-			for (int column = 0; column < reader.FieldCount; column++)
-			{
-				columnNames.Add(reader.GetValue(column)?.ToString());
-			}
-
-            while(reader.Read())
+            using (var memoryStream = new MemoryStream())
             {
-                var user = new User
+                await fileStream.CopyToAsync(memoryStream);
+				ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+				using (var package = new ExcelPackage(memoryStream))
                 {
-                    Id = Guid.NewGuid(),
-                    Created = DateTime.Now,
-                    Name = GetColumnValue(reader, columnNames, "Name"),
-                    Email = GetColumnValue(reader, columnNames, "Email"),
-                    Scaling = Double.Parse(GetColumnValue(reader, columnNames, "Inschaling")),
-                    IsAdmin = false
-                };
-                await _userRepository.AddAsync(user);
-            }
-		}
+					var worksheet = package.Workbook.Worksheets[0];
+					var rows = worksheet.Dimension.End.Row;
+
+					for (int row = 2; row <= rows; row++)
+					{
+						var user = new User
+						{
+							Id = Guid.NewGuid(),
+							Name = worksheet.Cells[row, 1].Value?.ToString(),
+							Created = DateTime.Now,
+							Email = worksheet.Cells[row, 2].Value?.ToString(),
+							Scaling = Double.Parse(worksheet.Cells[row, 7].Value?.ToString()),
+							IsAdmin = false,
+							Preferences = new List<Preference>(),
+							Permissions = new List<Permission>(),
+							Jobs = new List<Job>()
+						};
+
+						await _userRepository.AddAsync(user);
+					}
+				}
+			}
+        }
     }
 }
