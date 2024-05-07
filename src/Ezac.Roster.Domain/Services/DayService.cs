@@ -18,7 +18,7 @@ namespace Ezac.Roster.Domain.Services
             _dayRepository = dayRepository;
         }
 
-        public async Task<ResultModel<bool>> IsToggledAsync(Guid id)
+        public async Task<ResultModel<bool>> ToggleAsync(Guid id)
         {
             try
             {

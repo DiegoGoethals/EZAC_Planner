@@ -22,7 +22,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
         }
 
         [Fact]
-        public async Task IsToggledAsync_DayNotFound_ReturnsError()
+        public async Task ToggleAsync_DayNotFound_ReturnsError()
         {
             // Arrange
             var nonExistentId = Guid.NewGuid();
@@ -33,7 +33,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
             var expectedErrorMessages = new List<string> { "Dag niet gevonden." }; // Verwachte foutmelding voor dit scenario
 
             // Act
-            var result = await _dayService.IsToggledAsync(nonExistentId); // Voer de methode uit die getest wordt
+            var result = await _dayService.ToggleAsync(nonExistentId); // Voer de methode uit die getest wordt
 
             // Assert
             Assert.False(result.IsSucces); // Controleer of de operatie niet succesvol was
@@ -43,7 +43,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
 
 
         [Fact]
-        public async Task IsToggledAsync_ToggleSuccess_ReturnsUpdatedStatus()
+        public async Task ToggleAsync_ToggleSuccess_ReturnsUpdatedStatus()
         {
             // Arrange
             var existingId = Guid.NewGuid();
@@ -55,7 +55,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
                               .ReturnsAsync(true);
 
             // Act
-            var result = await _dayService.IsToggledAsync(existingId); // Voer de methode uit die getest wordt
+            var result = await _dayService.ToggleAsync(existingId); // Voer de methode uit die getest wordt
 
             // Assert
             Assert.True(result.IsSucces); // Controleer of de operatie succesvol was
@@ -65,7 +65,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
 
 
         [Fact]
-        public async Task IsToggledAsync_UpdateFailed_ReturnsError()
+        public async Task ToggleAsync_UpdateFailed_ReturnsError()
         {
             // Arrange
             var existingId = Guid.NewGuid();
@@ -77,7 +77,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
                               .ReturnsAsync(false);
 
             // Act
-            var result = await _dayService.IsToggledAsync(existingId);
+            var result = await _dayService.ToggleAsync(existingId);
 
             // Assert
             Assert.False(result.IsSucces);
@@ -86,7 +86,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
         }
 
         [Fact]
-        public async Task IsToggledAsync_ToggleSuccess_WithInitialClosedStatus()
+        public async Task ToggleAsync_ToggleSuccess_WithInitialClosedStatus()
         {
             // Arrange
             var existingId = Guid.NewGuid();
@@ -98,7 +98,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
                               .ReturnsAsync(true);
 
             // Act
-            var result = await _dayService.IsToggledAsync(existingId);
+            var result = await _dayService.ToggleAsync(existingId);
 
             // Assert
             Assert.True(result.IsSucces);
@@ -107,7 +107,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
         }
 
         [Fact]
-        public async Task IsToggledAsync_ToggleSuccess_WithInitialOpenStatus()
+        public async Task ToggleAsync_ToggleSuccess_WithInitialOpenStatus()
         {
             // Arrange
             var existingId = Guid.NewGuid();
@@ -119,7 +119,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
                               .ReturnsAsync(true);
 
             // Act
-            var result = await _dayService.IsToggledAsync(existingId);
+            var result = await _dayService.ToggleAsync(existingId);
 
             // Assert
             Assert.True(result.IsSucces);
