@@ -10,6 +10,6 @@ namespace Ezac.Roster.Domain.Interfaces.Services
 {
     public interface IDayService
     {
-        Task<ResultModel<bool>> IsToggledAsync(Guid id);
+        Task<ResultModel<bool>> ToggleAsync(Guid id);
     }
 }
