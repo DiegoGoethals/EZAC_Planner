@@ -56,8 +56,20 @@ namespace Ezac.Roster.Domain.Services
             };
         }
 
-        public async Task<ResultModel<User>> AddAsync(User user)
+        public async Task<ResultModel<User>> AddAsync(UserCreateRequestModel userCreateRequestModel)
         {
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Name = userCreateRequestModel.Name,
+                Created = DateTime.Now,
+                Email = userCreateRequestModel.Email,
+                Scaling = userCreateRequestModel.Scaling,
+                IsAdmin = userCreateRequestModel.IsAdmin,
+                Permissions = userCreateRequestModel.Permissions.ToList(),
+                Preferences = userCreateRequestModel.Preferences.ToList(),
+                Jobs = userCreateRequestModel.Jobs.ToList()
+            };
             if (await  _userRepository.AddAsync(user))
             {
                 return new ResultModel<User>
@@ -107,8 +119,30 @@ namespace Ezac.Roster.Domain.Services
             };
         }
 
-        public async Task<ResultModel<User>> UpdateAsync(User user)
+        public async Task<ResultModel<User>> UpdateAsync(UserUpdateRequestModel userUpdateRequestModel)
         {
+            var user = await _userRepository.GetByIdAsync(userUpdateRequestModel.Id);
+
+            if (user == null)
+            {
+                return new ResultModel<User>
+                {
+                    IsSucces = false,
+                    Errors = new List<string>
+                    {
+                        "No user found to update!"
+                    }
+                };
+            }
+
+            user.Name = userUpdateRequestModel.Name;
+            user.Email = userUpdateRequestModel.Email;
+            user.Scaling = userUpdateRequestModel.Scaling;
+            user.IsAdmin = userUpdateRequestModel.IsAdmin;
+            user.Permissions = userUpdateRequestModel.Permissions.ToList();
+            user.Preferences = userUpdateRequestModel.Preferences.ToList();
+            user.Jobs = userUpdateRequestModel.Jobs.ToList();
+
             if(await _userRepository.UpdateAsync(user))
             {
                 return new ResultModel<User>

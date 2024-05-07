@@ -24,7 +24,7 @@ namespace Ezac.Roster.Domain.Services
                 Created = DateTime.Now,
                 Start = applicationCalendarCreateRequestModel.Start,
                 End = applicationCalendarCreateRequestModel.End,
-                Days = applicationCalendarCreateRequestModel.Days,
+                Days = applicationCalendarCreateRequestModel.Days.ToList(),
             };
 
             //create new calendar
@@ -104,7 +104,7 @@ namespace Ezac.Roster.Domain.Services
             selectedCalendar.Updated = DateTime.Now;
             selectedCalendar.Start = applicationCalendarUpdateRequestModel.Start;
             selectedCalendar.End = applicationCalendarUpdateRequestModel.End;
-            selectedCalendar.Days = applicationCalendarUpdateRequestModel.Days;
+            selectedCalendar.Days = applicationCalendarUpdateRequestModel.Days.ToList();
 
             //check update result
             if (await _calendarRepository.UpdateAsync(selectedCalendar))
