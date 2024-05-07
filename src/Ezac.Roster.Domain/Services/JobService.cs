@@ -117,5 +117,46 @@ namespace Ezac.Roster.Domain.Services
                 }
             };
         }
+
+        public async Task<ResultModel<Job>> UpdateAsync(JobUpdateRequestModel jobUpdateRequestModel)
+        {
+            var job = await _jobRepository.GetByIdAsync(jobUpdateRequestModel.Id);
+
+            if (job == null)
+            {
+                return new ResultModel<Job>
+                {
+                    IsSucces = false,
+                    Errors = new List<string>
+                    {
+                        "No job found to update!"
+                    }
+                };
+            }
+
+            job.Name = jobUpdateRequestModel.Name;
+            job.Weight = jobUpdateRequestModel.Weight;
+            job.UserId = jobUpdateRequestModel.UserId;
+            job.DayPeriodId = jobUpdateRequestModel.DayPeriodId;
+            job.PermissionId = jobUpdateRequestModel.PermissionId;
+            job.Preferences = jobUpdateRequestModel.Preferences.ToList();
+
+            if (await _jobRepository.UpdateAsync(job))
+            {
+                return new ResultModel<Job>
+                {
+                    IsSucces = true,
+                    Value = job
+                };
+            }
+            return new ResultModel<Job>
+            {
+                IsSucces = false,
+                Errors = new List<string>
+                {
+                    "Couldn't update job!"
+                }
+            };
+        }
     }
 }
