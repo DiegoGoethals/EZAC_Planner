@@ -22,8 +22,4 @@
     <ProjectReference Include="..\..\Ezac.Roster.Infrastructure\Ezac.Roster.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components\Components\" />
-  </ItemGroup>
-
 </Project>
