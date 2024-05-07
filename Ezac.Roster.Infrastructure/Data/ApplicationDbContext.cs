@@ -42,11 +42,13 @@ namespace Ezac.Roster.Infrastructure.Data
 
             modelBuilder.Entity<DayPeriod>()
                 .HasMany(period => period.Jobs)
-                .WithMany(job => job.Dayperiods);
+                .WithOne(job => job.DayPeriod)
+                .HasForeignKey(job => job.DayPeriodId);
 
             modelBuilder.Entity<Job>()
-                .HasMany(job => job.Users)
-                .WithMany(user => user.Jobs);
+                .HasOne(job => job.User)
+                .WithMany(user => user.Jobs)
+                .HasForeignKey(job => job.UserId);
 
             modelBuilder.Entity<Job>()
                 .HasMany(job => job.Preferences)
