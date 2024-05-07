@@ -55,11 +55,11 @@ namespace Ezac.Roster.Domain.Services
             //check result of addasync
             if (result)
             {
-                var createdRecord = await GetByIdAsync(dayPeriod.Id);
+                var createdDayPeriod = await GetByIdAsync(dayPeriod.Id);
                 return new ResultModel<DayPeriod>
                 {
                     IsSucces = true,
-                    Value = createdRecord.Value,
+                    Value = createdDayPeriod.Value,
                 };
             }
             return new ResultModel<DayPeriod>
@@ -99,12 +99,12 @@ namespace Ezac.Roster.Domain.Services
         public async Task<ResultModel<DayPeriod>> GetByIdAsync(Guid id)
         {
             //get the dayperiod
-            var dayperiod = await _dayPeriodRepository.GetByIdAsync(id);
+            var dayPeriod = await _dayPeriodRepository.GetByIdAsync(id);
 
             //create new resultmodel
             var resultModel = new ResultModel<DayPeriod>();
             //check if exists
-            if (dayperiod == null)
+            if (dayPeriod == null)
             {
                 resultModel.IsSucces = false;
                 resultModel.Errors = new List<string> { "Dayperiod does not exist" };
@@ -113,16 +113,16 @@ namespace Ezac.Roster.Domain.Services
 
             //if exists
             resultModel.IsSucces = true;
-            resultModel.Value = dayperiod;
+            resultModel.Value = dayPeriod;
             return resultModel;
         }
 
         public async Task<ResultModel<DayPeriod>> UpdateAsync(DayPeriodUpdateRequestModel dayPeriodUpdateRequestModel)
         {
             //get the event
-            var selectedDayperiod = await _dayPeriodRepository.GetByIdAsync(dayPeriodUpdateRequestModel.Id);
+            var selectedDayPeriod = await _dayPeriodRepository.GetByIdAsync(dayPeriodUpdateRequestModel.Id);
 
-            if(selectedDayperiod == null)
+            if(selectedDayPeriod == null)
             {
                 return new ResultModel<DayPeriod>
                 {
@@ -132,20 +132,20 @@ namespace Ezac.Roster.Domain.Services
             };
 
             //update event
-            selectedDayperiod.Id = dayPeriodUpdateRequestModel.Id;
-            selectedDayperiod.Name = dayPeriodUpdateRequestModel.Name;
-            selectedDayperiod.Updated = DateTime.Now;
-            selectedDayperiod.Start = dayPeriodUpdateRequestModel.Start;
-            selectedDayperiod.End = dayPeriodUpdateRequestModel.End;
-            selectedDayperiod.IsOpen = dayPeriodUpdateRequestModel.IsOpen;
+            selectedDayPeriod.Id = dayPeriodUpdateRequestModel.Id;
+            selectedDayPeriod.Name = dayPeriodUpdateRequestModel.Name;
+            selectedDayPeriod.Updated = DateTime.Now;
+            selectedDayPeriod.Start = dayPeriodUpdateRequestModel.Start;
+            selectedDayPeriod.End = dayPeriodUpdateRequestModel.End;
+            selectedDayPeriod.IsOpen = dayPeriodUpdateRequestModel.IsOpen;
 
             //check update result
-            if (await _dayPeriodRepository.UpdateAsync(selectedDayperiod))
+            if (await _dayPeriodRepository.UpdateAsync(selectedDayPeriod))
             {
                 return new ResultModel<DayPeriod>
                 {
                     IsSucces = true,
-                    Value = selectedDayperiod,
+                    Value = selectedDayPeriod,
                 };
             }
 
