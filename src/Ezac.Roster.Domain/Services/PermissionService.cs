@@ -30,6 +30,7 @@ namespace Ezac.Roster.Domain.Services
 				Name = permissionCreateRequestModel.Name,
 				Created = DateTime.Now,
 				Users = permissionCreateRequestModel.Users.ToList(),
+				Jobs = permissionCreateRequestModel.Jobs.ToList()
 			};
 
 			var result = await _permissionRepository.AddAsync(permission);
@@ -46,7 +47,10 @@ namespace Ezac.Roster.Domain.Services
 			return new ResultModel<Permission>
 			{
 				IsSucces = false,
-				Errors = new List<string> { "Permission not created!" }
+				Errors = new List<string> 
+				{
+					"Permission not created!"
+				}
 			};
 		}
 
@@ -150,10 +154,23 @@ namespace Ezac.Roster.Domain.Services
 		{
 			var selectedPermission = await _permissionRepository.GetByIdAsync(permissionUpdateRequestModel.Id);
 
+			if (selectedPermission == null)
+			{
+				return new ResultModel<Permission>
+				{
+					IsSucces = false,
+					Errors = new List<string> 
+					{
+						"Permission not found!"
+					}
+				};
+			}
+
 			selectedPermission.Id = permissionUpdateRequestModel.Id;
 			selectedPermission.Name = permissionUpdateRequestModel.Name;	
 			selectedPermission.Updated = permissionUpdateRequestModel.Updated;
 			selectedPermission.Users = permissionUpdateRequestModel.Users.ToList();
+			selectedPermission.Jobs = permissionUpdateRequestModel.Jobs.ToList();
 
 			if (await _permissionRepository.UpdateAsync(selectedPermission))
 			{

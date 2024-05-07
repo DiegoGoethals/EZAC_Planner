@@ -13,5 +13,6 @@ namespace Ezac.Roster.Domain.Services.Models
 		public string Name { get; set; }
 		public DateTime Updated { get; set; }
 		public IEnumerable<User> Users { get; set; }
+		public IEnumerable<Job> Jobs { get; set; }
 	}
 }
