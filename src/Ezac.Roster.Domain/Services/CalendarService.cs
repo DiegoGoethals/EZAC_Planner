@@ -98,6 +98,15 @@ namespace Ezac.Roster.Domain.Services
             //get the event
             var selectedCalendar = await _calendarRepository.GetByIdAsync(applicationCalendarUpdateRequestModel.Id);
 
+            if (selectedCalendar == null)
+            {
+                return new ResultModel<ApplicationCalendar>
+                {
+                    IsSucces = false,
+                    Errors = new List<string> { "Calendar does not exist!" }
+                };
+            }
+
             //update event
             selectedCalendar.Id = applicationCalendarUpdateRequestModel.Id;
             selectedCalendar.Name = applicationCalendarUpdateRequestModel.Name;
