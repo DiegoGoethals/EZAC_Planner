@@ -123,6 +123,18 @@ namespace Ezac.Roster.Domain.Services
         {
             var preference = await _preferenceRepository.GetByIdAsync(preferenceUpdateRequestModel.Id);
 
+            if ( preference == null )
+            {
+                return new ResultModel<Preference>
+                {
+                    IsSucces = false,
+                    Errors = new List<string>
+                    {
+                        "No preference found to update!"
+                    }
+                };
+            }
+
             preference.Name = preferenceUpdateRequestModel.Name;
             preference.Updated = DateTime.Now;
             preference.Available = preferenceUpdateRequestModel.Available;
