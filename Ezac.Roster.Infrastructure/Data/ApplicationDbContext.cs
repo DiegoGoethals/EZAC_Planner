@@ -1,4 +1,5 @@
 ﻿using Ezac.Roster.Domain.Entities;
+using Ezac.Roster.Infrastructure.Data.Seeding;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ezac.Roster.Infrastructure.Data
@@ -68,6 +69,10 @@ namespace Ezac.Roster.Infrastructure.Data
                 .HasOne(preference => preference.User)
                 .WithMany(user => user.Preferences)
                 .HasForeignKey(preference => preference.UserId);
+
+
+
+            Seeder.Seed(modelBuilder);
         }
     }
 }

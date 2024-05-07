@@ -48,7 +48,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Calendars");
+                    b.ToTable("Calendars", (string)null);
                 });
 
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.Day", b =>
@@ -82,7 +82,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("CalendarId");
 
-                    b.ToTable("Days");
+                    b.ToTable("Days", (string)null);
                 });
 
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.DayPeriod", b =>
@@ -119,7 +119,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("DayId");
 
-                    b.ToTable("DayPeriods");
+                    b.ToTable("DayPeriods", (string)null);
                 });
 
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.Job", b =>
@@ -160,7 +160,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Jobs");
+                    b.ToTable("Jobs", (string)null);
                 });
 
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.Permission", b =>
@@ -183,7 +183,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Permissions", (string)null);
                 });
 
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.Preference", b =>
@@ -229,7 +229,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Preference");
+                    b.ToTable("Preference", (string)null);
                 });
 
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.User", b =>
@@ -261,7 +261,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("PermissionUser", b =>
@@ -276,7 +276,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("PermissionUser");
+                    b.ToTable("PermissionUser", (string)null);
                 });
 
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.Day", b =>
