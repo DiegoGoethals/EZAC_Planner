@@ -12,8 +12,8 @@ namespace Ezac.Roster.Domain.Interfaces.Services
 	{
 		Task<ResultModel<DayPeriod>> GetByIdAsync(Guid id);
 		Task<ResultModel<DayPeriod>> AddAsync(DayPeriodCreateRequestModel dayPeriodCreateRequestModel);
-		Task<ResultModel<bool>> DeleteAsync(Guid id);
-		Task<ResultModel<bool>> UpdateAsync(DayPeriodUpdateRequestModel dayPeriodUpdateRequestModel);
+		Task<ResultModel<DayPeriod>> DeleteAsync(Guid id);
+		Task<ResultModel<DayPeriod>> UpdateAsync(DayPeriodUpdateRequestModel dayPeriodUpdateRequestModel);
 
 	}
 }
