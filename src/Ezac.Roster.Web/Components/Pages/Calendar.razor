@@ -11,17 +11,40 @@
 @inject IDayPeriodService DayPeriodService
 
 
-<h3>Kalender voor de maand @currentMonth</h3>
+<h3>Kalender voor de maand @SelectedMonth</h3>
 
-@if (calendar == null)
+@if (calendar != null && calendar.Days != null)
 {
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th></th>
+                <th>Dag/Periode</th>
+                @foreach (var day in calendar.Days)
+                {
+                    foreach (var period in GetDayPeriodsForDay(day.Id))
+                    {
+                        <th>@period.Name</th>
+                    }
+                }
             </tr>
         </thead>
         <tbody>
+            @foreach (var day in calendar.Days)
+            {
+                <tr>
+                    <td>@day.Date.ToString("ddd d/M")</td>
+                    @foreach (var period in GetDayPeriodsForDay(day.Id))
+                    {
+                        <td>
+                            @foreach (var job in GetJobsForDayAndPeriod(day, period))
+                            {
+                                <p>@job.Name</p>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+
         </tbody>
     </table>
 }
@@ -29,12 +52,14 @@ else
 {
     <p>Gegevens worden geladen...</p>
 }
+
+
 @code {
 
     private ApplicationCalendar calendar;
     private List<DayPeriod> dayPeriods;
     private List<Job> jobs;
-    private string currentMonth = DateTime.Now.ToString("MMM yyy");
+    private string SelectedMonth;
 
     private Guid selectedCalendarId;
 
@@ -46,11 +71,10 @@ else
         if (calendarResult.IsSucces)
         {
             calendar = calendarResult.Value;
+            //SelectedMonth = calendar.Month;
         }
-
-        jobs = (await JobService.GetAllAsync()).Value.ToList();
-
     }
+
     private IEnumerable<DayPeriod> GetDayPeriodsForDay(Guid dayId)
     {
         // get day periods for the specific day
