@@ -51,9 +51,25 @@ namespace Ezac.Roster.Domain.Services
             };
         }
 
-        public Task<ResultModel<DayPeriod>> GetByIdAsync(Guid id)
+        public async Task<ResultModel<DayPeriod>> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            //get the dayperiod
+            var dayperiod = await _dayPeriodRepository.GetByIdAsync(id);
+
+            //create new resultmodel
+            var resultModel = new ResultModel<DayPeriod>();
+            //check if exists
+            if (dayperiod == null)
+            {
+                resultModel.IsSucces = false;
+                resultModel.Errors = new List<string> { "Dayperiod does not exist" };
+                return resultModel;
+            }
+
+            //if exists
+            resultModel.IsSucces = true;
+            resultModel.Value = dayperiod;
+            return resultModel;
         }
 
         public Task<ResultModel<DayPeriod>> UpdateAsync(DayPeriodUpdateRequestModel dayPeriodUpdateRequestModel)
