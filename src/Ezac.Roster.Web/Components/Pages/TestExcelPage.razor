@@ -1,0 +1,52 @@
+﻿@page "/excelTest"
+@rendermode InteractiveServer
+
+@using Ezac.Roster.Domain.Interfaces.Services
+
+@inject IFileService FileService;
+
+<h3>Excel Input</h3>
+
+<form @onsubmit="HandleFile">
+	<InputFile OnChange="LoadFile" />
+	<button type="submit">Import file</button>
+</form>
+
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+	<p>@errorMessage</p>
+}
+
+@code {
+	private IBrowserFile file;
+	private string errorMessage;
+
+	private void LoadFile(InputFileChangeEventArgs e)
+	{
+		file = e.File;
+	}
+
+	private async Task HandleFile()
+	{
+		if (file == null)
+		{
+			errorMessage = "Please select a file.";
+		}
+		var extension = Path.GetExtension(file.Name);
+
+		if (!extension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+		{
+			errorMessage = "Please upload an excel file!";
+			return;
+		}
+
+		if (file != null)
+		{
+			using var stream = file.OpenReadStream();
+
+			await FileService.ImportFile(stream);
+		}
+	}
+}
+

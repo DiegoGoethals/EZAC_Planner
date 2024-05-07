@@ -58,7 +58,7 @@ namespace Ezac.Roster.Domain.Services
 
         public async Task<ResultModel<User>> AddAsync(User user)
         {
-            if (await  _userRepository.AddAsync(user))
+            if (await _userRepository.AddAsync(user))
             {
                 return new ResultModel<User>
                 {
