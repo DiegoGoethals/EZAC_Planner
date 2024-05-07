@@ -13,7 +13,7 @@
 
 <h3>Kalender voor de maand @currentMonth</h3>
 
-@if (calendar != null)
+@if (calendar == null)
 {
     <table class="table table-bordered">
         <thead>
@@ -51,8 +51,9 @@ else
         jobs = (await JobService.GetAllAsync()).Value.ToList();
 
     }
-
-
-
+    private IEnumerable<DayPeriod> GetDayPeriodsForDay(Guid dayId)
+    {
+        return dayPeriods.Where(dp => dp.DayId == dayId);
+    }
 
 }
