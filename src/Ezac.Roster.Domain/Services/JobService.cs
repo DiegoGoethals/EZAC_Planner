@@ -56,8 +56,19 @@ namespace Ezac.Roster.Domain.Services
             };
         }
 
-        public async Task<ResultModel<Job>> AddAsync(Job job)
+        public async Task<ResultModel<Job>> AddAsync(JobCreateRequestModel jobCreateRequestModel)
         {
+            var job = new Job
+            {
+                Id = Guid.NewGuid(),
+                Name = jobCreateRequestModel.Name,
+                Created = DateTime.Now,
+                Weight = jobCreateRequestModel.Weight,
+                UserId = jobCreateRequestModel.UserId,
+                DayPeriodId = jobCreateRequestModel.DayPeriodId,
+                PermissionId = jobCreateRequestModel.PermissionId,
+                Preferences = jobCreateRequestModel.Preferences.ToList()
+            };
             if (await _jobRepository.AddAsync(job))
             {
                 return new ResultModel<Job>
