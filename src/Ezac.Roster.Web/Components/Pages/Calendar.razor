@@ -53,7 +53,15 @@ else
     }
     private IEnumerable<DayPeriod> GetDayPeriodsForDay(Guid dayId)
     {
+        // get day periods for the specific day
         return dayPeriods.Where(dp => dp.DayId == dayId);
     }
 
+    private IEnumerable<Job> GetJobsForDayAndPeriod(Day day, DayPeriod period)
+    {
+        // get jobs for the specific day and period
+        return day.DayPeriods
+              .Where(dp => dp.Id == period.Id)
+              .SelectMany(dp => dp.Jobs);
+    }
 }
