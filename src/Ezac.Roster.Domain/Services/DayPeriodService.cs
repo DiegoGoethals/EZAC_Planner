@@ -16,9 +16,10 @@ namespace Ezac.Roster.Domain.Services
         private readonly IDayperiodRepository _dayPeriodRepository;
         private readonly IDayRepository _dayRepository;
 
-        public DayPeriodService(IDayperiodRepository dayPeriodRepository)
+        public DayPeriodService(IDayperiodRepository dayPeriodRepository, IDayRepository dayRepository)
         {
             _dayPeriodRepository = dayPeriodRepository;
+            _dayRepository = dayRepository;
         }
 
         public async Task<ResultModel<DayPeriod>> AddAsync(DayPeriodCreateRequestModel dayPeriodCreateRequestModel)
