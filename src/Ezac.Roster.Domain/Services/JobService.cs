@@ -56,8 +56,19 @@ namespace Ezac.Roster.Domain.Services
             };
         }
 
-        public async Task<ResultModel<Job>> AddAsync(Job job)
+        public async Task<ResultModel<Job>> AddAsync(JobCreateRequestModel jobCreateRequestModel)
         {
+            var job = new Job
+            {
+                Id = Guid.NewGuid(),
+                Name = jobCreateRequestModel.Name,
+                Created = DateTime.Now,
+                Weight = jobCreateRequestModel.Weight,
+                UserId = jobCreateRequestModel.UserId,
+                DayPeriodId = jobCreateRequestModel.DayPeriodId,
+                PermissionId = jobCreateRequestModel.PermissionId,
+                Preferences = jobCreateRequestModel.Preferences.ToList()
+            };
             if (await _jobRepository.AddAsync(job))
             {
                 return new ResultModel<Job>
@@ -103,6 +114,47 @@ namespace Ezac.Roster.Domain.Services
                 Errors = new List<string>
                 {
                     "Couldn't delete this job!"
+                }
+            };
+        }
+
+        public async Task<ResultModel<Job>> UpdateAsync(JobUpdateRequestModel jobUpdateRequestModel)
+        {
+            var job = await _jobRepository.GetByIdAsync(jobUpdateRequestModel.Id);
+
+            if (job == null)
+            {
+                return new ResultModel<Job>
+                {
+                    IsSucces = false,
+                    Errors = new List<string>
+                    {
+                        "No job found to update!"
+                    }
+                };
+            }
+
+            job.Name = jobUpdateRequestModel.Name;
+            job.Weight = jobUpdateRequestModel.Weight;
+            job.UserId = jobUpdateRequestModel.UserId;
+            job.DayPeriodId = jobUpdateRequestModel.DayPeriodId;
+            job.PermissionId = jobUpdateRequestModel.PermissionId;
+            job.Preferences = jobUpdateRequestModel.Preferences.ToList();
+
+            if (await _jobRepository.UpdateAsync(job))
+            {
+                return new ResultModel<Job>
+                {
+                    IsSucces = true,
+                    Value = job
+                };
+            }
+            return new ResultModel<Job>
+            {
+                IsSucces = false,
+                Errors = new List<string>
+                {
+                    "Couldn't update job!"
                 }
             };
         }

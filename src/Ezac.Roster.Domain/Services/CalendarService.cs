@@ -24,7 +24,7 @@ namespace Ezac.Roster.Domain.Services
                 Created = DateTime.Now,
                 Start = applicationCalendarCreateRequestModel.Start,
                 End = applicationCalendarCreateRequestModel.End,
-                Days = applicationCalendarCreateRequestModel.Days,
+                Days = applicationCalendarCreateRequestModel.Days.ToList(),
             };
 
             //create new calendar
@@ -98,13 +98,22 @@ namespace Ezac.Roster.Domain.Services
             //get the event
             var selectedCalendar = await _calendarRepository.GetByIdAsync(applicationCalendarUpdateRequestModel.Id);
 
+            if (selectedCalendar == null)
+            {
+                return new ResultModel<ApplicationCalendar>
+                {
+                    IsSucces = false,
+                    Errors = new List<string> { "Calendar does not exist!" }
+                };
+            }
+
             //update event
             selectedCalendar.Id = applicationCalendarUpdateRequestModel.Id;
             selectedCalendar.Name = applicationCalendarUpdateRequestModel.Name;
             selectedCalendar.Updated = DateTime.Now;
             selectedCalendar.Start = applicationCalendarUpdateRequestModel.Start;
             selectedCalendar.End = applicationCalendarUpdateRequestModel.End;
-            selectedCalendar.Days = applicationCalendarUpdateRequestModel.Days;
+            selectedCalendar.Days = applicationCalendarUpdateRequestModel.Days.ToList();
 
             //check update result
             if (await _calendarRepository.UpdateAsync(selectedCalendar))
