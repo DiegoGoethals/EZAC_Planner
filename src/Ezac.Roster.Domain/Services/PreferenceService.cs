@@ -2,6 +2,7 @@
 using Ezac.Roster.Domain.Interfaces.Repositories;
 using Ezac.Roster.Domain.Interfaces.Services;
 using Ezac.Roster.Domain.Services.Models;
+using System.Xml.Linq;
 
 namespace Ezac.Roster.Domain.Services
 {
@@ -56,8 +57,19 @@ namespace Ezac.Roster.Domain.Services
             };
         }
 
-        public async Task<ResultModel<Preference>> AddAsync(Preference preference)
+        public async Task<ResultModel<Preference>> AddAsync(PreferenceCreateRequestModel preferenceCreateRequestModel)
         {
+            var preference = new Preference
+            {
+                Id = Guid.NewGuid(),
+                Name = preferenceCreateRequestModel.Name,
+                Created = DateTime.Now,
+                Available = preferenceCreateRequestModel.Available,
+                UserId = preferenceCreateRequestModel.UserId,
+                DayPeriodId = preferenceCreateRequestModel.DayPeriodId,
+                DayId = preferenceCreateRequestModel.DayId,
+                JobId = preferenceCreateRequestModel.JobId
+            };
             if (await _preferenceRepository.AddAsync(preference))
             {
                 return new ResultModel<Preference>
@@ -107,8 +119,18 @@ namespace Ezac.Roster.Domain.Services
             };
         }
 
-        public async Task<ResultModel<Preference>> UpdateAsync(Preference preference)
+        public async Task<ResultModel<Preference>> UpdateAsync(PreferenceUpdateRequestModel preferenceUpdateRequestModel)
         {
+            var preference = await _preferenceRepository.GetByIdAsync(preferenceUpdateRequestModel.Id);
+
+            preference.Name = preferenceUpdateRequestModel.Name;
+            preference.Updated = DateTime.Now;
+            preference.Available = preferenceUpdateRequestModel.Available;
+            preference.UserId = preferenceUpdateRequestModel.UserId;
+            preference.DayPeriodId = preferenceUpdateRequestModel.DayPeriodId;
+            preference.DayId = preferenceUpdateRequestModel.DayId;
+            preference.JobId = preferenceUpdateRequestModel.JobId;
+
             if (await _preferenceRepository.UpdateAsync(preference))
             {
                 return new ResultModel<Preference>
