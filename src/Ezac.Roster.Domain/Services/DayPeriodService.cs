@@ -11,12 +11,12 @@ namespace Ezac.Roster.Domain.Services
 {
     public class DayPeriodService : IDayPeriodService
     {
-        public Task<ResultModel<DayPeriod>> AddAsync(DayPeriod dayPeriod)
+        public Task<ResultModel<DayPeriod>> AddAsync(DayPeriodCreateRequestModel dayPeriodCreateRequestModel)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ResultModel<bool>> DeleteAsync(Guid id)
+        public Task<ResultModel<DayPeriod>> DeleteAsync(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -26,7 +26,7 @@ namespace Ezac.Roster.Domain.Services
             throw new NotImplementedException();
         }
 
-        public Task<ResultModel<bool>> UpdateAsync(DayPeriod dayPeriod)
+        public Task<ResultModel<DayPeriod>> UpdateAsync(DayPeriodUpdateRequestModel dayPeriodUpdateRequestModel)
         {
             throw new NotImplementedException();
         }
