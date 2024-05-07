@@ -12,9 +12,9 @@ namespace Ezac.Roster.Domain.Interfaces.Services
     {
         Task<ResultModel<IEnumerable<User>>> GetAllAsync();
         Task<ResultModel<User>> GetByIdAsync(Guid id);
-        Task<ResultModel<User>> AddAsync(User addUser);
+        Task<ResultModel<User>> AddAsync(UserCreateRequestModel userCreateRequestModel);
         Task<ResultModel<User>> DeleteAsync(Guid id);
-        Task<ResultModel<User>> UpdateAsync(User updateUser);
+        Task<ResultModel<User>> UpdateAsync(UserUpdateRequestModel userUpdateRequestModel);
         Task<ResultModel<IEnumerable<User>>> SearchByNameAsync(string userName);
     }
 }
