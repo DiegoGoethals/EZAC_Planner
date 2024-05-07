@@ -23,16 +23,16 @@ namespace Ezac.Roster.Web
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-            //builder.Services.AddScoped<ICalendarService, CalendarService>();
-            //builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
+            builder.Services.AddScoped<ICalendarService, CalendarService>();
+            builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-            //builder.Services.AddScoped<IDayPeriodService, DayPeriodService>();
+            builder.Services.AddScoped<IDayPeriodService, DayPeriodService>();
             //builder.Services.AddScoped<IDayPeriodRepository, DayPeriodRepository>();
 
-            //builder.Services.AddScoped<IDayService, DayService>();
+            builder.Services.AddScoped<IDayService, DayService>();
             builder.Services.AddScoped<IDayRepository, DayRepository>();
 
             //builder.Services.AddScoped<IPreferenceService, PreferenceService>();
@@ -41,7 +41,7 @@ namespace Ezac.Roster.Web
             //builder.Services.AddScoped<IPermissionsService, PermissionsService>();
             //builder.Services.AddScoped<IPermissionsRepository, PermissionsRepository>();
 
-            //builder.Services.AddScoped<IJobService, JobService>();
+            builder.Services.AddScoped<IJobService, JobService>();
             builder.Services.AddScoped<IJobRepository, JobRepository>();
 
 

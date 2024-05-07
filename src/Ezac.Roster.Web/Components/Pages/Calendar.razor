@@ -1,4 +1,14 @@
-﻿<h3>Calendar</h3>
+﻿@using Ezac.Roster.Domain
+@using Ezac.Roster.Infrastructure
+@using Ezac.Roster.Domain.Interfaces.Services
+
+@inject ICalendarService CalendarService
+@inject IJobService JobService
+@inject IDayService DayService
+@inject IDayPeriodService DayPeriodService
+
+<h3>Calendar</h3>
+
 
 @code {
 
