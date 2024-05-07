@@ -30,7 +30,7 @@ namespace Ezac.Roster.Web
             builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             builder.Services.AddScoped<IDayPeriodService, DayPeriodService>();
-            //builder.Services.AddScoped<IDayPeriodRepository, DayPeriodRepository>();
+            builder.Services.AddScoped<IDayperiodRepository, DayPeriodRepository>();
 
             builder.Services.AddScoped<IDayService, DayService>();
             builder.Services.AddScoped<IDayRepository, DayRepository>();

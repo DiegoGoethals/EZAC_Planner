@@ -1,4 +1,6 @@
-﻿@using Ezac.Roster.Domain
+﻿@page "/calendar"
+
+@using Ezac.Roster.Domain
 @using Ezac.Roster.Domain.Entities
 @using Ezac.Roster.Infrastructure
 @using Ezac.Roster.Domain.Interfaces.Services
@@ -9,14 +11,30 @@
 @inject IDayPeriodService DayPeriodService
 
 
-<h3>Calendar</h3>
+<h3>Kalender voor de maand @currentMonth</h3>
 
-
+@if (calendar != null)
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Gegevens worden geladen...</p>
+}
 @code {
 
     private ApplicationCalendar calendar;
     private List<DayPeriod> dayPeriods;
     private List<Job> jobs;
+    private string currentMonth = DateTime.Now.Month.ToString();
 
     private Guid selectedCalendarId;
 
@@ -31,7 +49,7 @@
         }
 
         jobs = (await JobService.GetAllAsync()).Value.ToList();
-        
+
     }
 
 
