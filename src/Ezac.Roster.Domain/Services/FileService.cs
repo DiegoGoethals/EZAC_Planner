@@ -8,10 +8,12 @@ namespace Ezac.Roster.Domain.Services
     public class FileService : IFileService
     {
         private readonly IUserRepository _userRepository;
+		private readonly IPermissionRepository _permissionRepository;
 
-        public FileService(IUserRepository userRepository)
+        public FileService(IUserRepository userRepository, IPermissionRepository permissionRepository)
         {
             _userRepository = userRepository;
+			_permissionRepository = permissionRepository;
         }
 
         public async Task ImportUsers(Stream fileStream)
@@ -42,8 +44,24 @@ namespace Ezac.Roster.Domain.Services
 
 						await _userRepository.AddAsync(user);
 					}
+					await ImportPermissions(worksheet);
 				}
 			}
         }
+
+		private async Task ImportPermissions(ExcelWorksheet worksheet)
+		{
+			for (int col = 3; col <= 6; col++)
+			{
+				var permission = new Permission
+				{
+					Id = Guid.NewGuid(),
+					Name = worksheet.Cells[1, col].Value?.ToString(),
+					Users = new List<User>(),
+					Jobs = new List<Job>()
+				};
+				await _permissionRepository.AddAsync(permission);
+			}
+		}
     }
 }
