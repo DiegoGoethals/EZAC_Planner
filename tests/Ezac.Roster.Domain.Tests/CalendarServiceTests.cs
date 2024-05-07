@@ -1,5 +1,8 @@
 ﻿using Ezac.Roster.Domain.Entities;
 using Ezac.Roster.Domain.Interfaces.Repositories;
+using Ezac.Roster.Domain.Interfaces.Services;
+using Ezac.Roster.Domain.Services;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,40 +14,43 @@ namespace Ezac.Roster.Domain.Tests
     public class CalendarServiceTests
     {
         [Fact]
-        public async Task GetByIdAsync_WhenCalendarExists_ReturnsSuccessResult()
+        public async void GetByIdAsync_WhenCalendarExists_ReturnsSuccessResult()
         {
-            //// Arrange
-            //var id = Guid.NewGuid();
-            //var expectedCalendar = new ApplicationCalendar { Id = id};
+            // Arrange
+            var id = Guid.NewGuid();
+            var expectedResult = new ApplicationCalendar { Id = id };
 
-            //var calendarRepository = new Mock<ICalendarRepository>();
-            //calendarRepository.Setup(c => c.Get)
+            var calendarRepository = new Mock<ICalendarRepository>(MockBehavior.Strict);
+            calendarRepository.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(expectedResult);
 
-            //// Act
-            //var result = await _service.GetByIdAsync(id);
+            var calendarService = new CalendarService(calendarRepository.Object);
+            
+            // Act
+            var currentResult = await calendarService.GetByIdAsync(id);
 
-            //// Assert
-            //Assert.IsTrue(result.IsSuccess);
-            //Assert.AreEqual(expectedCalendar, result.Value);
-            //Assert.IsNull(result.Errors);
+            // Assert
+            Assert.True(currentResult.IsSucces);
+            Assert.Equal(expectedResult, currentResult.Value);
         }
 
         [Fact]
         public async Task GetByIdAsync_WhenCalendarDoesNotExist_ReturnsErrorResult()
         {
-            //// Arrange
-            //var id = Guid.NewGuid();
-            //_mockCalendarRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync((ApplicationCalendar)null);
+            // Arrange
+            var id = Guid.NewGuid();
 
-            //// Act
-            //var result = await _service.GetByIdAsync(id);
+            var calendarRepository = new Mock<ICalendarRepository>(MockBehavior.Strict);
+            calendarRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync((ApplicationCalendar)null);
 
-            //// Assert
-            //Assert.IsFalse(result.IsSuccess);
-            //Assert.IsNull(result.Value);
-            //Assert.IsNotNull(result.Errors);
-            //Assert.AreEqual(1, result.Errors.Count);
-            //Assert.AreEqual("No calendar found", result.Errors[0]);
+            var calendarService = new CalendarService(calendarRepository.Object);
+
+            // Act
+            var currentResult = await calendarService.GetByIdAsync(id);
+
+            // Assert
+            Assert.False(currentResult.IsSucces);
+            Assert.Equal("No calendar found", currentResult.Errors.FirstOrDefault());
         }
     }
 }
