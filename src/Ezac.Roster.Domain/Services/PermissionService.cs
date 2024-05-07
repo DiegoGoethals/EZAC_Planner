@@ -21,23 +21,32 @@ namespace Ezac.Roster.Domain.Services
 			_userRepository = userRepository;
 		}
 
-		public async Task<ResultModel<Permission>> AddAsync(Permission permission)
+		public async Task<ResultModel<Permission>> AddAsync(PermissionCreateRequestModel permissionCreateRequestModel)
 		{
-			if (await _permissionRepository.AddAsync(permission))
+
+			var permission = new Permission
 			{
+				Id = Guid.NewGuid(),
+				Name = permissionCreateRequestModel.Name,
+				Created = DateTime.Now,
+				Users = permissionCreateRequestModel.Users.ToList(),
+			};
+
+			var result = await _permissionRepository.AddAsync(permission);
+
+			if (result)
+			{
+				var createdPermission = await GetByIdAsync(permission.Id);
 				return new ResultModel<Permission>
 				{
 					IsSucces = true,
-					Value = permission
+					Value = createdPermission.Value,
 				};
 			}
 			return new ResultModel<Permission>
 			{
 				IsSucces = false,
-				Errors = new List<string>
-				{
-					"Permission couldn't be added!"
-				}
+				Errors = new List<string> { "Permission not created!" }
 			};
 		}
 
@@ -137,23 +146,28 @@ namespace Ezac.Roster.Domain.Services
 			};
 		}
 
-		public async Task<ResultModel<Permission>> UpdateAsync(Permission permission)
+		public async Task<ResultModel<Permission>> UpdateAsync(PermissionUpdateRequestModel permissionUpdateRequestModel)
 		{
-			if (await _permissionRepository.UpdateAsync(permission))
+			var selectedPermission = await _permissionRepository.GetByIdAsync(permissionUpdateRequestModel.Id);
+
+			selectedPermission.Id = permissionUpdateRequestModel.Id;
+			selectedPermission.Name = permissionUpdateRequestModel.Name;	
+			selectedPermission.Updated = permissionUpdateRequestModel.Updated;
+			selectedPermission.Users = permissionUpdateRequestModel.Users.ToList();
+
+			if (await _permissionRepository.UpdateAsync(selectedPermission))
 			{
 				return new ResultModel<Permission>
 				{
 					IsSucces = true,
-					Value = permission
+					Value = selectedPermission,
 				};
 			}
+
 			return new ResultModel<Permission>
 			{
 				IsSucces = false,
-				Errors = new List<string>
-				{
-					"Couldn't update permission"
-				}
+				Errors = new List<string> { "Permission update failed!" }
 			};
 		}
 	}
