@@ -35,14 +35,14 @@ namespace Ezac.Roster.Domain.Services
 					for (int row = 2; row <= rows; row++)
 					{
 						var name = worksheet.Cells[row, 1].Value?.ToString();
-						if (name.Length > 0 && name!= null && !(name.GetType() == typeof(string)))
+						if (name!= null && name.Length > 0 && !(name.GetType() == typeof(string)))
 						{
 							return ImportFailed(row, 1);
 						}
 						var email = worksheet.Cells[row, 2].Value?.ToString();
 						string pattern = @"..*@..*\...*";
 						Match match = Regex.Match(email, pattern);
-						if (match.Success && email != null && !(email.GetType() == typeof(string)))
+						if (email != null && match.Success && !(email.GetType() == typeof(string)))
 						{
 							return ImportFailed(row, 2);
 						}
