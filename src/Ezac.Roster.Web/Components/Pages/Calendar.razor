@@ -32,33 +32,33 @@
                     <td>
                         <button @onclick="() => ToggleDay(day)" class="btn btn-primary">
                             @day.Date.ToString("ddd d/M")
-                    </button>
-                </td>
-                @foreach (var period in periodNames)
-                {
-                    <td>
-                        @if (!day.IsOpen)
-                        {
-                            <h5>Kolom uitgeschakeld</h5>
-                        }
-                        else
-                        {
-                            if (day.DayPeriods.Any(dp => dp.Name == period && dp.Jobs.Any()))
+                        </button>
+                    </td>
+                    @foreach (var period in periodNames)
+                    {
+                        <td>
+                            @if (!day.IsOpen)
                             {
-                                foreach (var job in day.DayPeriods.First(dp => dp.Name == period).Jobs)
-                                {
-                                    <p>@job.Name</p>
-                                }
+                                <h5>Kolom uitgeschakeld</h5>
                             }
                             else
                             {
-                                <p>Geen jobs beschikbaar</p>
+                                if (day.DayPeriods.Any(dp => dp.Name == period && dp.Jobs.Any()))
+                                {
+                                    foreach (var job in day.DayPeriods.First(dp => dp.Name == period).Jobs)
+                                    {
+                                        <p>@job.Name</p>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>Geen jobs beschikbaar</p>
+                                }
                             }
-                        }
-                    </td>
-                }
-            </tr>
-        }
+                        </td>
+                    }
+                </tr>
+            }
         </tbody>
     </table>
 }
@@ -124,6 +124,20 @@ else
         }
     }
 
+    private async Task TogglePeriod(Day day, DayPeriod period)
+    {
+        var toggleResult = await DayService.ToggleAsync(period.Id);
+        if (toggleResult.IsSucces)
+        {
+            StateHasChanged();
+        }
+
+        else
+        {
+            day.IsOpen = !day.IsOpen;
+            StateHasChanged();
+        }
+    }
 
     private IEnumerable<DayPeriod> GetDistinctPeriods(ICollection<Day> days)
     {
