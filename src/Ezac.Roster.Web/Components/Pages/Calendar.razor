@@ -20,12 +20,13 @@
         <thead>
             <tr>
                 <th>Dag/Periode</th>
-                @foreach (var day in calendar.Days)
+                @*@foreach (var period in GetDistinctPeriods(calendar.Days))
                 {
-                    @foreach (var period in day.DayPeriods)
-                    {
-                        <th>@period.Name</th>
-                    }
+                    <th>@period.Name</th>
+                }*@
+                @foreach (var period in periodNames)
+                {
+                    <th>@period</th>
                 }
             </tr>
         </thead>
@@ -34,19 +35,42 @@
             {
                 <tr>
                     <td>
-                        <button @onclick="() => ShowDayDetails(day)">@day.Date.ToString("ddd d/M")</button>
+                        @*<button @onclick="() => ShowDayDetails(day)">@day.Date.ToString("ddd d/M")</button>*@
+                        <button @onclick="() => ShowDayDetails(day)" disabled="@(!day.IsOpen)">@day.Date.ToString("ddd d/M")</button>
+
                     </td>
-                    @foreach (var period in day.DayPeriods)
+                    @if (day.IsOpen)
                     {
-                        <td>
-                            @foreach (var job in period.Jobs)
-                            {
-                                <p>@job.Name</p>
-                            }
-                        </td>
+                        @foreach (var period in periodNames)
+                        {
+                            <td><h5>Kolom open voor jobs!</h5></td>
+                            
+                        }
+
+
                     }
+
+                    @*@foreach (var period in GetDistinctPeriods(calendar.Days))
+        {
+            <td>
+                @if (day.IsOpen)
+                {
+                    @foreach (var job in GetJobsForDayAndPeriod(day, period))
+                    {
+                        <p>@job.Name</p>
+                    }
+                }
+
+                else
+                {
+                    <p>Kolom uitgeschakeld</p>
+                }
+            </td>
+        }*@
                 </tr>
             }
+
+
         </tbody>
     </table>
 }
@@ -63,6 +87,7 @@ else
     private List<DayPeriod> dayPeriods;
     private List<Job> jobs;
     private string SelectedMonth;
+    private List<string> periodNames = new List<string>();
 
     private Guid selectedCalendarId = new Guid("414A1234-E5CB-4DDC-B821-7393557ED8C3");
 
@@ -76,6 +101,8 @@ else
         {
             calendar = calendarResult.Value;
         }
+        await GetUniquePeriodNames();
+
     }
 
     private IEnumerable<DayPeriod> GetDayPeriodsForDay(Guid dayId)
@@ -92,8 +119,35 @@ else
               .SelectMany(dp => dp.Jobs);
     }
 
-    private void ShowDayDetails(Day day)
+    private async Task ShowDayDetails(Day day)
     {
+        var toggleResult = await DayService.ToggleAsync(day.Id);
+        if (toggleResult.IsSucces)
+        {
+            day.IsOpen = toggleResult.Value;
+            StateHasChanged();
+        }
+        else
+        {
+            return;
+        }
+    }
 
+
+    private IEnumerable<DayPeriod> GetDistinctPeriods(ICollection<Day> days)
+    {
+        return days.SelectMany(d => d.DayPeriods)
+                   .GroupBy(p => p.Id)
+                   .Select(g => g.First())
+                   .ToList();
+    }
+
+    private async Task GetUniquePeriodNames()
+    {
+        var dayPeriods = await DayPeriodService.GetAllAsync();
+        if (dayPeriods.IsSucces)
+        {
+                periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().ToList();
+        }
     }
 }
