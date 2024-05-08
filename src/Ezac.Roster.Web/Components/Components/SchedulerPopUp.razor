@@ -87,5 +87,19 @@
         }
     }
 
-    
+    private void GetStaff(ChangeEventArgs e)
+    {
+        if (Personel.Count > 0)
+        {
+            Personel.Clear();
+        }
+
+        foreach(var user in _users)
+        {
+            if (user.Permissions.Any(p => p.Name == e.Value?.ToString()))
+            {
+                Personel.Add(user);
+            }
+        }
+    }
 }
