@@ -16,5 +16,6 @@ namespace Ezac.Roster.Domain.Interfaces.Services
         Task<ResultModel<Permission>> DeleteAsync(Guid id);
         Task<ResultModel<Permission>> UpdateAsync(PermissionUpdateRequestModel permissionUpdateRequestModel);
         Task<ResultModel<IEnumerable<Permission>>> SearchByNameAsync(string name);
+        Task<ResultModel<IEnumerable<Permission>>> GetAllAsync();
     }
 }
