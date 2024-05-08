@@ -113,8 +113,7 @@ namespace Ezac.Roster.Domain.Services
 				{
 					Id = Guid.NewGuid(),
 					Name = worksheet.Cells[1, col].Value?.ToString(),
-					Users = new List<User>(),
-					Jobs = new List<Job>()
+					Users = new List<User>()
 				};
 				await _permissionRepository.AddAsync(permission);
 			}
