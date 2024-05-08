@@ -14,6 +14,6 @@ namespace Ezac.Roster.Domain.Entities
         public Guid DayId { get; set; }
         public Day Day { get; set; }
         public ICollection<Preference> Preferences { get; set; }
-        public ICollection<Job> Jobs {  get; set; } 
+        public ICollection<Job>? Jobs {  get; set; } 
     }
 }
