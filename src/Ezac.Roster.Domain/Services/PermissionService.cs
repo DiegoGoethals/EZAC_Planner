@@ -30,7 +30,6 @@ namespace Ezac.Roster.Domain.Services
 				Name = permissionCreateRequestModel.Name,
 				Created = DateTime.Now,
 				Users = permissionCreateRequestModel.Users.ToList(),
-				Jobs = permissionCreateRequestModel.Jobs.ToList()
 			};
 
 			var result = await _permissionRepository.AddAsync(permission);
@@ -189,7 +188,6 @@ namespace Ezac.Roster.Domain.Services
 			selectedPermission.Name = permissionUpdateRequestModel.Name;	
 			selectedPermission.Updated = permissionUpdateRequestModel.Updated;
 			selectedPermission.Users = permissionUpdateRequestModel.Users.ToList();
-			selectedPermission.Jobs = permissionUpdateRequestModel.Jobs.ToList();
 
 			if (await _permissionRepository.UpdateAsync(selectedPermission))
 			{
