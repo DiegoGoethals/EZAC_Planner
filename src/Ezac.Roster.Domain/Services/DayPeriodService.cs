@@ -96,6 +96,25 @@ namespace Ezac.Roster.Domain.Services
             };
         }
 
+        public async Task<ResultModel<IEnumerable<DayPeriod>>> GetAllAsync()
+        {
+            var dayPeriods = await _dayPeriodRepository.GetAllAsync();
+            if (dayPeriods == null)
+            {
+                return new ResultModel<IEnumerable<DayPeriod>>
+                {
+                    IsSucces = false,
+                    Errors = new List<string> { "No dayPeriods found" }
+                };
+            }
+
+            return new ResultModel<IEnumerable<DayPeriod>>
+            {
+                IsSucces = true,
+                Value = dayPeriods
+            };
+        }
+
         public async Task<ResultModel<DayPeriod>> GetByIdAsync(Guid id)
         {
             //get the dayperiod
