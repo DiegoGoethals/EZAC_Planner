@@ -73,7 +73,7 @@
             {
                 Id = p.Id,
                 Name = p.Name,
-            }).DistinctBy(dp => dp.Name).ToList();
+            }).DistinctBy(dp => dp.Name).OrderBy(dp => dp.Name).ToList();
         }
     }
 }
