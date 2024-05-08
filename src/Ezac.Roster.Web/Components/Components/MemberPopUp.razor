@@ -1,0 +1,63 @@
+﻿@using Ezac.Roster.Domain.Models
+@using Ezac.Roster.Domain.Interfaces.Services
+
+@inject IJobService _jobService
+@inject IDayPeriodService _dayPeriodService
+
+<h3>MemberPopUp</h3>
+
+<div>
+    <div class="mb-3">
+        <select class="form-select">
+            <option value="">Selecteer een baan</option>
+            @foreach (var job in _jobs)
+            {
+                <option>@job.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <select class="form-select">
+            <option value="">Selecteer een baan</option>
+            @foreach (var dayPeriod in _dayPeriods)
+            {
+                <option>@dayPeriod.Name</option>
+            }
+        </select>
+    </div>
+</div>
+
+@code {
+    private List<BaseListModel> _jobs { get; set; } = new List<BaseListModel>();
+    private List<BaseListModel> _dayPeriods { get; set; } = new List<BaseListModel>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await RefreshData();
+
+    }
+
+    public async Task RefreshData()
+    {
+        var jobsResult = await _jobService.GetAllAsync();
+        if (jobsResult.IsSucces)
+        {
+            _jobs = jobsResult.Value.Select(p => new BaseListModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+            }).ToList();
+        }
+
+        var dayPeriodsResult = await _dayPeriodService.GetAllAsync();
+        if (dayPeriodsResult.IsSucces)
+        {
+            _dayPeriods = dayPeriodsResult.Value.Select(p => new BaseListModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+            }).ToList();
+        }
+    }
+}
