@@ -4,6 +4,7 @@ using Ezac.Roster.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ezac.Roster.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240508070242_dataseeding")]
+    partial class dataseeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,12 +56,12 @@ namespace Ezac.Roster.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 11, 8, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3693),
+                            End = new DateTime(2024, 11, 8, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2953),
                             Name = "Zweefvliegkalender",
-                            Start = new DateTime(2024, 5, 8, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 8, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -99,21 +102,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("20588152-4167-48c4-ae4d-0da669a60666"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("54e23e5f-c2d2-4bb5-82fa-176a7db9972f"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 7, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
-                            Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsOpen = false,
-                            Name = "Tuesday",
-                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = new Guid("d6727df2-8484-4bd0-b191-a69d462e8258"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 8, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 8, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = false,
                             Name = "Wednesday",
@@ -121,10 +113,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("a382f769-96e0-4ccb-a328-bf1eb3564379"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("8146a091-1fc3-4d87-90d7-43b97151e834"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 9, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 9, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = false,
                             Name = "Thursday",
@@ -132,10 +124,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c2905be6-7439-4077-97b3-f57d14aa1911"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("736d1928-a0e7-4c1c-b4de-a2be70408178"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 10, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 10, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = false,
                             Name = "Friday",
@@ -143,10 +135,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4f2cf8c5-8773-4a06-994a-0ba9d2bcd815"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("b1616c2e-e72a-4ca8-a133-3c9175692361"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 11, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 11, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = true,
                             Name = "Saturday",
@@ -154,10 +146,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("78623b95-a40a-4d9f-bcbb-b18d865cef3e"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("e071a88e-b79e-4c1a-ad59-b2dde43204a5"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 12, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 12, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = true,
                             Name = "Sunday",
@@ -165,10 +157,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b4b53b17-6bb2-4727-9e41-354fb4e1f694"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("f9d2b92b-6caa-4c0f-992e-f5d9fe2afc80"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 13, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 13, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = false,
                             Name = "Monday",
@@ -176,10 +168,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("92ce17e7-6c8d-4634-80a8-4d4b5622625b"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("d7f935c4-278b-4f95-b802-73543433f659"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 14, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 14, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = false,
                             Name = "Tuesday",
@@ -187,10 +179,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7bf87b75-66e5-4ff3-8d4d-9a591fb9b5f4"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("2d5eef61-d6a9-46de-ad55-673d60917113"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 15, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 15, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = false,
                             Name = "Wednesday",
@@ -198,10 +190,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e47e3ad4-a57e-4251-bada-9bc1d3aec1e8"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("c7290798-7d9f-494d-8ddc-c3efc0c79d04"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 16, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 16, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = false,
                             Name = "Thursday",
@@ -209,10 +201,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d3aedb6d-ffb6-42a9-b6c7-58a30eeed7bf"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("00bbbd24-b99b-4f14-8ff2-75d8a5d9c801"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 17, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 17, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = false,
                             Name = "Friday",
@@ -220,10 +212,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("df129749-d09a-4344-98c4-87822bc21380"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("36d780c1-959f-4480-8698-ea91e273065b"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 18, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 18, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = true,
                             Name = "Saturday",
@@ -231,10 +223,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("49fa6205-03af-484f-a53b-9b2baa2b25db"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("b9aab22c-e2ff-47f7-8860-c44466757053"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 19, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 19, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = true,
                             Name = "Sunday",
@@ -242,10 +234,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("888df71f-b57e-4165-9ee2-56653e7bc0a0"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("b8cefcd3-99e0-4849-8062-48f891f99fb2"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 20, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 20, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = false,
                             Name = "Monday",
@@ -253,10 +245,10 @@ namespace Ezac.Roster.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5bbf6d0d-deae-48bc-8411-20922fe4ce3e"),
-                            CalendarId = new Guid("c70cda7e-6cf2-476a-9d2e-b2dc0247498b"),
+                            Id = new Guid("d4de14da-e0eb-4188-b942-305f988c29b7"),
+                            CalendarId = new Guid("414a1234-e5cb-4ddc-b821-7393557ed8c3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Date = new DateTime(2024, 5, 21, 14, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Date = new DateTime(2024, 5, 21, 9, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsOpen = false,
                             Name = "Tuesday",
@@ -303,542 +295,506 @@ namespace Ezac.Roster.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("22c7f8c5-8951-4edf-9111-c4e2fc8d0665"),
+                            Id = new Guid("4e2a2415-5f77-4783-8b42-6ec477f99248"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("20588152-4167-48c4-ae4d-0da669a60666"),
+                            DayId = new Guid("54e23e5f-c2d2-4bb5-82fa-176a7db9972f"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 8, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 8, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 7, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 8, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("e595e703-d949-43a0-9201-4a534910a69d"),
+                            Id = new Guid("c85a0404-1649-40e1-ba94-dc36a7f9d184"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("20588152-4167-48c4-ae4d-0da669a60666"),
+                            DayId = new Guid("54e23e5f-c2d2-4bb5-82fa-176a7db9972f"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 8, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 9, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 8, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 8, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("f5908fd1-21bc-4831-a0c2-9248f527b910"),
+                            Id = new Guid("0d208ce8-78b2-4a32-be7e-f42381172753"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("20588152-4167-48c4-ae4d-0da669a60666"),
+                            DayId = new Guid("54e23e5f-c2d2-4bb5-82fa-176a7db9972f"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 8, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 9, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 8, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 9, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("7f403ee2-ac6b-4d44-80e8-495ea4b61783"),
+                            Id = new Guid("6e42af9b-f4a8-4500-bb12-4c31b3f63195"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("d6727df2-8484-4bd0-b191-a69d462e8258"),
+                            DayId = new Guid("8146a091-1fc3-4d87-90d7-43b97151e834"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 9, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 9, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 8, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 9, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("40d72cd8-7e6a-466c-8f64-9853c681913d"),
+                            Id = new Guid("a6700cb7-a340-4e19-887f-db5ac7eaf375"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("d6727df2-8484-4bd0-b191-a69d462e8258"),
+                            DayId = new Guid("8146a091-1fc3-4d87-90d7-43b97151e834"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 9, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 10, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 9, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 9, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("5d9d6d51-cfac-4bbf-b03b-9d6c5b704c83"),
+                            Id = new Guid("55b2beeb-2871-457c-94e3-87ad44084bc6"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("d6727df2-8484-4bd0-b191-a69d462e8258"),
+                            DayId = new Guid("8146a091-1fc3-4d87-90d7-43b97151e834"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 9, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 10, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 9, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 10, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("81cdb9de-8c43-4dcf-8346-2a8e0260ea14"),
+                            Id = new Guid("a73e7c3e-cfca-4278-a0ea-5302d37abe43"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("a382f769-96e0-4ccb-a328-bf1eb3564379"),
+                            DayId = new Guid("736d1928-a0e7-4c1c-b4de-a2be70408178"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 10, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 10, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 9, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 10, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("cb8da873-48fd-4a88-824e-ce1150f16bdc"),
+                            Id = new Guid("70eee5a3-e22c-4718-b4ed-93b28030b465"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("a382f769-96e0-4ccb-a328-bf1eb3564379"),
+                            DayId = new Guid("736d1928-a0e7-4c1c-b4de-a2be70408178"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 10, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 11, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 10, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 10, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("49c83f79-2443-4bcf-b3ce-13664ea35351"),
+                            Id = new Guid("2ded5841-8211-4229-b864-ad36be89ddd6"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("a382f769-96e0-4ccb-a328-bf1eb3564379"),
+                            DayId = new Guid("736d1928-a0e7-4c1c-b4de-a2be70408178"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 10, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 11, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 10, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 11, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("0ef44eef-f8dc-4965-8dae-da6cd0daba17"),
+                            Id = new Guid("7fe2f2e8-96cb-4d98-929c-111512e15183"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("c2905be6-7439-4077-97b3-f57d14aa1911"),
+                            DayId = new Guid("b1616c2e-e72a-4ca8-a133-3c9175692361"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 11, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 11, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 10, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 11, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("6ac27315-773a-4aa5-b805-bb8428f9d7fc"),
+                            Id = new Guid("6b9d8421-e272-42bf-8cad-cd0ea01700d1"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("c2905be6-7439-4077-97b3-f57d14aa1911"),
+                            DayId = new Guid("b1616c2e-e72a-4ca8-a133-3c9175692361"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 11, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 12, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 11, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 11, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("d5d1e28f-6850-4a9a-bf7a-1db8233885a5"),
+                            Id = new Guid("78df6c1f-ef7b-4065-8057-ff42aa65ac09"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("c2905be6-7439-4077-97b3-f57d14aa1911"),
+                            DayId = new Guid("b1616c2e-e72a-4ca8-a133-3c9175692361"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 11, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 12, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 11, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 12, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("a0050c12-c59c-4a59-916f-f783ff57ee9d"),
+                            Id = new Guid("6e49759b-3019-4b0c-a511-4cfd7a974f0b"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("4f2cf8c5-8773-4a06-994a-0ba9d2bcd815"),
+                            DayId = new Guid("e071a88e-b79e-4c1a-ad59-b2dde43204a5"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 12, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 12, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 11, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 12, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("93c6cc8e-5be4-4c38-8477-7cc4ae93c52f"),
+                            Id = new Guid("09980fa3-9b8e-4a7f-a2fb-d116dab4c5da"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("4f2cf8c5-8773-4a06-994a-0ba9d2bcd815"),
+                            DayId = new Guid("e071a88e-b79e-4c1a-ad59-b2dde43204a5"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 12, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 13, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 12, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 12, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("a81b75a3-ce4f-4aa2-b39a-aed10bf0e778"),
+                            Id = new Guid("ac9394d2-0bfa-42fe-a021-9ccdf7c63d19"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("4f2cf8c5-8773-4a06-994a-0ba9d2bcd815"),
+                            DayId = new Guid("e071a88e-b79e-4c1a-ad59-b2dde43204a5"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 12, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 13, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 12, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 13, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("9bdd5800-79e0-43d0-ba8e-70ad5bee0086"),
+                            Id = new Guid("d8fc8c57-fa1b-43aa-93e9-d49947009ebd"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("78623b95-a40a-4d9f-bcbb-b18d865cef3e"),
+                            DayId = new Guid("f9d2b92b-6caa-4c0f-992e-f5d9fe2afc80"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 13, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 13, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 12, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 13, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("e6f4d76d-3564-41f6-9fc4-3bb66c0ab995"),
+                            Id = new Guid("c76845a1-4ab1-4864-a693-9c9a42cbb12a"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("78623b95-a40a-4d9f-bcbb-b18d865cef3e"),
+                            DayId = new Guid("f9d2b92b-6caa-4c0f-992e-f5d9fe2afc80"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 13, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 14, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 13, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 13, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("52595291-755b-4310-8503-6542ba419efb"),
+                            Id = new Guid("ad9223b4-bc9e-422e-ab7f-c8508f1eff4b"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("78623b95-a40a-4d9f-bcbb-b18d865cef3e"),
+                            DayId = new Guid("f9d2b92b-6caa-4c0f-992e-f5d9fe2afc80"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 13, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 14, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 13, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 14, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("ce11e849-66e1-4856-8345-75b38a636e82"),
+                            Id = new Guid("4c20f89c-cbea-4433-933e-bf39496801fc"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("b4b53b17-6bb2-4727-9e41-354fb4e1f694"),
+                            DayId = new Guid("d7f935c4-278b-4f95-b802-73543433f659"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 14, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 14, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 13, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 14, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("33537f59-3c0d-4d85-a037-ebd2981e5e36"),
+                            Id = new Guid("1154025b-deae-4235-87e6-903d74dac087"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("b4b53b17-6bb2-4727-9e41-354fb4e1f694"),
+                            DayId = new Guid("d7f935c4-278b-4f95-b802-73543433f659"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 14, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 15, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 14, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 14, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("7f6b062b-2344-47ce-a8ad-4aaac5373fbd"),
+                            Id = new Guid("f39b38b9-d732-44e8-a0a2-9ab0fae77000"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("b4b53b17-6bb2-4727-9e41-354fb4e1f694"),
+                            DayId = new Guid("d7f935c4-278b-4f95-b802-73543433f659"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 14, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 15, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 14, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 15, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("215fcc18-49e1-4f9f-87ea-b8727bdcd937"),
+                            Id = new Guid("04a3c594-797c-4225-a0c0-79ea404025da"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("92ce17e7-6c8d-4634-80a8-4d4b5622625b"),
+                            DayId = new Guid("2d5eef61-d6a9-46de-ad55-673d60917113"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 15, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 15, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 14, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 15, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("2e342d61-daf0-485a-b79c-270076d5830b"),
+                            Id = new Guid("fc5b1fd2-1a5f-4736-8fed-a02948efe102"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("92ce17e7-6c8d-4634-80a8-4d4b5622625b"),
+                            DayId = new Guid("2d5eef61-d6a9-46de-ad55-673d60917113"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 15, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 16, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 15, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 15, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("f1bbb302-a399-478b-bb2f-f23ff181c0e0"),
+                            Id = new Guid("2687c773-6e67-41ba-a412-1e649c19e71c"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("92ce17e7-6c8d-4634-80a8-4d4b5622625b"),
+                            DayId = new Guid("2d5eef61-d6a9-46de-ad55-673d60917113"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 15, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 16, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 15, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 16, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("acce0230-d92e-4e95-9dcb-f757e6f10158"),
+                            Id = new Guid("83a00c23-aa2c-4493-a275-4e89ed37e063"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("7bf87b75-66e5-4ff3-8d4d-9a591fb9b5f4"),
+                            DayId = new Guid("c7290798-7d9f-494d-8ddc-c3efc0c79d04"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 16, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 16, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 15, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 16, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("6729883a-a6aa-4400-b9aa-8b10692d7868"),
+                            Id = new Guid("bc01372b-d851-4bd1-a72c-d51f447d35a3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("7bf87b75-66e5-4ff3-8d4d-9a591fb9b5f4"),
+                            DayId = new Guid("c7290798-7d9f-494d-8ddc-c3efc0c79d04"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 16, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 17, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 16, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 16, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("36d0ac31-ec86-451d-a725-0d2d9e8606b5"),
+                            Id = new Guid("2285474e-015d-46fb-aa5e-a5c16e786aa3"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("7bf87b75-66e5-4ff3-8d4d-9a591fb9b5f4"),
+                            DayId = new Guid("c7290798-7d9f-494d-8ddc-c3efc0c79d04"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 16, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 17, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 16, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 17, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("d0f1310b-0d90-4c77-b8cb-a22add8e1964"),
+                            Id = new Guid("8d0b2bbd-61d9-491a-a9ab-3378a036488f"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("e47e3ad4-a57e-4251-bada-9bc1d3aec1e8"),
+                            DayId = new Guid("00bbbd24-b99b-4f14-8ff2-75d8a5d9c801"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 17, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 17, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 16, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 17, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("a5484377-d5c9-488c-9e01-df2dfa8af819"),
+                            Id = new Guid("85c79c34-0090-45c7-a50c-f6bbcd79a188"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("e47e3ad4-a57e-4251-bada-9bc1d3aec1e8"),
+                            DayId = new Guid("00bbbd24-b99b-4f14-8ff2-75d8a5d9c801"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 17, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 18, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 17, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 17, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("076717a1-fbd1-44c6-b334-a60ecc671e7f"),
+                            Id = new Guid("2264e7cf-1ccc-4035-9a2e-6e1207ef6e9e"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("e47e3ad4-a57e-4251-bada-9bc1d3aec1e8"),
+                            DayId = new Guid("00bbbd24-b99b-4f14-8ff2-75d8a5d9c801"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 17, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 18, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 17, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 18, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("118efeb8-2626-4f4a-900c-eb13e6e9aad7"),
+                            Id = new Guid("bc0c105a-1627-4292-84f6-f76b64038ddb"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("d3aedb6d-ffb6-42a9-b6c7-58a30eeed7bf"),
+                            DayId = new Guid("36d780c1-959f-4480-8698-ea91e273065b"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 18, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 18, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 17, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 18, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("77641f30-3c10-4c16-bd64-8f74c6b2ed57"),
+                            Id = new Guid("92554e8a-074b-41a3-822e-15daa01f2270"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("d3aedb6d-ffb6-42a9-b6c7-58a30eeed7bf"),
+                            DayId = new Guid("36d780c1-959f-4480-8698-ea91e273065b"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 18, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 19, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 18, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 18, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("7852f0cd-16d1-40bf-a8d8-bb808872d420"),
+                            Id = new Guid("ef9532c6-e301-4ee2-ad07-5a80b3894346"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("d3aedb6d-ffb6-42a9-b6c7-58a30eeed7bf"),
+                            DayId = new Guid("36d780c1-959f-4480-8698-ea91e273065b"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 18, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 19, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 18, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 19, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("d399f8f4-b41d-4d57-8eda-4761aea9d252"),
+                            Id = new Guid("bccefd26-9e26-4ac4-aa31-34ff2a5361e0"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("df129749-d09a-4344-98c4-87822bc21380"),
+                            DayId = new Guid("b9aab22c-e2ff-47f7-8860-c44466757053"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 19, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 19, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 18, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 19, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("ce7dee0e-b9eb-447e-9a7d-647efca3fa75"),
+                            Id = new Guid("25255ead-bf89-4e82-92ad-a63ae515d71e"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("df129749-d09a-4344-98c4-87822bc21380"),
+                            DayId = new Guid("b9aab22c-e2ff-47f7-8860-c44466757053"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 19, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 20, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 19, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 19, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("f709b112-4f4d-420a-b274-b5df591f452f"),
+                            Id = new Guid("e446ed35-0512-457e-add6-ea0c21f31a6d"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("df129749-d09a-4344-98c4-87822bc21380"),
+                            DayId = new Guid("b9aab22c-e2ff-47f7-8860-c44466757053"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 19, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 20, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 19, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 20, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("56146cdf-8d16-421e-81b0-21ebc47baad5"),
+                            Id = new Guid("eed31ac7-d56c-49c9-9668-066c059655ab"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("49fa6205-03af-484f-a53b-9b2baa2b25db"),
+                            DayId = new Guid("b8cefcd3-99e0-4849-8062-48f891f99fb2"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 20, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 20, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 19, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 20, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("43b86184-a60e-48a4-b50b-cb2551ebd617"),
+                            Id = new Guid("7620dcc3-dc15-4884-9fac-5ca9d57d8be6"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("49fa6205-03af-484f-a53b-9b2baa2b25db"),
+                            DayId = new Guid("b8cefcd3-99e0-4849-8062-48f891f99fb2"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 20, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 21, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 20, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 20, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("c2f625a4-3192-484e-bd16-f2c10df75694"),
+                            Id = new Guid("ae261741-e74a-4624-baaf-074734ed182c"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("49fa6205-03af-484f-a53b-9b2baa2b25db"),
+                            DayId = new Guid("b8cefcd3-99e0-4849-8062-48f891f99fb2"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 20, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 21, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 20, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 21, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("8899bc2c-cf74-4d02-b765-a8c5eb762244"),
+                            Id = new Guid("4873e4d8-74f3-437e-b6fe-41e24cffbbec"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("888df71f-b57e-4165-9ee2-56653e7bc0a0"),
+                            DayId = new Guid("d4de14da-e0eb-4188-b942-305f988c29b7"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 21, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 21, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "A",
-                            Start = new DateTime(2024, 5, 20, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 21, 17, 32, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("517701e2-4329-498d-834e-a829e6012a6d"),
+                            Id = new Guid("e7036b35-f07f-4e64-8f86-8392be3e4f4c"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("888df71f-b57e-4165-9ee2-56653e7bc0a0"),
+                            DayId = new Guid("d4de14da-e0eb-4188-b942-305f988c29b7"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 21, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 22, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "B",
-                            Start = new DateTime(2024, 5, 21, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 21, 22, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = new Guid("67f63aad-cbcc-40a5-84f8-2981a01ed12f"),
+                            Id = new Guid("cf33b3c8-6b09-4856-be2d-92e29d991b63"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("888df71f-b57e-4165-9ee2-56653e7bc0a0"),
+                            DayId = new Guid("d4de14da-e0eb-4188-b942-305f988c29b7"),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 21, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            End = new DateTime(2024, 5, 22, 8, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             IsOpen = true,
                             Name = "C",
-                            Start = new DateTime(2024, 5, 21, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
-                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = new Guid("a11b8503-bdaf-4d7e-87ad-ea21ad4b494e"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("5bbf6d0d-deae-48bc-8411-20922fe4ce3e"),
-                            Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 22, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
-                            IsOpen = true,
-                            Name = "A",
-                            Start = new DateTime(2024, 5, 21, 22, 44, 11, 959, DateTimeKind.Local).AddTicks(3642),
-                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = new Guid("61726d3c-6fe6-461c-8cb9-434c49b6cfa3"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("5bbf6d0d-deae-48bc-8411-20922fe4ce3e"),
-                            Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 22, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
-                            IsOpen = true,
-                            Name = "B",
-                            Start = new DateTime(2024, 5, 22, 3, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
-                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = new Guid("d5cdcb8d-b2ac-41ad-b7ec-6857a0bdb4fa"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DayId = new Guid("5bbf6d0d-deae-48bc-8411-20922fe4ce3e"),
-                            Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            End = new DateTime(2024, 5, 22, 13, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
-                            IsOpen = true,
-                            Name = "C",
-                            Start = new DateTime(2024, 5, 22, 7, 14, 11, 959, DateTimeKind.Local).AddTicks(3642),
+                            Start = new DateTime(2024, 5, 22, 2, 2, 42, 216, DateTimeKind.Local).AddTicks(2913),
                             Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -852,7 +808,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("DayPeriodId")
+                    b.Property<Guid>("DayPeriodId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Deleted")
@@ -861,13 +817,13 @@ namespace Ezac.Roster.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PermissionName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("PermissionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Weight")
@@ -877,61 +833,11 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("DayPeriodId");
 
+                    b.HasIndex("PermissionId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Jobs");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000008"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Lierist",
-                            PermissionName = "Lierist",
-                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Weight = 0.0
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000009"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Startofficier",
-                            PermissionName = "Startofficier",
-                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Weight = 0.0
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000010"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Bardienst",
-                            PermissionName = "Bardienst",
-                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Weight = 0.0
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000011"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Instructeur",
-                            PermissionName = "Instructeur",
-                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Weight = 0.0
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000012"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Instructeur(DDI)",
-                            PermissionName = "Instructeur",
-                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Weight = 0.0
-                        });
                 });
 
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.Permission", b =>
@@ -1187,13 +1093,25 @@ namespace Ezac.Roster.Infrastructure.Migrations
                 {
                     b.HasOne("Ezac.Roster.Domain.Entities.DayPeriod", "DayPeriod")
                         .WithMany("Jobs")
-                        .HasForeignKey("DayPeriodId");
+                        .HasForeignKey("DayPeriodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ezac.Roster.Domain.Entities.Permission", "Permission")
+                        .WithMany("Jobs")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Ezac.Roster.Domain.Entities.User", "User")
                         .WithMany("Jobs")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("DayPeriod");
+
+                    b.Navigation("Permission");
 
                     b.Navigation("User");
                 });
@@ -1266,6 +1184,11 @@ namespace Ezac.Roster.Infrastructure.Migrations
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.Job", b =>
                 {
                     b.Navigation("Preferences");
+                });
+
+            modelBuilder.Entity("Ezac.Roster.Domain.Entities.Permission", b =>
+                {
+                    b.Navigation("Jobs");
                 });
 
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.User", b =>

@@ -1,4 +1,5 @@
 ﻿using Ezac.Roster.Domain.Entities;
+using Ezac.Roster.Infrastructure.Data.Seeding;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ezac.Roster.Infrastructure.Data
@@ -55,11 +56,6 @@ namespace Ezac.Roster.Infrastructure.Data
                 .WithOne(preference => preference.Job)
                 .HasForeignKey(preference => preference.JobId);
 
-            modelBuilder.Entity<Job>()
-                .HasOne(job => job.Permission)
-                .WithMany(permission => permission.Jobs)
-                .HasForeignKey(job => job.PermissionId);
-
             modelBuilder.Entity<Permission>()
                 .HasMany(permission => permission.Users)
                 .WithMany(user => user.Permissions);
@@ -68,6 +64,8 @@ namespace Ezac.Roster.Infrastructure.Data
                 .HasOne(preference => preference.User)
                 .WithMany(user => user.Preferences)
                 .HasForeignKey(preference => preference.UserId);
+
+            Seeder.Seed(modelBuilder);
         }
     }
 }
