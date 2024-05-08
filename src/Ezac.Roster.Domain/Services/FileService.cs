@@ -18,6 +18,7 @@ namespace Ezac.Roster.Domain.Services
 
         public async Task ImportUsers(Stream fileStream)
         {
+			await _userRepository.DeleteAllAsync();
             using (var memoryStream = new MemoryStream())
             {
                 await fileStream.CopyToAsync(memoryStream);
@@ -71,6 +72,7 @@ namespace Ezac.Roster.Domain.Services
 
 		private async Task ImportPermissions(ExcelWorksheet worksheet)
 		{
+			await _permissionRepository.DeleteAllAsync();
 			for (int col = 3; col <= 6; col++)
 			{
 				var permission = new Permission

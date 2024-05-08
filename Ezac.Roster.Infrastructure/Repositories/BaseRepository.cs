@@ -73,5 +73,11 @@ namespace Ezac.Roster.Infrastructure.Repositories
         {
             return await _table.AnyAsync(t => t.Id == id);
         }
+
+        public async Task<bool> DeleteAllAsync()
+        {
+            _table.RemoveRange(await _table.ToListAsync());
+            return await SaveChangesAsync();
+        }
     }
 }
