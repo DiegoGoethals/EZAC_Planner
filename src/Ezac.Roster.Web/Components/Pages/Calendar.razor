@@ -94,6 +94,7 @@ else
         if (calendarResult.IsSucces)
         {
             calendar = calendarResult.Value;
+            calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
             await GetUniquePeriodNames();
         }
 
