@@ -1,121 +1,59 @@
 ﻿@using Ezac.Roster.Domain.Entities
 @using Ezac.Roster.Domain.Interfaces.Services
+@using Ezac.Roster.Domain.Models
 
 @inject IUserService _userService
-@inject IJobService _jobService
+@inject IPermissionsService _permissionService
 
-<div>
-    <h6>Beschikbare/bevoegde leden</h6>
+<div class="container">
+    <div class="row">
+        <div class="col col-lg-2">
+            <h6>Beschikbare/bevoegde leden</h6>
 
-    <div>
-        <select @onchange="GetStaff">
-        <option value="">Selecteer een baan</option>
-        @foreach (var job in _jobs)
-        {
-            <option>@job.Name</option>
-        }
-        </select>
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <table class="table table-dark">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var user in Personel)
+            <div class="mb-3">
+                <select class="form-select" @onchange="GetStaff">
+                    <option value="">Selecteer een baan</option>
+                    @foreach (var permission in _permissions)
                     {
-                        <tr class="userrow">
-                            <td>@user.Name</td>
-                        </tr>
+                        <option>@permission.Name</option>
                     }
-                </tbody>
-            </table>
+                </select>
+            </div>
+
+            <div>
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Personel)
+                        {
+                            <tr class="userrow" draggable="true">
+                                <td>@user.Name</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="mb-2">
+                <button class="btn btn-primary">Dagdeel toevoegen</button>
+            </div>
+            <div>
+                <button class="btn btn-primary">Dienst toevoegen</button>
+            </div>
         </div>
     </div>
 </div>
 
 
-
 @code {
-    //ToDo create usermodel en jobmodel
-    private List<User> _users { get; set; } = new List<User>();
-    private List<Job> _jobs { get; set; } = new List<Job>();
+    
 
-    public string? JobName { get; set; }
-
-    public bool IsInstructer { get; set; }
-    public bool IsLierist { get; set; }
-    public bool IsStartOfficer { get; set; }
-    public bool IsBarPersonel { get; set; }
-    public List<User> Personel { get; set; } = new List<User>();
-
-    protected override void OnInitialized()
-    {
-        RefreshListData();
-    }
-
-    public void RefreshListData()
-    {
-        //_users = _userService.GetAllAsync().Result.Value.ToList();
-        //_jobs = _jobService.GetAllAsync().Result.Value.ToList();
-
-        _jobs = new List<Job>
-        {
-            new Job{Id=Guid.NewGuid(), Name="Instructer"},
-            new Job{Id=Guid.NewGuid(), Name="Bar"},
-            new Job{Id=Guid.NewGuid(), Name="StartOfficer"},
-            new Job{Id=Guid.NewGuid(), Name="Lierist"},
-        };
-
-        _users = new List<User>
-        {
-            new User{Name = "Bob",  Permissions = new List<Permission>
-            {
-                new Permission { Name="Bar"},
-                new Permission { Name="Lierist"},
-            }},
-
-            new User{Name = "Inca",  Permissions = new List<Permission>
-            {
-                new Permission { Name="StartOfficer"},
-                new Permission { Name="Instructer"},
-            }},
-            new User{Name = "Jane",  Permissions = new List<Permission>
-            {
-                new Permission { Name="Instructer"},
-                new Permission { Name="Bar"},
-                new Permission { Name="Lierist"},
-            }},
-        };
-
-
-        //_users = await _userService.GetAllAsync().Result.Value.Select(p => new UserListModel
-        //{
-        //    Id = p.Id,
-        //    Name = p.Name,
-        //    Address = $"{p.Street}{p.HouseNumber}, {p.CityName}, {p.MainCityName}",
-        //    Longitude = p.Long,
-        //    Latitude = p.Lat,
-        //    ImagePath = p.ImagePath,
-        //}).ToList();
-    }
-
-    private void GetStaff(ChangeEventArgs e)
-    {
-        if (Personel.Count > 0)
-        {
-            Personel.Clear();
-        }
-
-        foreach(var user in _users)
-        {
-            if (user.Permissions.Any(p => p.Name == e.Value?.ToString()))
-            {
-                Personel.Add(user);
-            }
-        }
-    }
+    
 }
