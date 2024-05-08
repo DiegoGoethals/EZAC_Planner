@@ -48,7 +48,32 @@
     private List<BaseListModel> _dayPeriods { get; set; } = new List<BaseListModel>();
     public bool isChecked { get; set; }
 
-   
+    protected async override Task OnInitializedAsync()
+    {
+        await RefreshData();
 
-    
+    }
+
+    public async Task RefreshData()
+    {
+        var jobsResult = await _jobService.GetAllAsync();
+        if (jobsResult.IsSucces)
+        {
+            _jobs = jobsResult.Value.Select(p => new BaseListModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+            }).ToList();
+        }
+
+        var dayPeriodsResult = await _dayPeriodService.GetAllAsync();
+        if (dayPeriodsResult.IsSucces)
+        {
+            _dayPeriods = dayPeriodsResult.Value.Select(p => new BaseListModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+            }).DistinctBy(dp => dp.Name).ToList();
+        }
+    }
 }
