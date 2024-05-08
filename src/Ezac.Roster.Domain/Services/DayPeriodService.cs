@@ -104,7 +104,7 @@ namespace Ezac.Roster.Domain.Services
             {
                 var dayPeriods = await _dayPeriodRepository.GetAllAsync();
 
-                var distinctDayPeriods = dayPeriods.DistinctBy(dp => dp.Id).ToList();
+                var distinctDayPeriods = dayPeriods.DistinctBy(dp => dp.Id).ToList().OrderBy(dp => dp.Name);
 
                 result.IsSucces = true;
                 result.Value = distinctDayPeriods;
