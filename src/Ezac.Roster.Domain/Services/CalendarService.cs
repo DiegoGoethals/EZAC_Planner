@@ -132,5 +132,26 @@ namespace Ezac.Roster.Domain.Services
                 Errors = new List<string> { "Calendar update failed!" }
             };
         }
+
+        public async Task<ResultModel<IEnumerable<ApplicationCalendar>>> GetAllAsync()
+        {
+            var calendars = await _calendarRepository.GetAllAsync();
+            if (calendars != null)
+            {
+                return new ResultModel<IEnumerable<ApplicationCalendar>>
+                {
+                    IsSucces = true,
+                    Value = calendars
+                };
+            }
+            return new ResultModel<IEnumerable<ApplicationCalendar>>
+            {
+                IsSucces = false,
+                Errors = new List<string>
+                {
+                    "No calendars found!"
+                }
+            };
+        }
     }
 }

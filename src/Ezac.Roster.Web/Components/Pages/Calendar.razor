@@ -83,17 +83,15 @@ else
     private string SelectedMonth;
     private List<string> periodNames = new List<string>();
 
-    private Guid selectedCalendarId = new Guid("414A1234-E5CB-4DDC-B821-7393557ED8C3");
-
 
     protected override async Task OnInitializedAsync()
     {
         // get the calendar
-        var calendarResult = await CalendarService.GetByIdAsync(selectedCalendarId);
+        var calendarResult = await CalendarService.GetAllAsync();
 
         if (calendarResult.IsSucces)
         {
-            calendar = calendarResult.Value;
+            calendar = calendarResult.Value.FirstOrDefault();
             calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
             await GetUniquePeriodNames();
         }

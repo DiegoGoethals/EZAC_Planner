@@ -19,6 +19,15 @@ namespace Ezac.Roster.Infrastructure.Repositories
         {
         }
 
+        public override async Task<IEnumerable<ApplicationCalendar>> GetAllAsync()
+        {
+            return await _table
+                .Include(c => c.Days)
+                .ThenInclude(d => d.DayPeriods)
+                .ThenInclude(dp => dp.Jobs)
+                .ToListAsync();
+        }
+
         public override async Task<ApplicationCalendar> GetByIdAsync(Guid id)
         {
             return await _table
