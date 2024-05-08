@@ -23,12 +23,24 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 			new Permission { Id = Guid.Parse("00000000-0000-0000-0000-000000000004"), Name = "Instructeur" }
 			};
 
+			var jobs = new Job[]
+			{
+				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000008"), Name = "Lierist", PermissionName ="Lierist"},
+				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000009"), Name = "Startofficier",PermissionName ="Startofficier" },
+				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000010"), Name = "Bardienst", PermissionName ="Bardienst"},
+				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000011"), Name = "Instructeur", PermissionName ="Instructeur"},
+				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000012"), Name = "Instructeur(DDI)", PermissionName ="Instructeur"},
+			};
+
+
 			var users = new User[]
 			{
 			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000005"), Name = "Johnny Debeer", Email = "johnny@ezac.com", Scaling = 1, IsAdmin = false},
 			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000006"), Name = "Alfonso Rosseel", Email = "Alfie@ezac.com", Scaling = 0.5, IsAdmin = false,},
 			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000007"), Name = "Mohammed Ali", Email = "Admin@ezac.com", Scaling = 1, IsAdmin = true,}
 			};
+
+
 
 			var permissionUsers = new[]
 			{
@@ -40,7 +52,7 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 			new { Id = Guid.NewGuid(), UsersId = users[2].Id, PermissionsId = permissions[1].Id },
 			new { Id = Guid.NewGuid(), UsersId = users[2].Id, PermissionsId = permissions[2].Id },
 			new { Id = Guid.NewGuid(), UsersId = users[2].Id, PermissionsId = permissions[3].Id }
-		};
+			};
 
 			var calendar = new ApplicationCalendar
 			{ Id = Guid.NewGuid(), Name = "Zweefvliegkalender", Start = DateTime.Now, End = DateTime.Now.AddMonths(6), };
@@ -88,6 +100,7 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 			}
 
 			modelBuilder.Entity<Permission>().HasData(permissions);
+			modelBuilder.Entity<Job>().HasData(jobs);
 			modelBuilder.Entity<User>().HasData(users);
 			modelBuilder.Entity($"{nameof(Permission)}{nameof(User)}").HasData(permissionUsers);
 			modelBuilder.Entity<ApplicationCalendar>().HasData(calendar);

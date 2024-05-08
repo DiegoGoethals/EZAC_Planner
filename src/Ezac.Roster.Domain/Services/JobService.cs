@@ -66,7 +66,7 @@ namespace Ezac.Roster.Domain.Services
                 Weight = jobCreateRequestModel.Weight,
                 UserId = jobCreateRequestModel.UserId,
                 DayPeriodId = jobCreateRequestModel.DayPeriodId,
-                PermissionId = jobCreateRequestModel.PermissionId,
+                PermissionName = jobCreateRequestModel.PermissionName,
                 Preferences = jobCreateRequestModel.Preferences.ToList()
             };
             if (await _jobRepository.AddAsync(job))
@@ -138,7 +138,7 @@ namespace Ezac.Roster.Domain.Services
             job.Weight = jobUpdateRequestModel.Weight;
             job.UserId = jobUpdateRequestModel.UserId;
             job.DayPeriodId = jobUpdateRequestModel.DayPeriodId;
-            job.PermissionId = jobUpdateRequestModel.PermissionId;
+            job.PermissionName = jobUpdateRequestModel.PermissionName;
             job.Preferences = jobUpdateRequestModel.Preferences.ToList();
 
             if (await _jobRepository.UpdateAsync(job))
