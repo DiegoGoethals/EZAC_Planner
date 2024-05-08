@@ -28,7 +28,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var user in Personel)
+                        @foreach (var user in Staff)
                         {
                             <tr class="userrow" draggable="true">
                                 <td>@user.Name</td>
@@ -55,7 +55,7 @@
 @code {
     private List<UserListModel> _users { get; set; } = new List<UserListModel>();
     private List<BaseListModel> _permissions { get; set; } = new List<BaseListModel>();
-    public List<UserListModel> Personel { get; set; } = new List<UserListModel>();
+    public List<UserListModel> Staff { get; set; } = new List<UserListModel>();
 
     protected async override Task OnInitializedAsync()
     {
@@ -89,16 +89,16 @@
 
     private void GetStaff(ChangeEventArgs e)
     {
-        if (Personel.Count > 0)
+        if (Staff.Count > 0)
         {
-            Personel.Clear();
+            Staff.Clear();
         }
 
         foreach(var user in _users)
         {
             if (user.Permissions.Any(p => p.Name == e.Value?.ToString()))
             {
-                Personel.Add(user);
+                Staff.Add(user);
             }
         }
     }
