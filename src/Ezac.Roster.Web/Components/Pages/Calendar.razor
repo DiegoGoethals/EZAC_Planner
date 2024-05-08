@@ -21,7 +21,7 @@
                 <th>Dag/Periode</th>
                 @foreach (var day in calendar.Days)
                 {
-                    foreach (var period in GetDayPeriodsForDay(day.Id))
+                    @foreach (var period in day.DayPeriods)
                     {
                         <th>@period.Name</th>
                     }
@@ -33,10 +33,10 @@
             {
                 <tr>
                     <td>@day.Date.ToString("ddd d/M")</td>
-                    @foreach (var period in GetDayPeriodsForDay(day.Id))
+                    @foreach (var period in day.DayPeriods)
                     {
                         <td>
-                            @foreach (var job in GetJobsForDayAndPeriod(day, period))
+                            @foreach (var job in period.Jobs)
                             {
                                 <p>@job.Name</p>
                             }
@@ -44,14 +44,14 @@
                     }
                 </tr>
             }
-
         </tbody>
     </table>
 }
 else
 {
-    <p>Gegevens worden geladen...</p>
+    <p>Gegevens worden geladen of kalender bevat geen dagen.</p>
 }
+
 
 
 @code {
@@ -61,7 +61,8 @@ else
     private List<Job> jobs;
     private string SelectedMonth;
 
-    private Guid selectedCalendarId;
+    private Guid selectedCalendarId = new Guid("414A1234-E5CB-4DDC-B821-7393557ED8C3");
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -71,7 +72,6 @@ else
         if (calendarResult.IsSucces)
         {
             calendar = calendarResult.Value;
-            //SelectedMonth = calendar.Month;
         }
     }
 
