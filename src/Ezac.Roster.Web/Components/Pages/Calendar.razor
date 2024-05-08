@@ -1,4 +1,5 @@
 ﻿@page "/calendar"
+@rendermode InteractiveServer
 
 @using Ezac.Roster.Domain
 @using Ezac.Roster.Domain.Entities
@@ -32,7 +33,9 @@
             @foreach (var day in calendar.Days)
             {
                 <tr>
-                    <td>@day.Date.ToString("ddd d/M")</td>
+                    <td>
+                        <button @onclick="() => ShowDayDetails(day)">@day.Date.ToString("ddd d/M")</button>
+                    </td>
                     @foreach (var period in day.DayPeriods)
                     {
                         <td>
@@ -87,5 +90,10 @@ else
         return day.DayPeriods
               .Where(dp => dp.Id == period.Id)
               .SelectMany(dp => dp.Jobs);
+    }
+
+    private void ShowDayDetails(Day day)
+    {
+
     }
 }
