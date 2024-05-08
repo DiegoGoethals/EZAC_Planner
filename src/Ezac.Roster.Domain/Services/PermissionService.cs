@@ -85,7 +85,26 @@ namespace Ezac.Roster.Domain.Services
 			};
 		}
 
-		public async Task<ResultModel<IEnumerable<Permission>>> GetAllByUserIdAsync(Guid userId)
+        public async Task<ResultModel<IEnumerable<Permission>>> GetAllAsync()
+        {
+            var permissions = await _permissionRepository.GetAllAsync();
+			if(permissions == null)
+			{
+                return new ResultModel<IEnumerable<Permission>>
+                {
+                    IsSucces = false,
+                    Errors = new List<string>{"No permissions found for this user"}
+                };
+            }
+
+			return new ResultModel<IEnumerable<Permission>>
+			{
+				IsSucces = true,
+				Value = permissions
+            };
+        }
+
+        public async Task<ResultModel<IEnumerable<Permission>>> GetAllByUserIdAsync(Guid userId)
 		{
 			var user = await _userRepository.GetByIdAsync(userId);
 			var permissions = user.Permissions;
