@@ -3,6 +3,7 @@ using Ezac.Roster.Domain.Interfaces.Repositories;
 using Ezac.Roster.Domain.Interfaces.Services;
 using Ezac.Roster.Domain.Services.Models;
 using OfficeOpenXml;
+using System.Text.RegularExpressions;
 
 namespace Ezac.Roster.Domain.Services
 {
@@ -34,16 +35,22 @@ namespace Ezac.Roster.Domain.Services
 					for (int row = 2; row <= rows; row++)
 					{
 						var name = worksheet.Cells[row, 1].Value?.ToString();
-						if (name!= null && !(name.GetType() == typeof(string)))
+						if (name.Length > 0 && name!= null && !(name.GetType() == typeof(string)))
 						{
 							return ImportFailed(row, 1);
 						}
 						var email = worksheet.Cells[row, 2].Value?.ToString();
-						if (email != null && !(email.GetType() == typeof(string)))
+						string pattern = @"..*@..*\...*";
+						Match match = Regex.Match(email, pattern);
+						if (match.Success && email != null && !(email.GetType() == typeof(string)))
 						{
 							return ImportFailed(row, 2);
 						}
 						if (!Double.TryParse(worksheet.Cells[row, 7].Value?.ToString(), out double scaling))
+						{
+							return ImportFailed(row, 7);
+						}
+						if (scaling < 0 ) // Add check for smaller or equal to 1 if needed as well
 						{
 							return ImportFailed(row, 7);
 						}
@@ -121,7 +128,7 @@ namespace Ezac.Roster.Domain.Services
 
 		private string ImportFailed(int row, int column)
 		{
-			return $"You made a mistake inside the file at {row}, {column}! Please see our template to see what type of values we expect!";
+			return $"You made a mistake inside the file at row: {row}, column: {column}! Please see our template to see what type of values we expect!";
 		}
     }
 }
