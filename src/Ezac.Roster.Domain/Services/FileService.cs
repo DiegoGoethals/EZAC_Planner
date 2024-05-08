@@ -1,6 +1,7 @@
 ﻿using Ezac.Roster.Domain.Entities;
 using Ezac.Roster.Domain.Interfaces.Repositories;
 using Ezac.Roster.Domain.Interfaces.Services;
+using Ezac.Roster.Domain.Services.Models;
 using OfficeOpenXml;
 
 namespace Ezac.Roster.Domain.Services
@@ -16,7 +17,7 @@ namespace Ezac.Roster.Domain.Services
 			_permissionRepository = permissionRepository;
         }
 
-        public async Task ImportUsers(Stream fileStream)
+        public async Task<string> ImportUsers(Stream fileStream)
         {
 			await _userRepository.DeleteAllAsync();
             using (var memoryStream = new MemoryStream())
@@ -32,25 +33,57 @@ namespace Ezac.Roster.Domain.Services
 
 					for (int row = 2; row <= rows; row++)
 					{
+						var name = worksheet.Cells[row, 1].Value?.ToString();
+						if (!(name.GetType() == typeof(string)))
+						{
+							return ImportFailed(row, 1);
+						}
+						var email = worksheet.Cells[row, 2].Value?.ToString();
+						if (!(email.GetType() == typeof(string)))
+						{
+							return ImportFailed(row, 2);
+						}
+						if (!Double.TryParse(worksheet.Cells[row, 7].Value?.ToString(), out double scaling))
+						{
+							return ImportFailed(row, 7);
+						}
+
 						var user = new User
 						{
 							Id = Guid.NewGuid(),
-							Name = worksheet.Cells[row, 1].Value?.ToString(),
+							Name = name,
 							Created = DateTime.Now,
-							Email = worksheet.Cells[row, 2].Value?.ToString(),
-							Scaling = Double.Parse(worksheet.Cells[row, 7].Value?.ToString()),
+							Email = email,
+							Scaling = scaling,
 							IsAdmin = false,
 							Preferences = new List<Preference>(),
 							Permissions = new List<Permission>(),
 							Jobs = new List<Job>()
 						};
 
+						if (!bool.TryParse(worksheet.Cells[row, 3].Value?.ToString(), out bool instructeur))
+						{
+							return ImportFailed(row, 3);
+						}
+						if (!bool.TryParse(worksheet.Cells[row, 4].Value?.ToString(), out bool lierist))
+						{
+							return ImportFailed(row, 4);
+						}
+						if (!bool.TryParse(worksheet.Cells[row, 5].Value?.ToString(), out bool startofficier))
+						{
+							return ImportFailed(row, 5);
+						}
+						if (!bool.TryParse(worksheet.Cells[row, 6].Value?.ToString(), out bool bar))
+						{
+							return ImportFailed(row, 6);
+						}
+
 						var permissionDictionary = new Dictionary<string, bool>()
 						{
-							{"Instructeur", bool.Parse(worksheet.Cells[row, 3].Value?.ToString())},
-							{"Lierist", bool.Parse(worksheet.Cells[row, 4].Value?.ToString())},
-							{"Startofficier", bool.Parse(worksheet.Cells[row, 5].Value?.ToString())},
-							{"Bar", bool.Parse(worksheet.Cells[row, 6].Value?.ToString())}
+							{"Instructeur", instructeur},
+							{"Lierist", lierist},
+							{"Startofficier", startofficier},
+							{"Bar", bar}
 						};
 
 						foreach(var entry in permissionDictionary)
@@ -68,6 +101,7 @@ namespace Ezac.Roster.Domain.Services
 					}
 				}
 			}
+			return "File Uploaded successfully!";
         }
 
 		private async Task ImportPermissions(ExcelWorksheet worksheet)
@@ -84,6 +118,11 @@ namespace Ezac.Roster.Domain.Services
 				};
 				await _permissionRepository.AddAsync(permission);
 			}
+		}
+
+		private string ImportFailed(int row, int column)
+		{
+			return $"You made a mistake inside the file at {row}, {column}! Please see our template to see what type of values we expect!";
 		}
     }
 }
