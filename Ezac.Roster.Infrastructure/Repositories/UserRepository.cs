@@ -13,6 +13,14 @@ namespace Ezac.Roster.Infrastructure.Repositories
         {
         }
 
+        public override async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _table
+                .Include(u => u.Permissions)
+                .Include(u => u.Jobs)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<User>> GetByNameAsync(string name)
         {
             return await _table.Where(user => user.Name.Contains(name)).ToListAsync();

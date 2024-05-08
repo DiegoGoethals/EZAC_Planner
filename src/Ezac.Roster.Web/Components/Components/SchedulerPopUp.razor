@@ -1,0 +1,105 @@
+﻿@using Ezac.Roster.Domain.Entities
+@using Ezac.Roster.Domain.Interfaces.Services
+@using Ezac.Roster.Domain.Models
+
+@inject IUserService _userService
+@inject IPermissionsService _permissionService
+
+<div class="container">
+    <div class="row">
+        <div class="col col-lg-2">
+            <h6>Beschikbare/bevoegde leden</h6>
+
+            <div class="mb-3">
+                <select class="form-select" @onchange="GetStaff">
+                    <option value="">Selecteer een baan</option>
+                    @foreach (var permission in _permissions)
+                    {
+                        <option>@permission.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div>
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Staff)
+                        {
+                            <tr class="userrow" draggable="true">
+                                <td>@user.Name</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="mb-2">
+                <button class="btn btn-primary">Dagdeel toevoegen</button>
+            </div>
+            <div>
+                <button class="btn btn-primary">Dienst toevoegen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private List<UserListModel> _users { get; set; } = new List<UserListModel>();
+    private List<BaseListModel> _permissions { get; set; } = new List<BaseListModel>();
+    public List<UserListModel> Staff { get; set; } = new List<UserListModel>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await RefreshData();
+
+    }
+
+    public async Task RefreshData()
+    {
+        var usersResult = await _userService.GetAllAsync();
+        if (usersResult.IsSucces)
+        {
+            _users = usersResult.Value.Select(p => new UserListModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Permissions = p.Permissions,
+            }).ToList();
+        }
+
+        var permissionsResult = await _permissionService.GetAllAsync();
+        if (permissionsResult.IsSucces)
+        {
+            _permissions = permissionsResult.Value.Select(p => new BaseListModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+            }).ToList();
+        }
+    }
+
+    private void GetStaff(ChangeEventArgs e)
+    {
+        if (Staff.Count > 0)
+        {
+            Staff.Clear();
+        }
+
+        foreach(var user in _users)
+        {
+            if (user.Permissions.Any(p => p.Name == e.Value?.ToString()))
+            {
+                Staff.Add(user);
+            }
+        }
+    }
+}
