@@ -41,7 +41,7 @@ namespace Ezac.Roster.Web
             //builder.Services.AddScoped<IPermissionsService, PermissionsService>();
             //builder.Services.AddScoped<IPermissionsRepository, PermissionsRepository>();
 
-            //builder.Services.AddScoped<IJobService, JobService>();
+            builder.Services.AddScoped<IJobService, JobService>();
             builder.Services.AddScoped<IJobRepository, JobRepository>();
 
 
