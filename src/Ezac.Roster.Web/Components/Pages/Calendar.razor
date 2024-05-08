@@ -133,17 +133,6 @@ else
 
     private async Task TogglePeriod(Day day, string period)
     {
-        //var dayPeriod = day.DayPeriods.FirstOrDefault(dp => dp.Name == period);
-        //if (dayPeriod != null)
-        //{
-        //    var toggleResult = await DayPeriodService.ToggleAsync(dayPeriod.Id);
-        //    if (toggleResult.IsSucces)
-        //    {
-        //        dayPeriod.IsOpen = !dayPeriod.IsOpen;
-        //        StateHasChanged();
-        //    }
-        //}
-
         var dayPeriod = day.DayPeriods.FirstOrDefault(dp => dp.Name == period);
         if (dayPeriod.IsOpen)
         {
