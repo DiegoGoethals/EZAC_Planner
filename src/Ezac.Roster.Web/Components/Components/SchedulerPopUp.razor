@@ -53,7 +53,39 @@
 
 
 @code {
-    
+    private List<UserListModel> _users { get; set; } = new List<UserListModel>();
+    private List<BaseListModel> _permissions { get; set; } = new List<BaseListModel>();
+    public List<UserListModel> Personel { get; set; } = new List<UserListModel>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await RefreshData();
+
+    }
+
+    public async Task RefreshData()
+    {
+        var usersResult = await _userService.GetAllAsync();
+        if (usersResult.IsSucces)
+        {
+            _users = usersResult.Value.Select(p => new UserListModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Permissions = p.Permissions,
+            }).ToList();
+        }
+
+        var permissionsResult = await _permissionService.GetAllAsync();
+        if (permissionsResult.IsSucces)
+        {
+            _permissions = permissionsResult.Value.Select(p => new BaseListModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+            }).ToList();
+        }
+    }
 
     
 }
