@@ -4,6 +4,7 @@ using Ezac.Roster.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ezac.Roster.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240508121412_dataseeding2")]
+    partial class dataseeding2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +51,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Calendars", (string)null);
+                    b.ToTable("Calendars");
 
                     b.HasData(
                         new
@@ -94,7 +97,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("CalendarId");
 
-                    b.ToTable("Days", (string)null);
+                    b.ToTable("Days");
 
                     b.HasData(
                         new
@@ -298,7 +301,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("DayId");
 
-                    b.ToTable("DayPeriods", (string)null);
+                    b.ToTable("DayPeriods");
 
                     b.HasData(
                         new
@@ -954,7 +957,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("Permissions");
 
                     b.HasData(
                         new
@@ -1034,7 +1037,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Preference", (string)null);
+                    b.ToTable("Preference");
                 });
 
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.User", b =>
@@ -1066,7 +1069,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasData(
                         new
@@ -1116,7 +1119,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("PermissionUser", (string)null);
+                    b.ToTable("PermissionUser");
 
                     b.HasData(
                         new
