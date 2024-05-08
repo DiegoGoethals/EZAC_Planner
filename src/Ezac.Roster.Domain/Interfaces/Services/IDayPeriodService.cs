@@ -12,7 +12,7 @@ namespace Ezac.Roster.Domain.Interfaces.Services
 	{
 		Task<ResultModel<DayPeriod>> GetByIdAsync(Guid id);
         Task<ResultModel<IEnumerable<DayPeriod>>> GetAllAsync();
-
+        Task<ResultModel<bool>> ToggleAsync(Guid id);
         Task<ResultModel<DayPeriod>> AddAsync(DayPeriodCreateRequestModel dayPeriodCreateRequestModel);
 		Task<ResultModel<DayPeriod>> DeleteAsync(Guid id);
 		Task<ResultModel<DayPeriod>> UpdateAsync(DayPeriodUpdateRequestModel dayPeriodUpdateRequestModel);
