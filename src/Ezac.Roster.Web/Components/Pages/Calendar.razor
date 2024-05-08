@@ -16,6 +16,7 @@
 @if (calendar != null && calendar.Days != null)
 {
     <table class="table table-bordered">
+
         <thead>
             <tr>
                 <th>Dag/Periode</th>
@@ -28,6 +29,7 @@
         <tbody>
             @foreach (var day in calendar.Days)
             {
+
                 <tr>
                     <td>
                         <button @onclick="() => ToggleDay(day)" class="btn btn-primary">
@@ -37,6 +39,10 @@
                     @foreach (var period in periodNames)
                     {
                         <td>
+                            <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">
+                            </button>
+
+                            @period
                             @if (!day.IsOpen)
                             {
                                 <h5>Kolom uitgeschakeld</h5>
@@ -124,20 +130,37 @@ else
         }
     }
 
-    private async Task TogglePeriod(Day day, DayPeriod period)
+    private async Task TogglePeriod(Day day, string period)
     {
-        var toggleResult = await DayService.ToggleAsync(period.Id);
-        if (toggleResult.IsSucces)
-        {
-            StateHasChanged();
-        }
+        //var dayPeriod = day.DayPeriods.FirstOrDefault(dp => dp.Name == period);
+        //if (dayPeriod != null)
+        //{
+        //    var toggleResult = await DayPeriodService.ToggleAsync(dayPeriod.Id);
+        //    if (toggleResult.IsSucces)
+        //    {
+        //        dayPeriod.IsOpen = !dayPeriod.IsOpen;
+        //        StateHasChanged();
+        //    }
+        //}
 
+        var dayPeriod = day.DayPeriods.FirstOrDefault(dp => dp.Name == period);
+        if (dayPeriod.IsOpen)
+        {
+            var toggleResult = await DayPeriodService.ToggleAsync(dayPeriod.Id);
+            if (toggleResult.IsSucces)
+            {
+                dayPeriod.IsOpen = !dayPeriod.IsOpen;
+                StateHasChanged();
+            }
+        }
         else
         {
-            day.IsOpen = !day.IsOpen;
+            dayPeriod.IsOpen = !dayPeriod.IsOpen;
             StateHasChanged();
         }
     }
+
+
 
     private IEnumerable<DayPeriod> GetDistinctPeriods(ICollection<Day> days)
     {
