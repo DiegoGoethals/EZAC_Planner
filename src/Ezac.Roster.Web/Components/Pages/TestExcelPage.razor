@@ -1,0 +1,58 @@
+﻿@page "/excelTest"
+@rendermode InteractiveServer
+
+@using Ezac.Roster.Domain.Interfaces.Services
+
+@inject IFileService FileService;
+
+<h3>Excel Input</h3>
+
+<form @onsubmit="HandleFile">
+	<InputFile OnChange="LoadFile" />
+	<button type="submit" disabled="@isLoading">Import file</button>
+</form>
+
+<a href="templates/template.xlsx" download>Download template</a>
+
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+	<p>@errorMessage</p>
+}
+
+@code {
+	private IBrowserFile file;
+	private string errorMessage;
+	private bool isLoading = false;
+
+	private void LoadFile(InputFileChangeEventArgs e)
+	{
+		file = e.File;
+	}
+
+	private async Task HandleFile()
+	{
+		if (file == null)
+		{
+			errorMessage = "Please select a file.";
+			return;
+		}
+		var extension = Path.GetExtension(file.Name);
+
+		if (!(extension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) || (extension.Equals(".xls", StringComparison.OrdinalIgnoreCase))))
+		{
+			errorMessage = "Please upload an excel file!";
+			return;
+		}
+
+		if (file != null)
+		{
+			using var stream = file.OpenReadStream();
+			isLoading = true;
+
+			errorMessage = await FileService.ImportUsers(stream);
+			isLoading = false;
+		}
+	}
+}
+

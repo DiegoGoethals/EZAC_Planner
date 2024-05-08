@@ -16,5 +16,6 @@ namespace Ezac.Roster.Domain.Interfaces.Repositories
         Task<bool> DeleteAsync(T toDelete);
         Task<bool> UpdateAsync(T toUpdate);
         Task<bool> CheckIfExistsAsync(Guid id);
+        Task<bool> DeleteAllAsync();
     }
 }
