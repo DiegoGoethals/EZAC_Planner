@@ -11,7 +11,6 @@
 @inject IDayService DayService
 @inject IDayPeriodService DayPeriodService
 
-
 <h3>Kalender voor de maand @SelectedMonth</h3>
 
 @if (calendar != null && calendar.Days != null)
@@ -20,10 +19,6 @@
         <thead>
             <tr>
                 <th>Dag/Periode</th>
-                @*@foreach (var period in GetDistinctPeriods(calendar.Days))
-                {
-                    <th>@period.Name</th>
-                }*@
                 @foreach (var period in periodNames)
                 {
                     <th>@period</th>
@@ -35,42 +30,35 @@
             {
                 <tr>
                     <td>
-                        @*<button @onclick="() => ShowDayDetails(day)">@day.Date.ToString("ddd d/M")</button>*@
-                        <button @onclick="() => ShowDayDetails(day)" disabled="@(!day.IsOpen)">@day.Date.ToString("ddd d/M")</button>
-
-                    </td>
-                    @if (day.IsOpen)
-                    {
-                        @foreach (var period in periodNames)
+                        <button @onclick="() => ToggleDay(day)" class="btn btn-primary">
+                            @day.Date.ToString("ddd d/M")
+                    </button>
+                </td>
+                @foreach (var period in periodNames)
+                {
+                    <td>
+                        @if (!day.IsOpen)
                         {
-                            <td><h5>Kolom open voor jobs!</h5></td>
-                            
+                            <h5>Kolom uitgeschakeld</h5>
                         }
-
-
-                    }
-
-                    @*@foreach (var period in GetDistinctPeriods(calendar.Days))
-        {
-            <td>
-                @if (day.IsOpen)
-                {
-                    @foreach (var job in GetJobsForDayAndPeriod(day, period))
-                    {
-                        <p>@job.Name</p>
-                    }
+                        else
+                        {
+                            if (day.DayPeriods.Any(dp => dp.Name == period && dp.Jobs.Any()))
+                            {
+                                foreach (var job in day.DayPeriods.First(dp => dp.Name == period).Jobs)
+                                {
+                                    <p>@job.Name</p>
+                                }
+                            }
+                            else
+                            {
+                                <p>Geen jobs beschikbaar</p>
+                            }
+                        }
+                    </td>
                 }
-
-                else
-                {
-                    <p>Kolom uitgeschakeld</p>
-                }
-            </td>
-        }*@
-                </tr>
-            }
-
-
+            </tr>
+        }
         </tbody>
     </table>
 }
@@ -100,8 +88,8 @@ else
         if (calendarResult.IsSucces)
         {
             calendar = calendarResult.Value;
+            await GetUniquePeriodNames();
         }
-        await GetUniquePeriodNames();
 
     }
 
@@ -119,17 +107,20 @@ else
               .SelectMany(dp => dp.Jobs);
     }
 
-    private async Task ShowDayDetails(Day day)
+    private async Task ToggleDay(Day day)
     {
-        var toggleResult = await DayService.ToggleAsync(day.Id);
-        if (toggleResult.IsSucces)
+        if (day.IsOpen)
         {
-            day.IsOpen = toggleResult.Value;
-            StateHasChanged();
+            var toggleResult = await DayService.ToggleAsync(day.Id);
+            if (toggleResult.IsSucces)
+            {
+                StateHasChanged();
+            }
         }
         else
         {
-            return;
+            day.IsOpen = !day.IsOpen;
+            StateHasChanged();
         }
     }
 
@@ -147,7 +138,7 @@ else
         var dayPeriods = await DayPeriodService.GetAllAsync();
         if (dayPeriods.IsSucces)
         {
-                periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().ToList();
+            periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().ToList();
         }
     }
 }
