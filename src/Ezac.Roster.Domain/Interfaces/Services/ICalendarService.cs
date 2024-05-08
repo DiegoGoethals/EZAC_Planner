@@ -14,5 +14,6 @@ namespace Ezac.Roster.Domain.Interfaces.Services
         Task<ResultModel<ApplicationCalendar>> AddAsync(ApplicationCalendarCreateRequestModel applicationCalendarCreateRequestModel);
         Task<ResultModel<ApplicationCalendar>> DeleteAsync(Guid id);
         Task<ResultModel<ApplicationCalendar>> UpdateAsync(ApplicationCalendarUpdateRequestModel applicationCalendarUpdateRequestModel);
+		Task<ResultModel<IEnumerable<ApplicationCalendar>>> GetAllAsync();
     }
 }

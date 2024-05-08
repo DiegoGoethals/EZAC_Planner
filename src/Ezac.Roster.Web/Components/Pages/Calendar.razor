@@ -1,0 +1,169 @@
+﻿@page "/calendar"
+@rendermode InteractiveServer
+
+@using Ezac.Roster.Domain
+@using Ezac.Roster.Domain.Entities
+@using Ezac.Roster.Infrastructure
+@using Ezac.Roster.Domain.Interfaces.Services
+
+@inject ICalendarService CalendarService
+@inject IJobService JobService
+@inject IDayService DayService
+@inject IDayPeriodService DayPeriodService
+
+<h3>Kalender voor de maand @SelectedMonth</h3>
+
+@if (calendar != null && calendar.Days != null)
+{
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>Dag/Periode</th>
+                @foreach (var period in periodNames)
+                {
+                    <th>@period</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var day in calendar.Days)
+            {
+
+                <tr>
+                    <td>
+                        <button @onclick="() => ToggleDay(day)" class="btn btn-primary">
+                            @day.Date.ToString("ddd d/M")
+                        </button>
+                    </td>
+                    @foreach (var period in periodNames)
+                    {
+                        <td>
+                            <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">
+                            </button>
+
+                            @period
+                            @if (!day.IsOpen)
+                            {
+                                <h5>Kolom uitgeschakeld</h5>
+                            }
+                            else
+                            {
+                                if (day.DayPeriods.Any(dp => dp.Name == period && dp.Jobs.Any()))
+                                {
+                                    foreach (var job in day.DayPeriods.First(dp => dp.Name == period).Jobs)
+                                    {
+                                        <p>@job.Name</p>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>Geen jobs beschikbaar</p>
+                                }
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Gegevens worden geladen of kalender bevat geen dagen.</p>
+}
+
+
+
+@code {
+
+    private ApplicationCalendar calendar;
+    private List<DayPeriod> dayPeriods;
+    private List<Job> jobs;
+    private string SelectedMonth;
+    private List<string> periodNames = new List<string>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // get the calendar
+        var calendarResult = await CalendarService.GetAllAsync();
+
+        if (calendarResult.IsSucces)
+        {
+            calendar = calendarResult.Value.FirstOrDefault();
+            calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
+            await GetUniquePeriodNames();
+        }
+
+    }
+
+    private IEnumerable<DayPeriod> GetDayPeriodsForDay(Guid dayId)
+    {
+        // get day periods for the specific day
+        return dayPeriods.Where(dp => dp.DayId == dayId);
+    }
+
+    private IEnumerable<Job> GetJobsForDayAndPeriod(Day day, DayPeriod period)
+    {
+        // get jobs for the specific day and period
+        return day.DayPeriods
+              .Where(dp => dp.Id == period.Id)
+              .SelectMany(dp => dp.Jobs);
+    }
+
+    private async Task ToggleDay(Day day)
+    {
+        if (day.IsOpen)
+        {
+            var toggleResult = await DayService.ToggleAsync(day.Id);
+            if (toggleResult.IsSucces)
+            {
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            day.IsOpen = !day.IsOpen;
+            StateHasChanged();
+        }
+    }
+
+    private async Task TogglePeriod(Day day, string period)
+    {
+        var dayPeriod = day.DayPeriods.FirstOrDefault(dp => dp.Name == period);
+        if (dayPeriod.IsOpen)
+        {
+            var toggleResult = await DayPeriodService.ToggleAsync(dayPeriod.Id);
+            if (toggleResult.IsSucces)
+            {
+                dayPeriod.IsOpen = !dayPeriod.IsOpen;
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            dayPeriod.IsOpen = !dayPeriod.IsOpen;
+            StateHasChanged();
+        }
+    }
+
+
+
+    private IEnumerable<DayPeriod> GetDistinctPeriods(ICollection<Day> days)
+    {
+        return days.SelectMany(d => d.DayPeriods)
+                   .GroupBy(p => p.Id)
+                   .Select(g => g.First())
+                   .ToList();
+    }
+
+    private async Task GetUniquePeriodNames()
+    {
+        var dayPeriods = await DayPeriodService.GetAllAsync();
+        if (dayPeriods.IsSucces)
+        {
+            periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().ToList();
+        }
+    }
+}
