@@ -27,6 +27,8 @@ namespace Ezac.Roster.Domain.Services
 					var worksheet = package.Workbook.Worksheets[0];
 					var rows = worksheet.Dimension.End.Row;
 
+					await ImportPermissions(worksheet);
+
 					for (int row = 2; row <= rows; row++)
 					{
 						var user = new User
@@ -42,9 +44,27 @@ namespace Ezac.Roster.Domain.Services
 							Jobs = new List<Job>()
 						};
 
+						var permissionDictionary = new Dictionary<string, bool>()
+						{
+							{"Instructeur", bool.Parse(worksheet.Cells[row, 3].Value?.ToString())},
+							{"Lierist", bool.Parse(worksheet.Cells[row, 4].Value?.ToString())},
+							{"Startofficier", bool.Parse(worksheet.Cells[row, 5].Value?.ToString())},
+							{"Bar", bool.Parse(worksheet.Cells[row, 6].Value?.ToString())}
+						};
+
+						foreach(var entry in permissionDictionary)
+						{
+							if(entry.Value)
+							{
+								var permissionAsList = await _permissionRepository.GetByNameAsync(entry.Key);
+								var permission = permissionAsList.FirstOrDefault();
+								permission.Users.Add(user);
+								user.Permissions.Add(permission);
+								await _permissionRepository.UpdateAsync(permission);
+							}
+						}
 						await _userRepository.AddAsync(user);
 					}
-					await ImportPermissions(worksheet);
 				}
 			}
         }

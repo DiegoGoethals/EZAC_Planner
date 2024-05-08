@@ -46,6 +46,8 @@
 			using var stream = file.OpenReadStream();
 
 			await FileService.ImportUsers(stream);
+
+			errorMessage = "File uploaded succesfully!";
 		}
 	}
 }
