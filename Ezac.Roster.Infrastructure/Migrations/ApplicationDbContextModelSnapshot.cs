@@ -48,7 +48,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Calendars");
+                    b.ToTable("Calendars", (string)null);
 
                     b.HasData(
                         new
@@ -94,7 +94,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("CalendarId");
 
-                    b.ToTable("Days");
+                    b.ToTable("Days", (string)null);
 
                     b.HasData(
                         new
@@ -298,7 +298,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("DayId");
 
-                    b.ToTable("DayPeriods");
+                    b.ToTable("DayPeriods", (string)null);
 
                     b.HasData(
                         new
@@ -954,7 +954,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Permissions", (string)null);
 
                     b.HasData(
                         new
@@ -1034,7 +1034,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Preference");
+                    b.ToTable("Preference", (string)null);
                 });
 
             modelBuilder.Entity("Ezac.Roster.Domain.Entities.User", b =>
@@ -1066,7 +1066,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -1116,7 +1116,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("PermissionUser");
+                    b.ToTable("PermissionUser", (string)null);
 
                     b.HasData(
                         new
