@@ -96,26 +96,6 @@ namespace Ezac.Roster.Domain.Services
             };
         }
 
-        //public async Task<ResultModel<IEnumerable<DayPeriod>>> GetAllAsync()
-        //{
-        //    var result = new ResultModel<IEnumerable<DayPeriod>>();
-
-        //    try
-        //    {
-        //        var dayPeriods = await _dayPeriodRepository.GetAllAsync();
-
-        //        result.IsSucces = true;
-        //        result.Value = dayPeriods;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        result.IsSucces = false;
-        //        result.Errors = new List<string> { ex.Message };
-        //    }
-
-        //    return result;
-        //}
-
         public async Task<ResultModel<IEnumerable<DayPeriod>>> GetAllAsync()
         {
             var result = new ResultModel<IEnumerable<DayPeriod>>();
