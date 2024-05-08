@@ -160,6 +160,61 @@ namespace Ezac.Roster.Domain.Services
             return resultModel;
         }
 
+        public async Task<ResultModel<bool>> ToggleAsync(Guid id)
+        {
+            try
+            {
+                // get the day period
+                var day = await _dayPeriodRepository.GetByIdAsync(id);
+
+                if (day == null)
+                {
+                    return new ResultModel<bool>
+                    {
+                        IsSucces = false,
+                        Value = false,
+                        Errors = new List<string> { "Dag niet gevonden." }
+                    };
+                }
+
+                // toggle de status
+                day.IsOpen = !day.IsOpen;
+
+                // update the day period
+                var updateResult = await _dayPeriodRepository.UpdateAsync(day);
+
+                // check if the update is succesful
+                // else return error
+                if (updateResult)
+                {
+                    return new ResultModel<bool>
+                    {
+                        IsSucces = true,
+                        Value = day.IsOpen,
+                        Errors = new List<string> { "De dagstatus is succesvol gewijzigd." }
+                    };
+                }
+                else
+                {
+                    return new ResultModel<bool>
+                    {
+                        IsSucces = false,
+                        Value = false,
+                        Errors = new List<string> { "Kan de dagstatus niet wijzigen." }
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResultModel<bool>
+                {
+                    IsSucces = false,
+                    Value = false,
+                    Errors = new List<string> { $"Er is een fout opgetreden: {ex.Message}" }
+                };
+            }
+        }
+
         public async Task<ResultModel<DayPeriod>> UpdateAsync(DayPeriodUpdateRequestModel dayPeriodUpdateRequestModel)
         {
             //get the event
