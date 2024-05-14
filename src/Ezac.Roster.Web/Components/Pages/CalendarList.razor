@@ -1,0 +1,82 @@
+﻿@page "/calendarslist"
+@using Ezac.Roster.Infrastructure.Data
+@using Ezac.Roster.Domain.Models
+@using Ezac.Roster.Domain.Interfaces.Services
+@using Ezac.Roster.Domain.Entities
+@rendermode InteractiveServer
+
+
+@inject ICalendarService CalendarService
+@inject NavigationManager Navigation
+
+<h3>CalendarList</h3>
+
+<button class="btn btn-primary" @onclick="CreateCalendar">Maak een nieuwe kalender</button>
+
+
+@if (calendars != null)
+{
+    <table class="table table-hover mt-4">
+        <thead class="thead-light">
+            <tr>
+                <th>Naam</th>
+                <th>Jaar</th>
+                <th>Acties</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var calendar in calendars)
+            {
+                <tr>
+                    <td>@calendar.Name</td>
+                    <td>@calendar.Start.ToString("yyyy/MM") tot @calendar.End.ToString("yyyy/MM")</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">bewerken</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteCalendar(calendar.Id)">Verwijderen</button>
+                        <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+else
+{
+    <p>Geen kalenders gevonden.</p>
+}
+
+
+@code {
+    private List<ApplicationCalendar> calendars;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var calendarResult = await CalendarService.GetAllAsync();
+
+        if (calendarResult.IsSucces)
+        {
+            calendars = calendarResult.Value.ToList();
+        }
+    }
+
+    private void UpdateCalendar(Guid calendarId)
+    {
+        Navigation.NavigateTo($"calendarupdate/{calendarId}");
+    }
+
+    private void DeleteCalendar(Guid calendarId)
+    {
+        Navigation.NavigateTo($"calendardelete/{calendarId}");
+    }
+
+    private void CreateCalendar()
+    {
+        Navigation.NavigateTo("calendarcreate");
+    }
+
+    private void OverviewCalendar(Guid calendarId)
+    {
+        Navigation.NavigateTo($"calendardetails/{calendarId}");
+    }
+}
