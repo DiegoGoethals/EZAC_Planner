@@ -46,6 +46,7 @@ namespace Ezac.Roster.Web
             builder.Services.AddScoped<IJobService, JobService>();
             builder.Services.AddScoped<IJobRepository, JobRepository>();
 
+            builder.Services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
             builder.Services.AddScoped<IFileService, FileService>();
 
 			//add MudBlazor services

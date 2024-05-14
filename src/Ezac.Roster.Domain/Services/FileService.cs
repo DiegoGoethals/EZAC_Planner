@@ -1,7 +1,6 @@
 ﻿using Ezac.Roster.Domain.Entities;
 using Ezac.Roster.Domain.Interfaces.Repositories;
 using Ezac.Roster.Domain.Interfaces.Services;
-using Ezac.Roster.Domain.Services.Models;
 using OfficeOpenXml;
 using System.Text.RegularExpressions;
 
@@ -11,11 +10,13 @@ namespace Ezac.Roster.Domain.Services
     {
         private readonly IUserRepository _userRepository;
 		private readonly IPermissionRepository _permissionRepository;
+		private readonly IUserPermissionRepository _userPermissionRepository;
 
-        public FileService(IUserRepository userRepository, IPermissionRepository permissionRepository)
+        public FileService(IUserRepository userRepository, IPermissionRepository permissionRepository, IUserPermissionRepository userPermissionRepository)
         {
             _userRepository = userRepository;
 			_permissionRepository = permissionRepository;
+			_userPermissionRepository = userPermissionRepository;
         }
 
         public async Task<string> ImportUsers(Stream fileStream)
@@ -68,28 +69,30 @@ namespace Ezac.Roster.Domain.Services
 							Scaling = scaling,
 							IsAdmin = false,
 							Preferences = new List<Preference>(),
-							Permissions = new List<Permission>(),
+							UserPermissions = new List<UserPermission>(),
 							Jobs = new List<Job>()
 						};
 
-						if (!bool.TryParse(worksheet.Cells[row, 3].Value?.ToString(), out bool instructeur))
+                        await _userRepository.AddAsync(user);
+
+                        if (!int.TryParse(worksheet.Cells[row, 3].Value?.ToString(), out int instructeur))
 						{
 							return ImportFailed(row, 3);
 						}
-						if (!bool.TryParse(worksheet.Cells[row, 4].Value?.ToString(), out bool lierist))
+						if (!int.TryParse(worksheet.Cells[row, 4].Value?.ToString(), out int lierist))
 						{
 							return ImportFailed(row, 4);
 						}
-						if (!bool.TryParse(worksheet.Cells[row, 5].Value?.ToString(), out bool startofficier))
+						if (!int.TryParse(worksheet.Cells[row, 5].Value?.ToString(), out int startofficier))
 						{
 							return ImportFailed(row, 5);
 						}
-						if (!bool.TryParse(worksheet.Cells[row, 6].Value?.ToString(), out bool bar))
+						if (!int.TryParse(worksheet.Cells[row, 6].Value?.ToString(), out int bar))
 						{
 							return ImportFailed(row, 6);
 						}
 
-						var permissionDictionary = new Dictionary<string, bool>()
+						var permissionDictionary = new Dictionary<string, int>()
 						{
 							{"Instructeur", instructeur},
 							{"Lierist", lierist},
@@ -99,16 +102,25 @@ namespace Ezac.Roster.Domain.Services
 
 						foreach(var entry in permissionDictionary)
 						{
-							if(entry.Value)
+							if(entry.Value > 0)
 							{
 								var permissionAsList = await _permissionRepository.GetByNameAsync(entry.Key);
 								var permission = permissionAsList.FirstOrDefault();
-								permission.Users.Add(user);
-								user.Permissions.Add(permission);
+								var userPermission = new UserPermission
+								{
+                                    Id = Guid.NewGuid(),
+                                    UserId = user.Id,
+                                    PermissionId = permission.Id,
+									Name = permission.Name,
+                                    Experience = entry.Value
+                                };
+								await _userPermissionRepository.AddAsync(userPermission);
+								permission.UserPermissions.Add(userPermission);
+								user.UserPermissions.Add(userPermission);
 								await _permissionRepository.UpdateAsync(permission);
+								await _userRepository.UpdateAsync(user);
 							}
 						}
-						await _userRepository.AddAsync(user);
 					}
 				}
 			}
@@ -124,7 +136,7 @@ namespace Ezac.Roster.Domain.Services
 				{
 					Id = Guid.NewGuid(),
 					Name = worksheet.Cells[1, col].Value?.ToString(),
-					Users = new List<User>()
+					UserPermissions = new List<UserPermission>()
 				};
 				await _permissionRepository.AddAsync(permission);
 			}

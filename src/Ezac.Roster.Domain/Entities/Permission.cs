@@ -8,6 +8,6 @@ namespace Ezac.Roster.Domain.Entities
 {
 	public class Permission : BaseEntity
 	{
-		public ICollection<User> Users { get; set; }
+		public ICollection<UserPermission> UserPermissions { get; set; }
 	}
 }
