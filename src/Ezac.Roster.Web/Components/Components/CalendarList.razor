@@ -11,7 +11,26 @@
 
 <h3>CalendarList</h3>
 
-
+@if (calendars != null)
+{
+    <table class="table table-hover mt-4">
+        <thead class="thead-light">
+            <tr>
+                <th>Naam</th>
+                <th>Jaar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var calendar in calendars)
+            {
+                <tr>
+                    <td>@calendar.Name</td>
+                    <td>@calendar.Start @calendar.End</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 
 @code {
