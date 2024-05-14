@@ -4,28 +4,29 @@
 @using Ezac.Roster.Domain.Interfaces.Services
 @using Ezac.Roster.Domain.Entities
 @using Ezac.Roster.Web.Components.Components
+@using Ezac.Roster.Domain.Services.Models
 
 @inject ICalendarService CalendarService
 
 <div id="calendar-creator">
-    <form>
+    <form @onsubmit="CreateCalendar">
         <div class="form-group">
             <label for="calendarName">Kalender naam</label>
-            <input type="text" class="form-control" id="calendarName" placeholder="Kalender naam" @bind-value="_calendar.Name">
+            <input type="text" class="form-control" id="calendarName" placeholder="Kalender naam" required @bind-value="_calendar.Name">
         </div>
         <div class="form-group">
             <label for="startDate">Start datum</label>
-            <input type="date" class="form-control" id="startDate" value="@_calendar.Start.ToString("yyyy-MM-dd")" @onchange="UpdateStartDate">
+            <input type="date" class="form-control" id="startDate" required value="@_calendar.Start.ToString("yyyy-MM-dd")" @onchange="UpdateStartDate">
         </div>
         <div class="form-group">
             <label for="endDate">Eind datum</label>
-            <input type="date" class="form-control" id="endDate" value="@_calendar.End.ToString("yyyy-MM-dd")" @onchange="UpdateEndDate">
+            <input type="date" class="form-control" id="endDate" required value="@_calendar.End.ToString("yyyy-MM-dd")" @onchange="UpdateEndDate">
         </div>
         <div>
             <div class="form-group">
                 <label for="extraDays">Extra dagen beschikbaar zetten</label>
-                <input type="date" class="form-control" id="extraDays" />
-                <button type="button" class="btn btn-primary">Voeg toe</button>
+                <input type="date" class="form-control" id="extraDays" @bind="dateToAdd"/>
+                <button type="button" class="btn btn-primary" @onclick="AddExtraDay">Voeg toe</button>
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Creeer kalender</button>
@@ -48,6 +49,8 @@
 @code {
     private ApplicationCalendar _calendar { get; set; }
 
+    private DateTime dateToAdd { get; set; }
+
     protected override void OnInitialized()
     {
         _calendar = new ApplicationCalendar()
@@ -57,6 +60,7 @@
             Days = new List<Day>()
         };
         SetDays();
+        dateToAdd = DateTime.Now;
     }
 
     private void SetDays()
@@ -79,20 +83,46 @@
     }
 
     private void UpdateStartDate(ChangeEventArgs e)
-	{
-		_calendar.Start = DateTime.Parse(e.Value.ToString());
-		SetDays();
-	}
+    {
+        _calendar.Start = DateTime.Parse(e.Value.ToString());
+        SetDays();
+    }
 
     private void UpdateEndDate(ChangeEventArgs e)
-	{
-		_calendar.End = DateTime.Parse(e.Value.ToString());
-		SetDays();
-	}
+    {
+        _calendar.End = DateTime.Parse(e.Value.ToString());
+        SetDays();
+    }
 
     private void RemoveClosedDay(Day closedDay)
     {
         _calendar.Days.Remove(closedDay);
         StateHasChanged();
+    }
+
+    private void AddExtraDay()
+    {
+        _calendar.Days.Add(new Day()
+		{
+			Id = Guid.NewGuid(),
+			Date = dateToAdd,
+			IsOpen = true,
+			Name = dateToAdd.DayOfWeek.ToString(),
+			CalendarId = _calendar.Id
+		});
+        _calendar.Days = _calendar.Days.OrderBy(d => d.Date).ToList();
+    }
+
+    private async Task CreateCalendar()
+    {
+        var calendarCreateRequestModel = new ApplicationCalendarCreateRequestModel()
+		{
+			Name = _calendar.Name,
+			Start = _calendar.Start,
+			End = _calendar.End,
+			Days = _calendar.Days
+		};
+
+        await CalendarService.AddAsync(calendarCreateRequestModel);
     }
 }
