@@ -16,7 +16,8 @@ namespace Ezac.Roster.Infrastructure.Repositories
         public override async Task<IEnumerable<User>> GetAllAsync()
         {
             return await _table
-                .Include(u => u.Permissions)
+                .Include(u => u.UserPermissions)
+                .ThenInclude(up => up.Permission)
                 .Include(u => u.Jobs)
                 .ToListAsync();
         }

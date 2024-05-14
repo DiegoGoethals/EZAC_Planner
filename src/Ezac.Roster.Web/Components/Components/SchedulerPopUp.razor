@@ -68,11 +68,20 @@
         var usersResult = await _userService.GetAllAsync();
         if (usersResult.IsSucces)
         {
+            var permissions = new List<Permission>();
+            foreach (var user in usersResult.Value)
+			{
+				foreach (var permission in user.UserPermissions)
+				{
+					permissions.Add(permission.Permission);
+				}
+			}
+
             _users = usersResult.Value.Select(p => new UserListModel
             {
                 Id = p.Id,
                 Name = p.Name,
-                Permissions = p.Permissions,
+                Permissions = permissions,
             }).ToList();
         }
 
