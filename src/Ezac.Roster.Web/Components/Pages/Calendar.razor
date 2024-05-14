@@ -169,7 +169,27 @@ else
         }
     }
 
-   
+    private async Task FillDayperiodsWithJobs()
+    {
+        foreach (var day in calendar.Days)
+        {
+            foreach (var period in day.DayPeriods)
+            {
+                if (period.Name == "A" || period.Name == "B")
+                {
+                    period.Jobs = new Job[] { new Job { Name = "Lierist" },
+                               new Job { Name = "Startofficier" },
+                               new Job { Name = "Instructeur" },
+                               new Job { Name = "Instructeur (DDI)"} };
+                }
+                else if (period.Name == "C")
+                {
+                    period.Jobs = new Job[] { new Job { Name = "Bardienst" } };
+                }
+
+            }
+        }
+    }
 
     private async Task GetPermissions()
     {
