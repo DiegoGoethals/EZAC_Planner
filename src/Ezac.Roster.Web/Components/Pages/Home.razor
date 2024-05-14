@@ -1,7 +1,43 @@
 ﻿@page "/"
 
+<style>
+    .h1 {
+        text-align: center;
+    },
+/*    .centered-content {
+        display: ;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }*/
+</style>
+
 <PageTitle>Login</PageTitle>
 
-<h1>EZAC Planner Login</h1>
+<h1 class="h1">EZAC Planner Login</h1>
+
+<div>
+    <MudCard>
+        <MudCardContent>
+            <MudTextField @bind-Value="UserName" Placeholder="Gebruikersnaam" />
+            <MudTextField @bind-Value="Password" Placeholder="Wachtwoord" InputType="InputType.Password"/>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton OnClick="Login">Login</MudButton>
+        </MudCardActions>
+    </MudCard>
+    </div>
+
+    @code{
+
+
+        private string UserName { get; set; }
+        private string Password { get; set; }
+
+        private async Task Login()
+        {
+           
+        }
+    }
 
 
