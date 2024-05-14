@@ -11,6 +11,7 @@
 
 <h3>CalendarList</h3>
 
+
 @if (calendars != null)
 {
     <table class="table table-hover mt-4">
@@ -59,5 +60,10 @@
     private void DeleteCalendar(Guid calendarId)
     {
         Navigation.NavigateTo($"calendardelete/{calendarId}");
+    }
+
+    private void CreateCalendar()
+    {
+        Navigation.NavigateTo("calendarcreate");
     }
 }
