@@ -1,5 +1,7 @@
 ﻿@page "/"
 
+@rendermode InteractiveServer
+
 @using MudBlazor
 @using Ezac.Roster.Domain.Interfaces.Services
 
@@ -10,13 +12,7 @@
 <style>
     .h1 {
         text-align: center;
-    },
-/*    .centered-content {
-        display: ;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }*/
+    }
 </style>
 
 <PageTitle>Login</PageTitle>
@@ -27,29 +23,67 @@
     <MudCard>
         <MudCardContent>
             <MudTextField @bind-Value="UserName" Placeholder="Gebruikersnaam" />
-            <MudTextField @bind-Value="Password" Placeholder="Wachtwoord" InputType="InputType.Password"/>
+            <MudTextField @bind-Value="Password" Placeholder="Wachtwoord" InputType="InputType.Password" />
+            <MudIcon Icon="@(showPassword ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)" Size="Size.Medium" @onclick="TogglePasswordVisibility" />
         </MudCardContent>
         <MudCardActions>
             <MudButton OnClick="Login">Login</MudButton>
         </MudCardActions>
     </MudCard>
     </div>
-
+<div>
+    <label>@Message</label>
+</div>
     @code{
 
 
-        private string UserName { get; set; }
-        private string Password { get; set; }
-        private bool IsLoggedIn { get; set; }
+        private string UserName;
+        private string Password;
+        private bool IsLoggedIn;
+        private string Message = "Gelieve in te loggen";
+        private bool showPassword = false;
 
         private async Task Login()
         {
-
-            if (UserName == "test" && Password == "Test123!")
+            if (Password == "ezac")
             {
-                NavigationManager.NavigateTo("calendar");
+                var users = await UserService.GetAllAsync();
+                var user = users.Value.FirstOrDefault(u => u.Name == UserName);
+                if (user != null)
+                {
+                    if (user.IsAdmin == true)
+                    {
+                        IsLoggedIn = true;
+                        Message = "Logging in";
+                        NavigationManager.NavigateTo("/calendar");
+                    }
+                    else
+                    {
+                        IsLoggedIn = false;
+                        Message = "U heeft geen adminrechten";
+                    }
+                }
+                else
+                {
+                    IsLoggedIn = false;
+                    Message = "Gebruiker bestaat niet";
+                }
             }
+            else
+            {
+                IsLoggedIn = false;
+                Message = "Wachtwoord is onjuist";
+            }
+
+
+
         }
+
+        private void TogglePasswordVisibility()
+        {
+            showPassword = !showPassword;
+        }
+
     }
 
 
