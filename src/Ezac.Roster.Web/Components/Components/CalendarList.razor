@@ -68,4 +68,14 @@
     {
         Navigation.NavigateTo("calendarcreate");
     }
+
+    private void OverviewCalendar(Guid calendarId)
+    {
+        Navigation.NavigateTo($"calendar/{calendarId}");
+    }
+
+    private void OverviewCalendar(Guid calendarId)
+    {
+        Navigation.NavigateTo($"calendardetail/{calendarId}");
+    }
 }
