@@ -45,4 +45,9 @@
             calendars = calendarResult.Value.ToList();
         }
     }
+
+    private void UpdateCalendar(Guid calendarId)
+    {
+        Navigation.NavigateTo($"calendar/{calendarId.Id}");
+    }
 }
