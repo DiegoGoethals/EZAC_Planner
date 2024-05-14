@@ -8,9 +8,6 @@ using System.Threading.Tasks;
 
 namespace Ezac.Roster.Infrastructure.Data.Seeding
 {
-
-
-
 	public class Seeder
 	{
 		public static void Seed(ModelBuilder modelBuilder)
@@ -25,11 +22,11 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 
 			var jobs = new Job[]
 			{
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000008"), Name = "Lierist", PermissionName ="Lierist"},
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000009"), Name = "Startofficier",PermissionName ="Startofficier" },
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000010"), Name = "Bardienst", PermissionName ="Bardienst"},
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000011"), Name = "Instructeur", PermissionName ="Instructeur"},
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000012"), Name = "Instructeur(DDI)", PermissionName ="Instructeur"},
+				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000008"), Name = "Lierist", PermissionName ="Lierist", Experience = 1},
+				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000009"), Name = "Startofficier",PermissionName ="Startofficier", Experience = 1},
+				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000010"), Name = "Bardienst", PermissionName ="Bardienst", Experience = 1},
+				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000011"), Name = "Instructeur", PermissionName ="Instructeur", Experience = 1},
+				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000012"), Name = "Instructeur(DDI)", PermissionName ="Instructeur", Experience = 1},
 			};
 
 
@@ -40,18 +37,16 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000007"), Name = "Mohammed Ali", Email = "Admin@ezac.com", Scaling = 1, IsAdmin = true,}
 			};
 
-
-
-			var permissionUsers = new[]
+			var userPermissions = new[]
 			{
-			new { Id = Guid.NewGuid(), UsersId = users[0].Id, PermissionsId = permissions[0].Id },
-			new { Id = Guid.NewGuid(), UsersId = users[0].Id, PermissionsId = permissions[1].Id },
-			new { Id = Guid.NewGuid(), UsersId = users[1].Id, PermissionsId = permissions[2].Id },
-			new { Id = Guid.NewGuid(), UsersId = users[1].Id, PermissionsId = permissions[3].Id },
-			new { Id = Guid.NewGuid(), UsersId = users[2].Id, PermissionsId = permissions[0].Id },
-			new { Id = Guid.NewGuid(), UsersId = users[2].Id, PermissionsId = permissions[1].Id },
-			new { Id = Guid.NewGuid(), UsersId = users[2].Id, PermissionsId = permissions[2].Id },
-			new { Id = Guid.NewGuid(), UsersId = users[2].Id, PermissionsId = permissions[3].Id }
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[0].Id, PermissionId = permissions[0].Id, Experience = 5, Name = permissions[0].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[0].Id, PermissionId = permissions[1].Id, Experience = 5, Name = permissions[1].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[1].Id, PermissionId = permissions[2].Id, Experience = 5, Name = permissions[2].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[1].Id, PermissionId = permissions[3].Id, Experience = 5, Name = permissions[3].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[0].Id, Experience = 5, Name = permissions[0].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[1].Id, Experience = 5, Name = permissions[1].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[2].Id, Experience = 5, Name = permissions[2].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[3].Id, Experience = 5, Name = permissions[3].Name }
 			};
 
 			var calendar = new ApplicationCalendar
@@ -102,7 +97,7 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 			modelBuilder.Entity<Permission>().HasData(permissions);
 			modelBuilder.Entity<Job>().HasData(jobs);
 			modelBuilder.Entity<User>().HasData(users);
-			modelBuilder.Entity($"{nameof(Permission)}{nameof(User)}").HasData(permissionUsers);
+			modelBuilder.Entity<UserPermission>().HasData(userPermissions);
 			modelBuilder.Entity<ApplicationCalendar>().HasData(calendar);
 			modelBuilder.Entity<Day>().HasData(days);
 			modelBuilder.Entity<DayPeriod>().HasData(dayPeriods);

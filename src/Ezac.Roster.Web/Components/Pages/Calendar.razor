@@ -163,7 +163,7 @@ else
         var dayPeriods = await DayPeriodService.GetAllAsync();
         if (dayPeriods.IsSucces)
         {
-            periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().ToList();
+            periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().OrderBy(name => name).ToList();
         }
     }
 }

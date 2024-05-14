@@ -23,16 +23,29 @@ namespace Ezac.Roster.Domain.Services
 
 		public async Task<ResultModel<Permission>> AddAsync(PermissionCreateRequestModel permissionCreateRequestModel)
 		{
-
 			var permission = new Permission
 			{
 				Id = Guid.NewGuid(),
 				Name = permissionCreateRequestModel.Name,
 				Created = DateTime.Now,
-				Users = permissionCreateRequestModel.Users.ToList(),
+				UserPermissions = new List<UserPermission>()
 			};
 
-			var result = await _permissionRepository.AddAsync(permission);
+            var userPermissions = new List<UserPermission>();
+            foreach (var user in permissionCreateRequestModel.Users)
+            {
+                var userPermission = new UserPermission
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id,
+                    PermissionId = permission.Id,
+                    Experience = 1,
+                };
+                userPermissions.Add(userPermission);
+            }
+			permission.UserPermissions = userPermissions;
+
+            var result = await _permissionRepository.AddAsync(permission);
 
 			if (result)
 			{
@@ -106,7 +119,13 @@ namespace Ezac.Roster.Domain.Services
         public async Task<ResultModel<IEnumerable<Permission>>> GetAllByUserIdAsync(Guid userId)
 		{
 			var user = await _userRepository.GetByIdAsync(userId);
-			var permissions = user.Permissions;
+			var userPermissions = user.UserPermissions;
+			var permissions = new List<Permission>();
+			foreach (var userPermission in userPermissions)
+			{
+                var permission = await _permissionRepository.GetByIdAsync(userPermission.PermissionId);
+                permissions.Add(permission);
+            }
 
 			if (permissions != null)
 			{
@@ -187,7 +206,19 @@ namespace Ezac.Roster.Domain.Services
 			selectedPermission.Id = permissionUpdateRequestModel.Id;
 			selectedPermission.Name = permissionUpdateRequestModel.Name;	
 			selectedPermission.Updated = permissionUpdateRequestModel.Updated;
-			selectedPermission.Users = permissionUpdateRequestModel.Users.ToList();
+			var userPermissions = new List<UserPermission>();
+			foreach (var user in permissionUpdateRequestModel.Users)
+			{
+                var userPermission = new UserPermission
+				{
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id,
+                    PermissionId = selectedPermission.Id,
+                    Experience = 1,
+                };
+                userPermissions.Add(userPermission);
+            }
+			selectedPermission.UserPermissions = userPermissions;
 
 			if (await _permissionRepository.UpdateAsync(selectedPermission))
 			{

@@ -16,7 +16,6 @@ namespace Ezac.Roster.Domain.Entities
         public DayPeriod? DayPeriod { get; set; }
         public ICollection<Preference>? Preferences { get; set; }
         public string PermissionName { get; set; }
-        //public Permission Permission { get; set; }
-        //public Guid PermissionId { get; set; }
+        public int Experience { get; set; }
     }
 }
