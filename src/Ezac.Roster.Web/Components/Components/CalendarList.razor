@@ -29,7 +29,7 @@
             {
                 <tr>
                     <td>@calendar.Name</td>
-                    <td>@calendar.Start @calendar.End</td>
+                    <td>@calendar.Start.ToString("yyyy/MM") tot @calendar.End.ToString("yyyy/MM")</td>
                     <td>
                         <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">bewerken</button>
                         <button class="btn btn-danger btn-sm" @onclick="() => DeleteCalendar(calendar.Id)">Verwijderen</button>
