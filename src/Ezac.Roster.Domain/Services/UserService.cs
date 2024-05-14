@@ -66,10 +66,24 @@ namespace Ezac.Roster.Domain.Services
                 Email = userCreateRequestModel.Email,
                 Scaling = userCreateRequestModel.Scaling,
                 IsAdmin = userCreateRequestModel.IsAdmin,
-                Permissions = userCreateRequestModel.Permissions.ToList(),
+                UserPermissions = new List<UserPermission>(),
                 Preferences = userCreateRequestModel.Preferences.ToList(),
                 Jobs = userCreateRequestModel.Jobs.ToList()
             };
+
+            var userPermissions = new List<UserPermission>();
+            foreach (var permission in userCreateRequestModel.Permissions)
+            {
+                userPermissions.Add(new UserPermission
+                {
+                    Id = Guid.NewGuid(),
+                    PermissionId = permission.Id,
+                    UserId = user.Id,
+                    Experience = 1
+                });
+            }
+            user.UserPermissions = userPermissions;
+
             if (await  _userRepository.AddAsync(user))
             {
                 return new ResultModel<User>
@@ -135,11 +149,23 @@ namespace Ezac.Roster.Domain.Services
                 };
             }
 
+            var userPermissions = new List<UserPermission>();
+            foreach (var permission in userUpdateRequestModel.Permissions)
+            {
+                userPermissions.Add(new UserPermission
+                {
+                    Id = Guid.NewGuid(),
+                    PermissionId = permission.Id,
+                    UserId = user.Id,
+                    Experience = 1
+                });
+            }
+
             user.Name = userUpdateRequestModel.Name;
             user.Email = userUpdateRequestModel.Email;
             user.Scaling = userUpdateRequestModel.Scaling;
             user.IsAdmin = userUpdateRequestModel.IsAdmin;
-            user.Permissions = userUpdateRequestModel.Permissions.ToList();
+            user.UserPermissions = userPermissions;
             user.Preferences = userUpdateRequestModel.Preferences.ToList();
             user.Jobs = userUpdateRequestModel.Jobs.ToList();
 
