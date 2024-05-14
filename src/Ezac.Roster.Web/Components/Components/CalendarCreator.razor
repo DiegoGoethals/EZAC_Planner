@@ -1,39 +1,89 @@
 ﻿@using Ezac.Roster.Domain.Interfaces.Services
+@using Ezac.Roster.Domain.Entities
 
 @inject ICalendarService CalendarService
 
 @rendermode InteractiveServer
 
 <form>
-	<div class="form-group">
-		<label for="calendarName">Kalender naam</label>
-		<input type="text" class="form-control" id="calendarName" placeholder="Kalender naam">
-	</div>
-	<div class="form-group">
-		<label for="startDate">Start datum</label>
-		<input type="date" class="form-control" id="startDate">
-	</div>
-	<div class="form-group">
-		<label for="endDate">Eind datum</label>
-		<input type="date" class="form-control" id="endDate">
-	</div>
-	<div>
-		<div class="form-group">
-			<label for="extraDays">Extra dagen beschikbaar zetten</label>
-			<input type="date" class="form-control" id="extraDays"/>
-			<button type="button" class="btn btn-primary">Voeg toe</button>
-		</div>
-	</div>
-	<button type="submit" class="btn btn-primary">Creeer kalender</button>
+    <div class="form-group">
+        <label for="calendarName">Kalender naam</label>
+        <input type="text" class="form-control" id="calendarName" placeholder="Kalender naam" @bind-value="_calendar.Name">
+    </div>
+    <div class="form-group">
+        <label for="startDate">Start datum</label>
+        <input type="date" class="form-control" id="startDate" value="@_calendar.Start.ToString("yyyy-MM-dd")" @onchange="UpdateStartDate">
+    </div>
+    <div class="form-group">
+        <label for="endDate">Eind datum</label>
+        <input type="date" class="form-control" id="endDate" value="@_calendar.End.ToString("yyyy-MM-dd")" @onchange="UpdateEndDate">
+    </div>
+    <div>
+        <div class="form-group">
+            <label for="extraDays">Extra dagen beschikbaar zetten</label>
+            <input type="date" class="form-control" id="extraDays" />
+            <button type="button" class="btn btn-primary">Voeg toe</button>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Creeer kalender</button>
 </form>
 
 <div>
-	<h3>Aangeduide data</h3>
-	<ul>
-		<DateItem/>
-	</ul>
+    <h3>Aangeduide data</h3>
+    <ul>
+        @foreach (var day in _calendar.Days)
+        {
+            if (day.IsOpen)
+            {
+                <DateItem day="@day" />
+            }
+        }
+    </ul>
 </div>
 
-@code {
+<p>Kalender met naam: @_calendar.Name en start: @_calendar.Start.ToString("dd/MM/yyyy") en met einde: @_calendar.End.ToString("dd/MM/yyyy")</p>
 
+@code {
+    private ApplicationCalendar _calendar { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _calendar = new ApplicationCalendar()
+        {
+            Start = DateTime.Now,
+            End = DateTime.Now.AddMonths(6),
+            Days = new List<Day>()
+        };
+        SetDays();
+    }
+
+    private void SetDays()
+    {
+        _calendar.Days.Clear();
+        var allDays = Enumerable.Range(0, (_calendar.End - _calendar.Start).Days + 1)
+                                .Select(offset => _calendar.Start.AddDays(offset));
+        foreach (var day in allDays)
+        {
+            _calendar.Days.Add(new Day()
+            {
+                Id = Guid.NewGuid(),
+                Date = day,
+                IsOpen = day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday,
+                Name = day.DayOfWeek.ToString(),
+                CalendarId = _calendar.Id
+            });
+        }
+    }
+
+    private void UpdateStartDate(ChangeEventArgs e)
+	{
+		_calendar.Start = DateTime.Parse(e.Value.ToString());
+		SetDays();
+	}
+
+    private void UpdateEndDate(ChangeEventArgs e)
+	{
+		_calendar.End = DateTime.Parse(e.Value.ToString());
+		SetDays();
+	}
 }

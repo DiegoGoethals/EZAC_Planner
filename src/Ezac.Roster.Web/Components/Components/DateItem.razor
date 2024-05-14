@@ -1,12 +1,16 @@
-﻿<li>
+﻿@using Ezac.Roster.Domain.Entities
+@rendermode InteractiveServer
+
+<li>
 	<div class="date-item">
 		<div class="date-item__date">
-			<span>dag + Date</span>
+			<span>@day.Name: @day.Date</span>
 			<span>x button</span>
 		</div>
 	</div>
 </li>
 
 @code {
-
+	[Parameter]
+	public Day day { get; set; }
 }

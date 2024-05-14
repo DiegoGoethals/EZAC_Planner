@@ -8,9 +8,6 @@ using System.Threading.Tasks;
 
 namespace Ezac.Roster.Infrastructure.Data.Seeding
 {
-
-
-
 	public class Seeder
 	{
 		public static void Seed(ModelBuilder modelBuilder)
