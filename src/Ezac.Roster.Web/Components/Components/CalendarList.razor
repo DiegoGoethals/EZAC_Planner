@@ -33,6 +33,7 @@
                     <td>
                         <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">bewerken</button>
                         <button class="btn btn-danger btn-sm" @onclick="() => DeleteCalendar(calendar.Id)">Verwijderen</button>
+                        <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
                     </td>
                 </tr>
             }
@@ -72,10 +73,5 @@
     private void OverviewCalendar(Guid calendarId)
     {
         Navigation.NavigateTo($"calendar/{calendarId}");
-    }
-
-    private void OverviewCalendar(Guid calendarId)
-    {
-        Navigation.NavigateTo($"calendardetail/{calendarId}");
     }
 }
