@@ -5,6 +5,8 @@ using Ezac.Roster.Infrastructure.Data;
 using Ezac.Roster.Infrastructure.Repositories;
 using Ezac.Roster.Web.Components;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
+
 
 namespace Ezac.Roster.Web
 {
@@ -46,8 +48,11 @@ namespace Ezac.Roster.Web
 
             builder.Services.AddScoped<IFileService, FileService>();
 
+			//add MudBlazor services
+			builder.Services.AddMudServices();
 
-            var app = builder.Build();
+
+			var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
