@@ -10,6 +10,7 @@
 @inject IJobService JobService
 @inject IDayService DayService
 @inject IDayPeriodService DayPeriodService
+@inject IPermissionsService PermissionService
 
 <h3>Kalender voor de maand @SelectedMonth</h3>
 
@@ -79,7 +80,8 @@ else
 
     private ApplicationCalendar calendar;
     private List<DayPeriod> dayPeriods;
-    private List<Job> jobs;
+    private static List<Job> jobs;
+    private static List<Permission> permissions;
     private string SelectedMonth;
     private List<string> periodNames = new List<string>();
 
@@ -93,7 +95,9 @@ else
         {
             calendar = calendarResult.Value.FirstOrDefault();
             calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
+
             await GetUniquePeriodNames();
+            await FillDayperiodsWithJobs();
         }
 
     }
@@ -148,8 +152,6 @@ else
         }
     }
 
-
-
     private IEnumerable<DayPeriod> GetDistinctPeriods(ICollection<Day> days)
     {
         return days.SelectMany(d => d.DayPeriods)
@@ -166,9 +168,35 @@ else
             periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().OrderBy(name => name).ToList();
         }
     }
-
-    private async Task Login()
+      
+    private async Task FillDayperiodsWithJobs()
     {
-        
+        foreach (var day in calendar.Days)
+        {
+            foreach (var period in day.DayPeriods)
+            {
+                if (period.Name == "A" || period.Name == "B")
+                {
+                    period.Jobs = new Job[] { new Job { Name = "Lierist" },
+                               new Job { Name = "Startofficier" },
+                               new Job { Name = "Instructeur" },
+                               new Job { Name = "Instructeur (DDI)"} };
+                }
+                else if (period.Name == "C")
+                {
+                    period.Jobs = new Job[] { new Job { Name = "Bardienst" } };
+                }
+
+            }
+        }
+    }
+
+    private async Task GetPermissions()
+    {
+        var permissionsResult = await PermissionService.GetAllAsync();
+        if (permissionsResult.IsSucces)
+        {
+            permissions = permissionsResult.Value.ToList();
+        }
     }
 }
