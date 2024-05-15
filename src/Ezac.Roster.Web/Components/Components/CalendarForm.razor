@@ -20,7 +20,7 @@
             <button type="button" class="btn btn-primary" @onclick="(e) => HandleClick(e)">Voeg toe</button>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Bewerk kalender</button>
+    <button type="submit" class="btn btn-primary" @onclick="ModifyCalendar" disabled="@isButtonDisabled">Bewerk kalender</button>
 </form>
 
 @code {
@@ -50,4 +50,11 @@
 	{
 		AddExtraDay(dateToAdd);
 	}
+
+    private bool isButtonDisabled = false;
+
+    private void ModifyCalendar()
+    {
+        isButtonDisabled = true;
+    }
 }
