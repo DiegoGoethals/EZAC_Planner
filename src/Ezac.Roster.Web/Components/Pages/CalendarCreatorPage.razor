@@ -41,21 +41,24 @@
 
     private void SetDays()
     {
-        _calendar.Days.Clear();
         var allDays = Enumerable.Range(0, (_calendar.End - _calendar.Start).Days + 1)
                                 .Select(offset => _calendar.Start.AddDays(offset));
         foreach (var day in allDays)
         {
-            _calendar.Days.Add(new Day()
+            if (!_calendar.Days.Any(d => d.Date == day))
             {
-                Id = Guid.NewGuid(),
-                Date = day,
-                IsOpen = day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday,
-                Name = day.DayOfWeek.ToString(),
-                CalendarId = _calendar.Id
-            });
+                _calendar.Days.Add(new Day()
+                    {
+                        Id = Guid.NewGuid(),
+                        Date = day,
+                        IsOpen = day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday,
+                        Name = day.DayOfWeek.ToString(),
+                        CalendarId = _calendar.Id
+                    });
+            }
+
         }
-        _calendar.Days = _calendar.Days.OrderBy(d => d.Date).ToList();
+        _calendar.Days = _calendar.Days.Where(d => d.Date >= _calendar.Start && d.Date <= _calendar.End).OrderBy(d => d.Date).ToList();
     }
 
     private void UpdateStartDate(ChangeEventArgs e)
@@ -85,6 +88,10 @@
 
     private void AddExtraDay(DateTime dateToAdd)
     {
+        if (_calendar.Days.Any(d => d.Date == dateToAdd))
+        {
+            return;
+        }
         _calendar.Days.Add(new Day()
             {
                 Id = Guid.NewGuid(),
