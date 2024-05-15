@@ -5,12 +5,10 @@
 @using MudBlazor
 @using Ezac.Roster.Domain.Interfaces.Services
 @using Ezac.Roster.Web.Components.Layout
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-
 
 @inject NavigationManager NavigationManager
 @inject IUserService UserService
-@inject ProtectedLocalStorage ProtectedLocalStore
+@inject Ezac.Roster.Domain.Services.LogInBooLService LogInBooLService
 
 
 <style>
@@ -28,7 +26,7 @@
     <MudCard>
         <MudCardContent>
             <MudTextField @bind-Value="UserName" Placeholder="Gebruikersnaam" />
-            <MudTextField @bind-Value="Password" Placeholder="Wachtwoord" InputType="InputType.Password" />
+            <MudTextField @bind-Value="Password" Placeholder="Wachtwoord" InputType="@(!showPassword ? InputType.Password : InputType.Text)" />
             <MudIcon Icon="@(showPassword ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)" Size="Size.Medium" @onclick="TogglePasswordVisibility" />
         </MudCardContent>
         <MudCardActions>
@@ -42,7 +40,6 @@
 @code{
     private string UserName;
     private string Password;
-    private bool IsLoggedIn;
     private string Message = "Gelieve in te loggen";
     private bool showPassword;
 
@@ -58,25 +55,21 @@
                 {
 
                     Message = "Logging in";
-                    IsLoggedIn = true;
-                    await ProtectedLocalStore.SetAsync("IsLoggedIn", IsLoggedIn);
+                    LogInBooLService.IsLoggedIn = true;
                     NavigationManager.NavigateTo("/calendar");
                 }
                 else
                 {
-                    IsLoggedIn = false;
                     Message = "U heeft geen adminrechten";
                 }
             }
             else
             {
-                IsLoggedIn = false;
                 Message = "Gebruiker bestaat niet";
             }
         }
         else
         {
-            IsLoggedIn = false;
             Message = "Wachtwoord is onjuist";
         }
     }
@@ -85,7 +78,7 @@
     {
         showPassword = !showPassword;
     }
-
+    //await ProtectedLocalStore.SetAsync("IsLoggedIn", IsLoggedIn);
 }
 
 

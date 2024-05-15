@@ -23,8 +23,11 @@ namespace Ezac.Roster.Web
 
             // Add services to the container.
 
+
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
+			builder.Services.AddSingleton<LogInBooLService>();
 
 			builder.Services.AddScoped<ICalendarService, CalendarService>();
             builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
