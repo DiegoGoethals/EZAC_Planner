@@ -22,10 +22,14 @@ namespace Ezac.Roster.Web
                 .UseSqlServer(builder.Configuration.GetConnectionString("DefaultDb")));
 
             // Add services to the container.
+
+
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-            builder.Services.AddScoped<ICalendarService, CalendarService>();
+			builder.Services.AddSingleton<LogInBooLService>();
+
+			builder.Services.AddScoped<ICalendarService, CalendarService>();
             builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 
             builder.Services.AddScoped<IUserService, UserService>();
