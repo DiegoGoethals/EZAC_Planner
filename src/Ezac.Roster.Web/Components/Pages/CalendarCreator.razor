@@ -10,29 +10,7 @@
 @inject NavigationManager NavigationManager
 
 <div id="calendar-creator">
-    <form @onsubmit="CreateCalendar">
-        <div class="form-group">
-            <label for="calendarName">Kalender naam</label>
-            <input type="text" class="form-control" id="calendarName" placeholder="Kalender naam" required @bind-value="_calendar.Name">
-        </div>
-        <div class="form-group">
-            <label for="startDate">Start datum</label>
-            <input type="date" class="form-control" id="startDate" required value="@_calendar.Start.ToString("yyyy-MM-dd")" @onchange="UpdateStartDate">
-        </div>
-        <div class="form-group">
-            <label for="endDate">Eind datum</label>
-            <input type="date" class="form-control" id="endDate" required value="@_calendar.End.ToString("yyyy-MM-dd")" @onchange="UpdateEndDate">
-        </div>
-        <div>
-            <div class="form-group">
-                <label for="extraDays">Extra dagen beschikbaar zetten</label>
-                <input type="date" class="form-control" id="extraDays" @bind="dateToAdd"/>
-                <button type="button" class="btn btn-primary" @onclick="AddExtraDay">Voeg toe</button>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary" disabled="@addingCalendar">Creeer kalender</button>
-    </form>
-
+    <CalendarForm Calendar="_calendar" FormHandler="CreateCalendar" UpdateStartDate="UpdateStartDate" UpdateEndDate="UpdateEndDate" AddExtraDay="AddExtraDay" />
     <div>
         <h3>Aangeduide data</h3>
         <ul id="date-list">
@@ -50,19 +28,15 @@
 @code {
     private ApplicationCalendar _calendar { get; set; }
 
-    private DateTime dateToAdd { get; set; }
-    private bool addingCalendar = false;
-
     protected override void OnInitialized()
     {
         _calendar = new ApplicationCalendar()
         {
             Start = DateTime.Now,
-            End = DateTime.Now.AddMonths(6),
+            End = DateTime.Now,
             Days = new List<Day>()
         };
         SetDays();
-        dateToAdd = DateTime.Now;
     }
 
     private void SetDays()
@@ -102,17 +76,18 @@
         StateHasChanged();
     }
 
-    private void AddExtraDay()
+    private void AddExtraDay(DateTime dateToAdd)
     {
         _calendar.Days.Add(new Day()
-		{
-			Id = Guid.NewGuid(),
-			Date = dateToAdd,
-			IsOpen = true,
-			Name = dateToAdd.DayOfWeek.ToString(),
-			CalendarId = _calendar.Id
-		});
+            {
+                Id = Guid.NewGuid(),
+                Date = dateToAdd,
+                IsOpen = true,
+                Name = dateToAdd.DayOfWeek.ToString(),
+                CalendarId = _calendar.Id
+            });
         _calendar.Days = _calendar.Days.OrderBy(d => d.Date).ToList();
+        StateHasChanged();
     }
 
     private async Task CreateCalendar()
@@ -124,8 +99,6 @@
 			End = _calendar.End,
 			Days = _calendar.Days
 		};
-
-        addingCalendar = true;
 
         await CalendarService.AddAsync(calendarCreateRequestModel);
         NavigationManager.NavigateTo("calendarslist");
