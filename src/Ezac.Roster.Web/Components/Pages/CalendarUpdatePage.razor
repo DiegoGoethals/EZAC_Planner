@@ -9,28 +9,7 @@
 @inject ICalendarService CalendarService
 @inject NavigationManager NavigationManager
 
-<div id="calendar-creator">
-    @if (_calendar != null)
-	{
-        <CalendarForm Calendar="_calendar" FormHandler="UpdateCalendar" UpdateStartDate="UpdateStartDate" UpdateEndDate="UpdateEndDate" AddExtraDay="AddExtraDay" />
-        <div>
-            <h3>Aangeduide data</h3>
-            <ul id="date-list">
-                @foreach (var day in _calendar.Days)
-                {
-                    if (day.IsOpen)
-                    {
-                        <DateItem day="@day" RemoveDay="@RemoveClosedDay" />
-                    }
-                }
-            </ul>
-        </div>
-    }
-    else
-	{
-		<p>Geen kalender gevonden.</p>
-    }
-</div>
+<CalendarOverview Calendar="_calendar" FormHandler="UpdateCalendar" />
 
 @code {
     [Parameter]
@@ -46,71 +25,6 @@
             _calendar = result.Value;
         }
 	}
-
-    private void SetDays()
-    {
-        var allDays = Enumerable.Range(0, (_calendar.End - _calendar.Start).Days + 1)
-                                .Select(offset => _calendar.Start.AddDays(offset));
-        foreach (var day in allDays)
-        {
-            if (!_calendar.Days.Any(d => d.Date == day))
-			{
-                _calendar.Days.Add(new Day()
-                    {
-                        Id = Guid.NewGuid(),
-                        Date = day,
-                        IsOpen = day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday,
-                        Name = day.DayOfWeek.ToString(),
-                        CalendarId = _calendar.Id
-                    });
-			}
-            
-        }
-        _calendar.Days = _calendar.Days.Where(d => d.Date >= _calendar.Start && d.Date <= _calendar.End).OrderBy(d => d.Date).ToList();
-    }
-
-    private void UpdateStartDate(ChangeEventArgs e)
-    {
-        _calendar.Start = DateTime.Parse(e.Value.ToString());
-        SetDays();
-    }
-
-    private void UpdateEndDate(ChangeEventArgs e)
-    {
-        _calendar.End = DateTime.Parse(e.Value.ToString());
-        SetDays();
-    }
-
-    private void RemoveClosedDay(Day closedDay)
-    {
-        var dayToRemove = _calendar.Days.FirstOrDefault(day => day.Equals(closedDay));
-        if (dayToRemove != null)
-        {
-            _calendar.Days.Remove(dayToRemove);
-            closedDay.IsOpen = false;
-            _calendar.Days.Add(closedDay);
-            _calendar.Days = _calendar.Days.OrderBy(d => d.Date).ToList();
-            StateHasChanged();
-        }
-    }
-
-    private void AddExtraDay(DateTime dateToAdd)
-    {
-        if (_calendar.Days.Any(d => d.Date == dateToAdd) || dateToAdd < _calendar.Start || dateToAdd > _calendar.End)
-        {
-            return;
-        }
-        _calendar.Days.Add(new Day()
-            {
-                Id = Guid.NewGuid(),
-                Date = dateToAdd,
-                IsOpen = true,
-                Name = dateToAdd.DayOfWeek.ToString(),
-                CalendarId = _calendar.Id
-            });
-        _calendar.Days = _calendar.Days.OrderBy(d => d.Date).ToList();
-        StateHasChanged();
-    }
 
     private async Task UpdateCalendar()
     {
