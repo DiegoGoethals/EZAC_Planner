@@ -4,44 +4,47 @@
 
 @using MudBlazor
 @using Ezac.Roster.Domain.Interfaces.Services
+@using Ezac.Roster.Web.Components.Layout
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
 
 @inject NavigationManager NavigationManager
 @inject IUserService UserService
+@inject ProtectedLocalStorage ProtectedLocalStore
 
 
-<style>
-    .h1 {
-        text-align: center;
-    }
-</style>
+    <style>
+        .h1 {
+            text-align: center;
+        }
+    </style>
 
-<PageTitle>Login</PageTitle>
+    <PageTitle>Login</PageTitle>
 
-<h1 class="h1">EZAC Planner Login</h1>
 
-<div>
-    <MudCard>
-        <MudCardContent>
-            <MudTextField @bind-Value="UserName" Placeholder="Gebruikersnaam" />
-            <MudTextField @bind-Value="Password" Placeholder="Wachtwoord" InputType="InputType.Password" />
-            <MudIcon Icon="@(showPassword ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)" Size="Size.Medium" @onclick="TogglePasswordVisibility" />
-        </MudCardContent>
-        <MudCardActions>
-            <MudButton OnClick="Login">Login</MudButton>
-        </MudCardActions>
-    </MudCard>
+    <h1 class="h1">EZAC Roosterplanner Login</h1>
+
+    <div>
+        <MudCard>
+            <MudCardContent>
+                <MudTextField @bind-Value="UserName" Placeholder="Gebruikersnaam" />
+                <MudTextField @bind-Value="Password" Placeholder="Wachtwoord" InputType="InputType.Password" />
+                <MudIcon Icon="@(showPassword ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)" Size="Size.Medium" @onclick="TogglePasswordVisibility" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton OnClick="Login">Login</MudButton>
+            </MudCardActions>
+        </MudCard>
     </div>
-<div>
-    <label>@Message</label>
-</div>
+    <div>
+        <label>@Message</label>
+    </div>
     @code{
-
-
         private string UserName;
         private string Password;
         private bool IsLoggedIn;
         private string Message = "Gelieve in te loggen";
-        private bool showPassword = false;
+        private bool showPassword;
 
         private async Task Login()
         {
@@ -53,8 +56,10 @@
                 {
                     if (user.IsAdmin == true)
                     {
-                        IsLoggedIn = true;
+
                         Message = "Logging in";
+                        IsLoggedIn = true;
+                        await ProtectedLocalStore.SetAsync("IsLoggedIn", IsLoggedIn);
                         NavigationManager.NavigateTo("/calendar");
                     }
                     else
@@ -74,9 +79,6 @@
                 IsLoggedIn = false;
                 Message = "Wachtwoord is onjuist";
             }
-
-
-
         }
 
         private void TogglePasswordVisibility()
