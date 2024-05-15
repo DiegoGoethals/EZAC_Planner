@@ -13,79 +13,79 @@
 @inject ProtectedLocalStorage ProtectedLocalStore
 
 
-    <style>
-        .h1 {
-            text-align: center;
-        }
-    </style>
+<style>
+    .h1 {
+        text-align: center;
+    }
+</style>
 
-    <PageTitle>Login</PageTitle>
+<PageTitle>Login</PageTitle>
 
 
-    <h1 class="h1">EZAC Roosterplanner Login</h1>
+<h1 class="h1">EZAC Roosterplanner Login</h1>
 
-    <div>
-        <MudCard>
-            <MudCardContent>
-                <MudTextField @bind-Value="UserName" Placeholder="Gebruikersnaam" />
-                <MudTextField @bind-Value="Password" Placeholder="Wachtwoord" InputType="InputType.Password" />
-                <MudIcon Icon="@(showPassword ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)" Size="Size.Medium" @onclick="TogglePasswordVisibility" />
-            </MudCardContent>
-            <MudCardActions>
-                <MudButton OnClick="Login">Login</MudButton>
-            </MudCardActions>
-        </MudCard>
-    </div>
-    <div>
-        <label>@Message</label>
-    </div>
-    @code{
-        private string UserName;
-        private string Password;
-        private bool IsLoggedIn;
-        private string Message = "Gelieve in te loggen";
-        private bool showPassword;
+<div>
+    <MudCard>
+        <MudCardContent>
+            <MudTextField @bind-Value="UserName" Placeholder="Gebruikersnaam" />
+            <MudTextField @bind-Value="Password" Placeholder="Wachtwoord" InputType="InputType.Password" />
+            <MudIcon Icon="@(showPassword ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)" Size="Size.Medium" @onclick="TogglePasswordVisibility" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton OnClick="Login">Login</MudButton>
+        </MudCardActions>
+    </MudCard>
+</div>
+<div>
+    <label>@Message</label>
+</div>
+@code{
+    private string UserName;
+    private string Password;
+    private bool IsLoggedIn;
+    private string Message = "Gelieve in te loggen";
+    private bool showPassword;
 
-        private async Task Login()
+    private async Task Login()
+    {
+        if (Password == "ezac")
         {
-            if (Password == "ezac")
+            var users = await UserService.GetAllAsync();
+            var user = users.Value.FirstOrDefault(u => u.Name == UserName);
+            if (user != null)
             {
-                var users = await UserService.GetAllAsync();
-                var user = users.Value.FirstOrDefault(u => u.Name == UserName);
-                if (user != null)
+                if (user.IsAdmin == true)
                 {
-                    if (user.IsAdmin == true)
-                    {
 
-                        Message = "Logging in";
-                        IsLoggedIn = true;
-                        await ProtectedLocalStore.SetAsync("IsLoggedIn", IsLoggedIn);
-                        NavigationManager.NavigateTo("/calendar");
-                    }
-                    else
-                    {
-                        IsLoggedIn = false;
-                        Message = "U heeft geen adminrechten";
-                    }
+                    Message = "Logging in";
+                    IsLoggedIn = true;
+                    await ProtectedLocalStore.SetAsync("IsLoggedIn", IsLoggedIn);
+                    NavigationManager.NavigateTo("/calendar");
                 }
                 else
                 {
                     IsLoggedIn = false;
-                    Message = "Gebruiker bestaat niet";
+                    Message = "U heeft geen adminrechten";
                 }
             }
             else
             {
                 IsLoggedIn = false;
-                Message = "Wachtwoord is onjuist";
+                Message = "Gebruiker bestaat niet";
             }
         }
-
-        private void TogglePasswordVisibility()
+        else
         {
-            showPassword = !showPassword;
+            IsLoggedIn = false;
+            Message = "Wachtwoord is onjuist";
         }
-
     }
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+    }
+
+}
 
 
