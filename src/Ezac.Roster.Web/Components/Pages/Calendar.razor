@@ -170,7 +170,7 @@ else
             periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().OrderBy(name => name).ToList();
         }
     }
-
+      
     private async Task FillDayperiodsWithJobs()
     {
         foreach (var day in calendar.Days)
@@ -201,5 +201,4 @@ else
             permissions = permissionsResult.Value.ToList();
         }
     }
-
 }
