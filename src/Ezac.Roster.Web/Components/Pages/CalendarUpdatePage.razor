@@ -1,0 +1,114 @@
+﻿@page "/calendarupdate/{calendarId}"
+@rendermode InteractiveServer
+
+@using Ezac.Roster.Domain.Interfaces.Services
+@using Ezac.Roster.Domain.Entities
+@using Ezac.Roster.Web.Components.Components
+@using Ezac.Roster.Domain.Services.Models
+
+@inject ICalendarService CalendarService
+@inject NavigationManager NavigationManager
+
+<div id="calendar-creator">
+    @if (_calendar != null)
+	{
+        <CalendarForm Calendar="_calendar" FormHandler="UpdateCalendar" UpdateStartDate="UpdateStartDate" UpdateEndDate="UpdateEndDate" AddExtraDay="AddExtraDay" />
+        <div>
+            <h3>Aangeduide data</h3>
+            <ul id="date-list">
+                @foreach (var day in _calendar.Days)
+                {
+                    if (day.IsOpen)
+                    {
+                        <DateItem day="@day" RemoveDay="@RemoveClosedDay" />
+                    }
+                }
+            </ul>
+        </div>
+    }
+    else
+	{
+		<p>Geen kalender gevonden.</p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string calendarId { get; set; }
+
+    private ApplicationCalendar _calendar { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await CalendarService.GetByIdAsync(Guid.Parse(calendarId));
+        if (result.IsSucces)
+        {
+            _calendar = result.Value;
+        }
+	}
+
+    private void SetDays()
+    {
+        _calendar.Days.Clear();
+        var allDays = Enumerable.Range(0, (_calendar.End - _calendar.Start).Days + 1)
+                                .Select(offset => _calendar.Start.AddDays(offset));
+        foreach (var day in allDays)
+        {
+            _calendar.Days.Add(new Day()
+                {
+                    Id = Guid.NewGuid(),
+                    Date = day,
+                    IsOpen = day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday,
+                    Name = day.DayOfWeek.ToString(),
+                    CalendarId = _calendar.Id
+                });
+        }
+        _calendar.Days = _calendar.Days.OrderBy(d => d.Date).ToList();
+    }
+
+    private void UpdateStartDate(ChangeEventArgs e)
+    {
+        _calendar.Start = DateTime.Parse(e.Value.ToString());
+        SetDays();
+    }
+
+    private void UpdateEndDate(ChangeEventArgs e)
+    {
+        _calendar.End = DateTime.Parse(e.Value.ToString());
+        SetDays();
+    }
+
+    private void RemoveClosedDay(Day closedDay)
+    {
+        _calendar.Days.Remove(closedDay);
+        StateHasChanged();
+    }
+
+    private void AddExtraDay(DateTime dateToAdd)
+    {
+        _calendar.Days.Add(new Day()
+            {
+                Id = Guid.NewGuid(),
+                Date = dateToAdd,
+                IsOpen = true,
+                Name = dateToAdd.DayOfWeek.ToString(),
+                CalendarId = _calendar.Id
+            });
+        _calendar.Days = _calendar.Days.OrderBy(d => d.Date).ToList();
+        StateHasChanged();
+    }
+
+    private async Task UpdateCalendar()
+    {
+        var calendarUpdateRequestModel = new ApplicationCalendarUpdateRequestModel()
+            {
+                Name = _calendar.Name,
+                Start = _calendar.Start,
+                End = _calendar.End,
+                Days = _calendar.Days
+            };
+
+        await CalendarService.UpdateAsync(calendarUpdateRequestModel);
+        NavigationManager.NavigateTo("calendarslist");
+    }
+}
