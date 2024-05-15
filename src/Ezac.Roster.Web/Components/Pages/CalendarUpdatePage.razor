@@ -96,7 +96,7 @@
 
     private void AddExtraDay(DateTime dateToAdd)
     {
-        if (_calendar.Days.Any(d => d.Date == dateToAdd))
+        if (_calendar.Days.Any(d => d.Date == dateToAdd) || dateToAdd < _calendar.Start || dateToAdd > _calendar.End)
         {
             return;
         }
