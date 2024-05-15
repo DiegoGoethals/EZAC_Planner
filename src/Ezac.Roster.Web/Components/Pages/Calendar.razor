@@ -1,4 +1,4 @@
-﻿@page "/calendar"
+﻿@page "/calendar/{id}"
 @rendermode InteractiveServer
 
 @using Ezac.Roster.Domain
@@ -77,6 +77,8 @@ else
 
 
 @code {
+    [Parameter]
+    public string Id { get; set; }
 
     private ApplicationCalendar calendar;
     private List<DayPeriod> dayPeriods;
@@ -89,11 +91,11 @@ else
     protected override async Task OnInitializedAsync()
     {
         // get the calendar
-        var calendarResult = await CalendarService.GetAllAsync();
+        var calendarResult = await CalendarService.GetByIdAsync(Guid.Parse(Id));
 
         if (calendarResult.IsSucces)
         {
-            calendar = calendarResult.Value.FirstOrDefault();
+            calendar = calendarResult.Value;
             calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
 
             await GetUniquePeriodNames();
