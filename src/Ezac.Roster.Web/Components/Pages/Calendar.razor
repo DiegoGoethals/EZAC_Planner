@@ -111,7 +111,10 @@ else
     private List<UserListModel> _users { get; set; } = new List<UserListModel>();
     public List<UserListModel> Staff { get; set; } = new List<UserListModel>();
 
-    
+    private void CancelUserDropZone(string dropzoneId)
+    {
+        Dropzones[dropzoneId] = null;
+    }
 
     
 
