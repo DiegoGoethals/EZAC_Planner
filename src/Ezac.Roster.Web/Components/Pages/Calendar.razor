@@ -44,19 +44,19 @@
 
                                     @if (!day.IsOpen)
                                     {
-                                        <td style="background-color:red"></td>
+                                        <td style="background-color:tomato"></td>
                                     }
                                     else
                                     {
-                                        <td @onclick="TogglePopUp" style="background-color:green">
+                                        <td @onclick="TogglePopUp" style="background-color:lightgreen">
                                             <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">
                                                 @period.Name
                                             </button>
 
                                             @foreach (var job in period.Jobs)
                                             {
-                                                <div ondragover="event.preventDefault();" draggable="true" @ondrop="(e => HandleDrop(e, job.Id))">
-                                                    @job.Name
+                                                <div ondragover="event.preventDefault();" draggable="true" @ondrop="(e => HandleDrop(e, job.Id))" style="border-color:black">
+                                                    <p style="text-decoration:underline">@job.Name</p>
                                                     @if (Dropzones.ContainsKey(job.Id.ToString()))
                                                     {
                                                         
