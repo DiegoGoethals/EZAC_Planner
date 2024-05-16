@@ -5,75 +5,84 @@
 @using Ezac.Roster.Domain.Entities
 @using Ezac.Roster.Infrastructure
 @using Ezac.Roster.Domain.Interfaces.Services
+@using Ezac.Roster.Domain.Models
 
 @inject ICalendarService CalendarService
 @inject IJobService JobService
 @inject IDayService DayService
 @inject IDayPeriodService DayPeriodService
 @inject IPermissionsService PermissionService
-
-<h3>Kalender voor de maand @SelectedMonth</h3>
+@inject IUserService _userService
 
 @if (calendar != null && calendar.Days != null)
 {
-    <table class="table table-bordered">
-
-        <thead>
-            <tr>
-                <th>Dag/Periode</th>
-                @foreach (var period in periodNames)
-                {
-                    <th>@period</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var day in calendar.Days)
-            {
-
-                <tr>
-                    <td>
-                        <button @onclick="() => ToggleDay(day)" class="btn btn-primary">
-                            @day.Date.ToString("ddd d/M")
-                        </button>
-                    </td>
-                    @foreach (var period in periodNames)
-                    {
-                        <td>
-                            <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">
-                            </button>
-
-                            @period
-                            @if (!day.IsOpen)
+    <div class="row">
+        <div class="col-lg-10">
+            <div class="table-responsive">
+                <table class="table table-bordered" style="border-color:black">
+                    <thead>
+                        <tr>
+                            <th>Dag/Periode</th>
+                            @foreach (var period in periodNames)
                             {
-                                <h5>Kolom uitgeschakeld</h5>
+                                <th>@period</th>
                             }
-                            else
-                            {
-                                if (day.DayPeriods.Any(dp => dp.Name == period && dp.Jobs.Any()))
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var day in calendar.Days)
+                        {
+                            <tr>
+                                <td @onclick="() => ToggleDay(day)">
+                                    <p>
+                                        @day.Date.ToString("ddd d/M")
+                                    </p>
+                                </td>
+                                @foreach (var period in day.DayPeriods.OrderBy(dp => dp.Name))
                                 {
-                                    foreach (var job in day.DayPeriods.First(dp => dp.Name == period).Jobs)
+
+                                    @if (!day.IsOpen)
                                     {
-                                        <p>@job.Name</p>
+                                        <td style="background-color:red"></td>
+                                    }
+                                    else
+                                    {
+                                        <td @onclick="TogglePopUp" style="background-color:green">
+                                            <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">
+                                                @period.Name
+                                            </button>
+
+                                            @foreach (var job in period.Jobs)
+                                            {
+                                                <div ondragover="event.preventDefault();" draggable="true" @ondrop="(e => HandleDrop(e, job.Id.ToString()))">
+                                                    @job.Name
+                                                    @if (Dropzones.ContainsKey(job.Id.ToString()))
+                                                    {
+                                                        if (Dropzones[job.Id.ToString()] != null)
+                                                        {
+                                                            <p>@Dropzones[job.Id.ToString()].Name</p>
+                                                            <button @onclick="() => CancelUserDropZone(job.Id.ToString())" style="background-color:red">X</button>
+                                                        }
+                                                    }
+                                                </div>
+                                            }
+                                        </td>
                                     }
                                 }
-                                else
-                                {
-                                    <p>Geen jobs beschikbaar</p>
-                                }
-                            }
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        
+    </div>
 }
 else
 {
     <p>Gegevens worden geladen of kalender bevat geen dagen.</p>
 }
-
 
 
 @code {
@@ -84,6 +93,7 @@ else
     private static List<Permission> permissions;
     private string SelectedMonth;
     private List<string> periodNames = new List<string>();
+    
 
 
     protected override async Task OnInitializedAsync()
@@ -97,8 +107,10 @@ else
             calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
 
             await GetUniquePeriodNames();
-            await FillDayperiodsWithJobs();
+            //await FillDayperiodsWithJobs();
         }
+
+        
 
     }
 
@@ -133,9 +145,9 @@ else
         }
     }
 
-    private async Task TogglePeriod(Day day, string period)
+    private async Task TogglePeriod(Day day, DayPeriod period)
     {
-        var dayPeriod = day.DayPeriods.FirstOrDefault(dp => dp.Name == period);
+        var dayPeriod = day.DayPeriods.FirstOrDefault(dp => dp.Name == period.Name);
         if (dayPeriod.IsOpen)
         {
             var toggleResult = await DayPeriodService.ToggleAsync(dayPeriod.Id);
