@@ -1,14 +1,9 @@
 ﻿@page "/calendarupdate/{calendarId}"
 @rendermode @(new InteractiveServerRenderMode(false))
 
-@using Ezac.Roster.Domain.Interfaces.Services
-@using Ezac.Roster.Domain.Entities
-@using Ezac.Roster.Web.Components.Components
-@using Ezac.Roster.Domain.Services.Models
-@using Ezac.Roster.Web.Models
-
 @inject ICalendarService CalendarService
 @inject NavigationManager NavigationManager
+@inject IDayService DayService
 
 <CalendarOverview Calendar="_calendar" FormHandler="UpdateCalendar" />
 
@@ -44,6 +39,15 @@
                 End = _calendar.End,
                 Days = _calendar.Days
         };
+
+        foreach (var day in _calendar.Days)
+        {
+            var result = await DayService.GetByIdAsync(day.Id);
+            if (!result.IsSucces)
+            {
+                await DayService.AddAsync(day);
+            }
+		}
 
         await CalendarService.UpdateAsync(calendarUpdateRequestModel);
         NavigationManager.NavigateTo("calendarslist");

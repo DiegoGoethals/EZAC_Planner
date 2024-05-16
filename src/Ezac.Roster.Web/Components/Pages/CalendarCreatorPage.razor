@@ -13,6 +13,7 @@
     {
         _calendar = new CalenderViewModel()
         {
+            Id = Guid.NewGuid(),
             Start = DateTime.Now,
             End = DateTime.Now,
             Days = new List<Day>()
@@ -23,6 +24,7 @@
     {
         var calendarCreateRequestModel = new ApplicationCalendarCreateRequestModel()
 		{
+            Id = _calendar.Id,
 			Name = _calendar.Name,
 			Start = _calendar.Start,
 			End = _calendar.End,

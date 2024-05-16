@@ -52,7 +52,7 @@ namespace Ezac.Roster.Infrastructure.Repositories
         public async Task<bool> UpdateAsync(T toUpdate)
         {
             toUpdate.Updated = DateTime.Now;
-            _table.Update(toUpdate);
+            //_table.Update(toUpdate);
             return await SaveChangesAsync();
         }
         private async Task<bool> SaveChangesAsync()
@@ -62,9 +62,10 @@ namespace Ezac.Roster.Infrastructure.Repositories
                 await _applicationDbContext.SaveChangesAsync();
                 return true;
             }
-            catch (DbUpdateException dbUpdateException)
+            
+            catch(Exception exception)
             {
-                _logger.LogError(dbUpdateException.Message);
+                _logger.LogError(exception.Message);
                 return false;
             }
         }

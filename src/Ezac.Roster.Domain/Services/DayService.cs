@@ -1,4 +1,5 @@
-﻿using Ezac.Roster.Domain.Interfaces.Repositories;
+﻿using Ezac.Roster.Domain.Entities;
+using Ezac.Roster.Domain.Interfaces.Repositories;
 using Ezac.Roster.Domain.Interfaces.Services;
 using Ezac.Roster.Domain.Services.Models;
 using System;
@@ -69,6 +70,47 @@ namespace Ezac.Roster.Domain.Services
                     IsSucces = false,
                     Value = false,
                     Errors = new List<string> { $"Er is een fout opgetreden: {ex.Message}" }
+                };
+            }
+        }
+
+        public async Task<ResultModel<Day>> AddAsync(Day day)
+        {
+            if (await _dayRepository.AddAsync(day))
+            {
+                return new ResultModel<Day>
+                {
+                    IsSucces = true,
+                    Value = day
+                };
+            }
+            else
+            {
+                return new ResultModel<Day>
+                {
+                    IsSucces = false,
+                    Errors = new List<string> { "Kan de dag niet toevoegen." }
+                };
+            }
+        }
+
+        public async Task<ResultModel<Day>> GetByIdAsync(Guid id)
+        {
+            var day = await _dayRepository.GetByIdAsync(id);
+            if (day != null)
+            {
+                return new ResultModel<Day>
+                {
+                    IsSucces = true,
+                    Value = day,
+                };
+            }
+            else
+            {
+                return new ResultModel<Day>
+                {
+                    IsSucces = false,
+                    Errors = new List<string> { "Dag niet gevonden." }
                 };
             }
         }
