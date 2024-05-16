@@ -66,4 +66,17 @@
     public EventCallback<UserListModel> OnDragged { get; set; }
 
     
+
+    public async Task RefreshData()
+    {
+        var permissionsResult = await _permissionService.GetAllAsync();
+        if (permissionsResult.IsSucces)
+        {
+            _permissions = permissionsResult.Value.Select(p => new BaseListModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+            }).ToList();
+        }
+    }
 }
