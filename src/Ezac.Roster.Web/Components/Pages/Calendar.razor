@@ -123,7 +123,19 @@ else
     }
 
 
-    
+    private async Task HandleDrop(DragEventArgs e, string zone)
+    {
+        if (draggedMember != null)
+        {
+            if (!Dropzones.ContainsKey(zone))
+            {
+                Dropzones[zone] = new UserListModel();
+            }
+
+            Dropzones[zone] = draggedMember;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
 
     
 
