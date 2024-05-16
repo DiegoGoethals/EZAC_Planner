@@ -57,23 +57,29 @@
             }
         }
 
-        foreach (var date in Calendar.Days)
-        {
-            if (date.IsOpen && date.DayPeriods.Count == 0)
-            {
-                date.DayPeriods = new List<DayPeriod>()
-                {
-                    new DayPeriod
-                    {
-                        Id = Guid.NewGuid(),
-                        DayId = date.Id,
-                        Start = DateTime.Parse("08:30"),
-                        End = DateTime.Parse("13:00"),
-                        Name = "A",
-                        Jobs = new List<Job>(),
-                        Preferences = new List<Preference>()
-                    },
-                    new DayPeriod
+        FillDayPeriods();
+        Calendar.Days = Calendar.Days.Where(d => d.Date >= Calendar.Start && d.Date <= Calendar.End).OrderBy(d => d.Date).ToList();
+    }
+
+    private void FillDayPeriods()
+	{
+		foreach (var date in Calendar.Days)
+		{
+			if (date.IsOpen && date.DayPeriods.Count == 0)
+			{
+				date.DayPeriods = new List<DayPeriod>()
+				{
+					new DayPeriod
+					{
+						Id = Guid.NewGuid(),
+						DayId = date.Id,
+						Start = DateTime.Parse("08:30"),
+						End = DateTime.Parse("13:00"),
+						Name = "A",
+						Jobs = new List<Job>(),
+						Preferences = new List<Preference>()
+					},
+					new DayPeriod
 					{
 						Id = Guid.NewGuid(),
 						DayId = date.Id,
@@ -83,18 +89,18 @@
 						Jobs = new List<Job>(),
 						Preferences = new List<Preference>()
 					},
-                    new DayPeriod
-                    {
-                        Id = Guid.NewGuid(),
+					new DayPeriod
+					{
+						Id = Guid.NewGuid(),
 						DayId = date.Id,
 						Start = DateTime.Parse("17:30"),
 						End = DateTime.Parse("23:00"),
 						Name = "C",
 						Jobs = new List<Job>(),
 						Preferences = new List<Preference>()
-                    }
-                };
-                foreach (var period in date.DayPeriods)
+					}
+				};
+				foreach (var period in date.DayPeriods)
 				{
 					if (period.Name == "A" || period.Name == "B")
 					{
@@ -108,10 +114,9 @@
 						period.Jobs = new Job[] { new Job { Name = "Bardienst" } };
 					}
 				}
-            }
-        }
-        Calendar.Days = Calendar.Days.Where(d => d.Date >= Calendar.Start && d.Date <= Calendar.End).OrderBy(d => d.Date).ToList();
-    }
+			}
+		}
+	}
 
     private void UpdateStartDate(ChangeEventArgs e)
     {
@@ -152,8 +157,10 @@
             Date = dateToAdd,
             IsOpen = true,
             Name = dateToAdd.DayOfWeek.ToString(),
-            CalendarId = Calendar.Id
+            CalendarId = Calendar.Id,
+            DayPeriods = new List<DayPeriod>()
         });
+        FillDayPeriods();
         Calendar.Days = Calendar.Days.OrderBy(d => d.Date).ToList();
         StateHasChanged();
     }
