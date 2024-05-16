@@ -53,4 +53,17 @@
 </div>
 
 
+@code {
+    //public List<UserListModel> _users { get; set; } = new List<UserListModel>();
+    private List<BaseListModel> _permissions { get; set; } = new List<BaseListModel>();
+    [Parameter]
+    public List<UserListModel> Staff { get; set; }
+    [Parameter]
+    public EventCallback<ChangeEventArgs> OnGetStaff { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+    [Parameter]
+    public EventCallback<UserListModel> OnDragged { get; set; }
 
+    
+}
