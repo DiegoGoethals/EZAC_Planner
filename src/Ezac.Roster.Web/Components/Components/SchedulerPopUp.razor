@@ -65,7 +65,14 @@
     [Parameter]
     public EventCallback<UserListModel> OnDragged { get; set; }
 
-    
+    protected async override Task OnInitializedAsync()
+    {
+        await RefreshData();
+        if (Staff.Count > 0)
+        {
+            Staff.Clear();
+        }
+    }
 
     public async Task RefreshData()
     {
