@@ -120,14 +120,20 @@
 
     private void UpdateStartDate(ChangeEventArgs e)
     {
-        Calendar.Start = DateTime.Parse(e.Value.ToString());
-        SetDays();
+        if (DateTime.TryParse(e.Value.ToString(), out DateTime startDate) && startDate <= Calendar.End)
+		{
+			Calendar.Start = startDate;
+			SetDays();
+		}
     }
 
     private void UpdateEndDate(ChangeEventArgs e)
     {
-        Calendar.End = DateTime.Parse(e.Value.ToString());
-        SetDays();
+        if(DateTime.TryParse(e.Value.ToString(), out DateTime endDate) && endDate >= Calendar.Start)
+		{
+			Calendar.End = endDate;
+			SetDays();
+		}
     }
 
     private void RemoveClosedDay(Day closedDay)
