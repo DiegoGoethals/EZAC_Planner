@@ -116,7 +116,11 @@ else
         Dropzones[dropzoneId] = null;
     }
 
-    
+    public Task HandleDragStart(UserListModel user)
+    {
+        draggedMember = user;
+        return Task.CompletedTask;
+    }
 
 
     
