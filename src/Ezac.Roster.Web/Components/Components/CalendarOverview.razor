@@ -59,7 +59,7 @@
     {
         foreach (var date in Calendar.Days)
         {
-            if (date.IsOpen && date.DayPeriods.Count == 0)
+            if (date.DayPeriods.Count == 0)
             {
                 date.DayPeriods = new List<DayPeriod>()
 				{
