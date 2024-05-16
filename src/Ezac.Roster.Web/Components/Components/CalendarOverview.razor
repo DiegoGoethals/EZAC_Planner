@@ -56,18 +56,17 @@
                 });
             }
         }
-
         FillDayPeriods();
         Calendar.Days = Calendar.Days.Where(d => d.Date >= Calendar.Start && d.Date <= Calendar.End).OrderBy(d => d.Date).ToList();
     }
 
     private void FillDayPeriods()
-	{
-		foreach (var date in Calendar.Days)
-		{
-			if (date.IsOpen && date.DayPeriods.Count == 0)
-			{
-				date.DayPeriods = new List<DayPeriod>()
+    {
+        foreach (var date in Calendar.Days)
+        {
+            if (date.IsOpen && date.DayPeriods.Count == 0)
+            {
+                date.DayPeriods = new List<DayPeriod>()
 				{
 					new DayPeriod
 					{
@@ -100,23 +99,23 @@
 						Preferences = new List<Preference>()
 					}
 				};
-				foreach (var period in date.DayPeriods)
-				{
-					if (period.Name == "A" || period.Name == "B")
-					{
-						period.Jobs = new Job[] { new Job { Name = "Lierist" },
+                foreach (var period in date.DayPeriods)
+                {
+                    if (period.Name == "A" || period.Name == "B")
+                    {
+                        period.Jobs = new Job[] { new Job { Name = "Lierist" },
 								   new Job { Name = "Startofficier" },
 								   new Job { Name = "Instructeur" },
 								   new Job { Name = "Instructeur (DDI)"} };
-					}
-					else if (period.Name == "C")
-					{
-						period.Jobs = new Job[] { new Job { Name = "Bardienst" } };
-					}
-				}
-			}
-		}
-	}
+                    }
+                    else if (period.Name == "C")
+                    {
+                        period.Jobs = new Job[] { new Job { Name = "Bardienst" } };
+                    }
+                }
+            }
+        }
+    }
 
     private void UpdateStartDate(ChangeEventArgs e)
     {
@@ -147,19 +146,30 @@
 
     private void AddExtraDay(DateTime dateToAdd)
     {
-        if (Calendar.Days.Any(d => d.Date == dateToAdd) || dateToAdd < Calendar.Start || dateToAdd > Calendar.End)
+        if (dateToAdd < Calendar.Start || dateToAdd > Calendar.End)
         {
             return;
         }
-        Calendar.Days.Add(new Day()
+        var day = Calendar.Days.FirstOrDefault(d => d.Date.Date == dateToAdd);
+        if (!day.IsOpen)
         {
-            Id = Guid.NewGuid(),
-            Date = dateToAdd,
-            IsOpen = true,
-            Name = dateToAdd.DayOfWeek.ToString(),
-            CalendarId = Calendar.Id,
-            DayPeriods = new List<DayPeriod>()
-        });
+            var dayCopy = new Day()
+            {
+                Id = day.Id,
+                Date = day.Date,
+                IsOpen = true,
+                Name = day.Name,
+                CalendarId = day.CalendarId,
+                DayPeriods = new List<DayPeriod>(),
+                Preferences = new List<Preference>()
+            };
+            Calendar.Days.Remove(day);
+            Calendar.Days.Add(dayCopy);
+        }
+        else
+		{
+			return;
+		}
         FillDayPeriods();
         Calendar.Days = Calendar.Days.OrderBy(d => d.Date).ToList();
         StateHasChanged();
