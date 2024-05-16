@@ -76,7 +76,19 @@
             </div>
         </div>
 
-        
+        @if (ToggleSchedulerPopUp)
+        {
+            <div class="col-lg-2">
+                <div class="position-fixed" style="top: 200px; right: 20px;">
+                    <Ezac.Roster.Web.Components.Components.SchedulerPopUp @rendermode="InteractiveServer"
+                                                                          OnGetStaff="(e) => GetStaff(e)"
+                                                                          Staff="Staff"
+                                                                          OnCancel="CancelPopUp"
+                                                                          OnDragged="(user) => HandleDragStart(user)">
+                    </Ezac.Roster.Web.Components.Components.SchedulerPopUp>
+                </div>
+            </div>
+        }
     </div>
 }
 else
