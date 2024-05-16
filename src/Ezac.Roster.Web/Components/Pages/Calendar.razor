@@ -110,7 +110,17 @@ else
             //await FillDayperiodsWithJobs();
         }
 
-        
+        var usersResult = await _userService.GetAllAsync();
+        if (usersResult.IsSucces)
+        {
+            _users = usersResult.Value.Select(p => new Ezac.Roster.Domain.Models.UserListModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Permissions = p.UserPermissions,
+                Scaling = p.Scaling,
+            }).ToList();
+        }
 
     }
 
