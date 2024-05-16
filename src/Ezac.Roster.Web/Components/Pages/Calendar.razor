@@ -99,7 +99,6 @@ else
             calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
 
             await GetUniquePeriodNames();
-            await FillDayperiodsWithJobs();
         }
 
     }
@@ -168,28 +167,6 @@ else
         if (dayPeriods.IsSucces)
         {
             periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().OrderBy(name => name).ToList();
-        }
-    }
-      
-    private async Task FillDayperiodsWithJobs()
-    {
-        foreach (var day in calendar.Days)
-        {
-            foreach (var period in day.DayPeriods)
-            {
-                if (period.Name == "A" || period.Name == "B")
-                {
-                    period.Jobs = new Job[] { new Job { Name = "Lierist" },
-                               new Job { Name = "Startofficier" },
-                               new Job { Name = "Instructeur" },
-                               new Job { Name = "Instructeur (DDI)"} };
-                }
-                else if (period.Name == "C")
-                {
-                    period.Jobs = new Job[] { new Job { Name = "Bardienst" } };
-                }
-
-            }
         }
     }
 
