@@ -64,7 +64,7 @@
                                                         {
                                                             <div class="d-flex align-items-center">
                                                                 <p class="mb-0 mr-2">@Dropzones[job.Id.ToString()].Name</p>
-                                                                <button @onclick="() => CancelUserDropZone(job.Id.ToString())" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.5rem; line-height: 1.5; border-radius: 0.2rem;">X</button>
+                                                                <button @onclick="() => CancelUserDropZone(job.Id)" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.5rem; line-height: 1.5; border-radius: 0.2rem;">X</button>
                                                             </div>
                                                         }
                                                     }
@@ -115,10 +115,28 @@ else
     private List<UserListModel> _users { get; set; } = new List<UserListModel>();
     public List<UserListModel> Staff { get; set; } = new List<UserListModel>();
 
-    private void CancelUserDropZone(string dropzoneId)
+    private async void CancelUserDropZone(Guid dropzoneId)
     {
-        Dropzones[dropzoneId] = null;
+        Dropzones[dropzoneId.ToString()] = null;
 
+        //get the job
+        var result = await JobService.GetByIdAsync(dropzoneId);
+        if (result.IsSucces)
+        {
+            var job = new JobUpdateRequestModel
+            {
+                Id = dropzoneId,
+                Name = result.Value.Name,
+                Weight = result.Value.Weight,
+                UserId = null,
+                DayPeriodId = result.Value.DayPeriodId,
+                PermissionName = result.Value.PermissionName,
+                Preferences = result.Value.Preferences,
+            };
+            //update job in db
+            var updateResult = await JobService.UpdateAsync(job);
+        }
+        await InvokeAsync(StateHasChanged);
     }
 
     public Task HandleDragStart(UserListModel user)
