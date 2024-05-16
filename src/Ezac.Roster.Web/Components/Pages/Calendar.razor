@@ -55,18 +55,13 @@
 
                                             @foreach (var job in period.Jobs)
                                             {
-                                                <div ondragover="event.preventDefault();" draggable="true" @ondrop="(e => HandleDrop(e, job.Id))" style="border-color:black">
+                                                <div ondragover="event.preventDefault();" draggable="true" @ondrop="(e => HandleDrop(e, job, period))" style="border-color:black">
                                                     <p style="text-decoration:underline">@job.Name</p>
-                                                    @if (Dropzones.ContainsKey(job.Id.ToString()))
+
+                                                    @if (job.User != null)
                                                     {
-                                                        
-                                                        @if (Dropzones[job.Id.ToString()] != null)
-                                                        {
-                                                            <div class="d-flex align-items-center">
-                                                                <p class="mb-0 mr-2">@Dropzones[job.Id.ToString()].Name</p>
-                                                                <button @onclick="() => CancelUserDropZone(job.Id)" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.5rem; line-height: 1.5; border-radius: 0.2rem;">X</button>
-                                                            </div>
-                                                        }
+                                                        <p class="mb-0 mr-2">@job.User.Name</p>
+                                                        <button @onclick="() => CancelUserDropZone(job.Id)" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.5rem; line-height: 1.5; border-radius: 0.2rem;">X</button>
                                                     }
                                                 </div>
                                             }
@@ -128,6 +123,7 @@ else
                 Id = dropzoneId,
                 Name = result.Value.Name,
                 Weight = result.Value.Weight,
+                User = null,
                 UserId = null,
                 DayPeriodId = result.Value.DayPeriodId,
                 PermissionName = result.Value.PermissionName,
@@ -146,33 +142,35 @@ else
     }
 
 
-    private async Task HandleDrop(DragEventArgs e, Guid jobId)
+    private async Task HandleDrop(DragEventArgs e, Job job, DayPeriod dayPeriod)
     {
         if (draggedMember != null)
         {
-            if (!Dropzones.ContainsKey(jobId.ToString()))
+            if (!dayPeriod.Jobs.Any(j => j.UserId == draggedMember.Id))
             {
-                Dropzones[jobId.ToString()] = new UserListModel();
-            }
-
-            Dropzones[jobId.ToString()] = draggedMember;
-
-            //get the job
-            var result = await JobService.GetByIdAsync(jobId);
-            if (result.IsSucces)
-            {
-                var job = new JobUpdateRequestModel
+                if(draggedMember.Permissions.Any(p => p.Name == job.PermissionName))
                 {
-                    Id = jobId,
-                    Name = result.Value.Name,
-                    Weight = result.Value.Weight,
-                    UserId = draggedMember.Id,
-                    DayPeriodId = result.Value.DayPeriodId,
-                    PermissionName = result.Value.PermissionName,
-                    Preferences = result.Value.Preferences,
-                };
-                //update job in db
-                var updateResult = await JobService.UpdateAsync(job);
+                    if (!Dropzones.ContainsKey(job.Id.ToString()))
+                    {
+                        Dropzones[job.Id.ToString()] = new UserListModel();
+                    }
+
+                    Dropzones[job.Id.ToString()] = draggedMember;
+
+                    var newJob = new JobUpdateRequestModel
+                    {
+                        Id = job.Id,
+                        Name = job.Name,
+                        Weight = job.Weight,
+                        User = draggedMember,
+                        UserId = draggedMember.Id,
+                        DayPeriodId = job.DayPeriodId,
+                        PermissionName = job.PermissionName,
+                        Preferences = job.Preferences,
+                    };
+                    //update job in db
+                    var updateResult = await JobService.UpdateAsync(newJob);
+                }
             }
             await InvokeAsync(StateHasChanged);
         }
