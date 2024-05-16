@@ -103,15 +103,15 @@
                 {
                     if (period.Name == "A" || period.Name == "B")
                     {
-                        period.Jobs = new Job[] { new Job { Name = "Lierist", Experience = 1, Weight = 5 },
-								   new Job { Name = "Startofficier", Experience = 1, Weight = 5 },
-								   new Job { Name = "Instructeur", Experience = 1, Weight = 5 },
-								   new Job { Name = "Instructeur (DDI)", Experience = 1, Weight = 5 } 
+                        period.Jobs = new Job[] { new Job { Name = "Lierist", Experience = 1, Weight = 5, PermissionName = "Lierist" },
+								   new Job { Name = "Startofficier", Experience = 1, Weight = 5, PermissionName = "Startofficier" },
+								   new Job { Name = "Instructeur", Experience = 1, Weight = 5, PermissionName = "Instructeur" },
+								   new Job { Name = "Instructeur (DDI)", Experience = 1, Weight = 5, PermissionName = "Instructeur" } 
                         };
                     }
                     else if (period.Name == "C")
                     {
-                        period.Jobs = new Job[] { new Job { Name = "Bardienst", Experience = 1, Weight = 5 }};
+                        period.Jobs = new Job[] { new Job { Name = "Bardienst", Experience = 1, Weight = 5, PermissionName = "Bar" }};
                     }
                 }
             }
