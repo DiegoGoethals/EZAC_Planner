@@ -108,7 +108,6 @@ namespace Ezac.Roster.Domain.Services
             }
 
             //update event
-            selectedCalendar.Id = applicationCalendarUpdateRequestModel.Id;
             selectedCalendar.Name = applicationCalendarUpdateRequestModel.Name;
             selectedCalendar.Updated = DateTime.Now;
             selectedCalendar.Start = applicationCalendarUpdateRequestModel.Start;
