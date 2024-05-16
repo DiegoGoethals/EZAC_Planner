@@ -23,4 +23,8 @@
     <ProjectReference Include="..\..\Ezac.Roster.Infrastructure\Ezac.Roster.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
 </Project>

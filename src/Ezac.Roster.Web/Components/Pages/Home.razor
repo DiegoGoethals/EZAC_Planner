@@ -1,7 +1,84 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+@rendermode InteractiveServer
 
-<h1>Hello, world!</h1>
+@using MudBlazor
+@using Ezac.Roster.Domain.Interfaces.Services
+@using Ezac.Roster.Web.Components.Layout
 
-Welcome to your new app.
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+@inject Ezac.Roster.Domain.Services.LogInBooLService LogInBooLService
+
+
+<style>
+    .h1 {
+        text-align: center;
+    }
+</style>
+
+<PageTitle>Login</PageTitle>
+
+
+<h1 class="h1">EZAC Roosterplanner Login</h1>
+
+<div>
+    <MudCard>
+        <MudCardContent>
+            <MudTextField @bind-Value="UserName" Placeholder="Gebruikersnaam" />
+            <MudTextField @bind-Value="Password" Placeholder="Wachtwoord" InputType="@(!showPassword ? InputType.Password : InputType.Text)" />
+            <MudIcon Icon="@(showPassword ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)" Size="Size.Medium" @onclick="TogglePasswordVisibility" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton OnClick="Login">Login</MudButton>
+        </MudCardActions>
+    </MudCard>
+</div>
+<div>
+    <label>@Message</label>
+</div>
+@code{
+    private string UserName;
+    private string Password;
+    private string Message = "Gelieve in te loggen";
+    private bool showPassword;
+
+    private async Task Login()
+    {
+        if (Password == "ezac")
+        {
+            var users = await UserService.GetAllAsync();
+            var user = users.Value.FirstOrDefault(u => u.Name == UserName);
+            if (user != null)
+            {
+                if (user.IsAdmin == true)
+                {
+
+                    Message = "Logging in";
+                    LogInBooLService.IsLoggedIn = true;
+                    NavigationManager.NavigateTo("/calendar");
+                }
+                else
+                {
+                    Message = "U heeft geen adminrechten";
+                }
+            }
+            else
+            {
+                Message = "Gebruiker bestaat niet";
+            }
+        }
+        else
+        {
+            Message = "Wachtwoord is onjuist";
+        }
+    }
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+    }
+    //await ProtectedLocalStore.SetAsync("IsLoggedIn", IsLoggedIn);
+}
+
+
