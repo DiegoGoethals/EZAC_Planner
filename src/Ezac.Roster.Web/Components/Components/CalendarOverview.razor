@@ -1,10 +1,5 @@
 ﻿@rendermode InteractiveServer
 
-@using Ezac.Roster.Domain.Interfaces.Services
-@using Ezac.Roster.Domain.Entities
-@using Ezac.Roster.Web.Components.Components
-@using Ezac.Roster.Domain.Services.Models
-
 @inject ICalendarService CalendarService
 
 <div id="calendar-creator">
@@ -32,7 +27,7 @@
 
 @code {
     [Parameter]
-    public ApplicationCalendar Calendar { get; set; }
+    public CalenderViewModel Calendar { get; set; }
 
     [Parameter]
     public Func<Task> FormHandler { get; set; }

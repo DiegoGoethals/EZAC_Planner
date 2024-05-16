@@ -1,6 +1,4 @@
-﻿@using Ezac.Roster.Domain.Entities
-
-<form @onsubmit="FormHandler">
+﻿<form @onsubmit="FormHandler">
     <div class="form-group">
         <label for="calendarName">Kalender naam</label>
         <input type="text" class="form-control" id="calendarName" placeholder="Kalender naam" required @bind-value="Calendar.Name">
@@ -25,7 +23,7 @@
 
 @code {
     [Parameter]
-    public ApplicationCalendar Calendar { get; set; }
+    public CalenderViewModel Calendar { get; set; }
 
     [Parameter]
     public Func<Task> FormHandler { get; set; }

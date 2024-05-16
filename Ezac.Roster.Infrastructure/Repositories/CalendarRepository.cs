@@ -30,11 +30,16 @@ namespace Ezac.Roster.Infrastructure.Repositories
 
         public override async Task<ApplicationCalendar> GetByIdAsync(Guid id)
         {
+
+            var dinges = _table.Include(c => c.Days)
+                .ThenInclude(d => d.DayPeriods)
+                .ThenInclude(dp => dp.Jobs)
+                .FirstOrDefault(c => c.Id == id);
             return await _table
                 .Include(c => c.Days)
-            .ThenInclude(d => d.DayPeriods)
+                .ThenInclude(d => d.DayPeriods)
                 .ThenInclude(dp => dp.Jobs)
-        .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }
