@@ -9,6 +9,7 @@ namespace Ezac.Roster.Domain.Models
 {
     public class UserListModel : BaseListModel
     {
-        public IEnumerable<Permission> Permissions { get; set; }
+        public double Scaling { get; set; }
+        public IEnumerable<UserPermission> Permissions { get; set; }
     }
 }
