@@ -147,7 +147,21 @@ else
         ToggleSchedulerPopUp = false;
     }
 
-    
+    private void GetStaff(ChangeEventArgs e)
+    {
+        if (Staff.Count > 0)
+        {
+            Staff.Clear();
+        }
+
+        foreach (var user in _users)
+        {
+            if (user.Permissions.Any(p => p.Name == e.Value?.ToString()))
+            {
+                Staff.Add(user);
+            }
+        }
+    }
 
 
     protected override async Task OnInitializedAsync()
