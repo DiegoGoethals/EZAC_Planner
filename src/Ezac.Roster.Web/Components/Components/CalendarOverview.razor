@@ -156,7 +156,7 @@
         {
             return;
         }
-        var day = Calendar.Days.FirstOrDefault(d => d.Date.Date == dateToAdd);
+        var day = Calendar.Days.FirstOrDefault(d => d.Date.Date == dateToAdd.Date);
         if (!day.IsOpen)
         {
             var dayCopy = new Day()
