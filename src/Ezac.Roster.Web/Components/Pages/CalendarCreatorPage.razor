@@ -1,0 +1,37 @@
+﻿@page "/calendar-creator"
+@rendermode InteractiveServer
+
+@inject ICalendarService CalendarService
+@inject NavigationManager NavigationManager
+
+<CalendarOverview Calendar="_calendar" FormHandler="CreateCalendar" />
+
+@code {
+    private CalenderViewModel _calendar { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _calendar = new CalenderViewModel()
+        {
+            Id = Guid.NewGuid(),
+            Start = DateTime.Now,
+            End = DateTime.Now,
+            Days = new List<Day>()
+        };
+    }
+
+    private async Task CreateCalendar()
+    {
+        var calendarCreateRequestModel = new ApplicationCalendarCreateRequestModel()
+		{
+            Id = _calendar.Id,
+			Name = _calendar.Name,
+			Start = _calendar.Start,
+			End = _calendar.End,
+			Days = _calendar.Days
+		};
+
+        await CalendarService.AddAsync(calendarCreateRequestModel);
+        NavigationManager.NavigateTo("calendarslist");
+    }
+}

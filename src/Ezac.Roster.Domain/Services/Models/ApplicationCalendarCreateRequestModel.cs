@@ -9,6 +9,7 @@ namespace Ezac.Roster.Domain.Services.Models
 {
     public class ApplicationCalendarCreateRequestModel
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public DateTime Created { get; set; }
         public IEnumerable<Day> Days { get; set; }

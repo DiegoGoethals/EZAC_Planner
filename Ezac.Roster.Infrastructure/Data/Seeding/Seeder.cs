@@ -34,19 +34,40 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 			{
 			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000005"), Name = "Johnny Debeer", Email = "johnny@ezac.com", Scaling = 1, IsAdmin = false},
 			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000006"), Name = "Alfonso Rosseel", Email = "Alfie@ezac.com", Scaling = 0.5, IsAdmin = false,},
-			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000007"), Name = "Mohammed Ali", Email = "Admin@ezac.com", Scaling = 1, IsAdmin = true,}
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000007"), Name = "Mohammed Ali", Email = "Admin@ezac.com", Scaling = 1, IsAdmin = true,},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000008"), Name = "Diego Maradonna", Email = "Diego@ezac.com", Scaling = 1, IsAdmin = false,},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000009"), Name = "Mitch Mitchell", Email = "Mitch@ezac.com", Scaling = 1, IsAdmin = false,},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000010"), Name = "Mileto Di Marco", Email = "Mileto@ezac.com", Scaling = 1, IsAdmin = false,},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000011"), Name = "Antoinne De Vlieger", Email = "Antoinne@ezac.com", Scaling = 1, IsAdmin = true,},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000012"), Name = "Siegfried Dedeyne", Email = "Siegfried@ezac.com", Scaling = 1, IsAdmin = true,},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000013"), Name = "Dries Deboosere", Email = "Dries@ezac.com", Scaling = 1, IsAdmin = false,},
 			};
 
 			var userPermissions = new[]
 			{
-				new UserPermission { Id = Guid.NewGuid(), UserId = users[0].Id, PermissionId = permissions[0].Id, Experience = 5, Name = permissions[0].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[0].Id, PermissionId = permissions[0].Id, Experience = 1, Name = permissions[0].Name },
 				new UserPermission { Id = Guid.NewGuid(), UserId = users[0].Id, PermissionId = permissions[1].Id, Experience = 5, Name = permissions[1].Name },
-				new UserPermission { Id = Guid.NewGuid(), UserId = users[1].Id, PermissionId = permissions[2].Id, Experience = 5, Name = permissions[2].Name },
-				new UserPermission { Id = Guid.NewGuid(), UserId = users[1].Id, PermissionId = permissions[3].Id, Experience = 5, Name = permissions[3].Name },
-				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[0].Id, Experience = 5, Name = permissions[0].Name },
-				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[1].Id, Experience = 5, Name = permissions[1].Name },
-				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[2].Id, Experience = 5, Name = permissions[2].Name },
-				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[3].Id, Experience = 5, Name = permissions[3].Name }
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[1].Id, PermissionId = permissions[2].Id, Experience = 4, Name = permissions[2].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[1].Id, PermissionId = permissions[3].Id, Experience = 6, Name = permissions[3].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[0].Id, Experience = 8, Name = permissions[0].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[1].Id, Experience = 2, Name = permissions[1].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[2].Id, Experience = 1, Name = permissions[2].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[2].Id, PermissionId = permissions[3].Id, Experience = 9, Name = permissions[3].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[3].Id, PermissionId = permissions[0].Id, Experience = 7, Name = permissions[0].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[3].Id, PermissionId = permissions[3].Id, Experience = 4, Name = permissions[3].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[4].Id, PermissionId = permissions[1].Id, Experience = 3, Name = permissions[1].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[4].Id, PermissionId = permissions[2].Id, Experience = 1, Name = permissions[2].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[5].Id, PermissionId = permissions[1].Id, Experience = 5, Name = permissions[1].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[5].Id, PermissionId = permissions[3].Id, Experience = 4, Name = permissions[3].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[6].Id, PermissionId = permissions[0].Id, Experience = 7, Name = permissions[0].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[6].Id, PermissionId = permissions[2].Id, Experience = 2, Name = permissions[2].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[7].Id, PermissionId = permissions[0].Id, Experience = 3, Name = permissions[0].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[7].Id, PermissionId = permissions[2].Id, Experience = 8, Name = permissions[2].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[7].Id, PermissionId = permissions[3].Id, Experience = 9, Name = permissions[3].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[8].Id, PermissionId = permissions[1].Id, Experience = 4, Name = permissions[1].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[8].Id, PermissionId = permissions[2].Id, Experience = 2, Name = permissions[2].Name },
+				new UserPermission { Id = Guid.NewGuid(), UserId = users[8].Id, PermissionId = permissions[3].Id, Experience = 8, Name = permissions[3].Name },
+
 			};
 
 			var calendar = new ApplicationCalendar

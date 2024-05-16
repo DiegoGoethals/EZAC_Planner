@@ -1,0 +1,24 @@
+﻿@rendermode InteractiveServer
+
+<li>
+	<div class="date-item">
+		<div class="date-item-content">
+			<span>@day.Name: @day.Date.Date.ToString("dd/MM/yyyy")</span>
+			<button @onclick="CloseDay">x</button>
+		</div>
+	</div>
+</li>
+
+@code {
+    [Parameter]
+    public Day day { get; set; }
+
+    [Parameter]
+    public Action<Day> RemoveDay { get; set; }
+
+    private void CloseDay()
+    {
+        day.IsOpen = false;
+        RemoveDay(day);
+    }
+}
