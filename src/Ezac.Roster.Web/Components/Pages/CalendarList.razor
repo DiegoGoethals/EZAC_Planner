@@ -3,16 +3,18 @@
 @using Ezac.Roster.Domain.Models
 @using Ezac.Roster.Domain.Interfaces.Services
 @using Ezac.Roster.Domain.Entities
+@using Ezac.Roster.Web.Components.Components
 @rendermode InteractiveServer
 
 
 @inject ICalendarService CalendarService
 @inject NavigationManager Navigation
 
-<h3>CalendarList</h3>
+<h3>Alle kalenders</h3>
 
 <button class="btn btn-primary" @onclick="CreateCalendar">Maak een nieuwe kalender</button>
 
+<ConfirmDeletePopUp @ref="DeletePopUp" deleteCalendar="@DeleteCalendar" />
 
 @if (calendars != null)
 {
@@ -32,7 +34,7 @@
                     <td>@calendar.Start.ToString("yyyy/MM") tot @calendar.End.ToString("yyyy/MM")</td>
                     <td>
                         <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">bewerken</button>
-                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteCalendar(calendar.Id)">Verwijderen</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
                         <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
                     </td>
                 </tr>
@@ -50,6 +52,8 @@ else
 @code {
     private List<ApplicationCalendar> calendars;
 
+    private ConfirmDeletePopUp DeletePopUp;
+
     protected override async Task OnInitializedAsync()
     {
         var calendarResult = await CalendarService.GetAllAsync();
@@ -65,18 +69,30 @@ else
         Navigation.NavigateTo($"calendarupdate/{calendarId}");
     }
 
-    private void DeleteCalendar(Guid calendarId)
+    private async Task ShowDeletePopUp(Guid calendarId)
     {
-        Navigation.NavigateTo($"calendardelete/{calendarId}");
+        await DeletePopUp.Show(calendarId);
+    }
+
+    private async Task DeleteCalendar(Guid calendarId)
+    {
+        await CalendarService.DeleteAsync(calendarId);
+        var calendarResult = await CalendarService.GetAllAsync();
+
+        if (calendarResult.IsSucces)
+        {
+            calendars = calendarResult.Value.ToList();
+        }
+        StateHasChanged();
     }
 
     private void CreateCalendar()
     {
-        Navigation.NavigateTo("calendarcreate");
+        Navigation.NavigateTo("calendar-creator");
     }
 
     private void OverviewCalendar(Guid calendarId)
     {
-        Navigation.NavigateTo($"calendardetails/{calendarId}");
+        Navigation.NavigateTo($"calendar/{calendarId}");
     }
 }

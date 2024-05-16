@@ -1,10 +1,5 @@
-﻿@page "/calendar"
+﻿@page "/calendar/{id}"
 @rendermode InteractiveServer
-
-@using Ezac.Roster.Domain
-@using Ezac.Roster.Domain.Entities
-@using Ezac.Roster.Infrastructure
-@using Ezac.Roster.Domain.Interfaces.Services
 
 @inject ICalendarService CalendarService
 @inject IJobService JobService
@@ -77,6 +72,8 @@ else
 
 
 @code {
+    [Parameter]
+    public string Id { get; set; }
 
     private ApplicationCalendar calendar;
     private List<DayPeriod> dayPeriods;
@@ -89,15 +86,14 @@ else
     protected override async Task OnInitializedAsync()
     {
         // get the calendar
-        var calendarResult = await CalendarService.GetAllAsync();
+        var calendarResult = await CalendarService.GetByIdAsync(Guid.Parse(Id));
 
         if (calendarResult.IsSucces)
         {
-            calendar = calendarResult.Value.FirstOrDefault();
+            calendar = calendarResult.Value;
             calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
 
             await GetUniquePeriodNames();
-            await FillDayperiodsWithJobs();
         }
 
     }
@@ -166,28 +162,6 @@ else
         if (dayPeriods.IsSucces)
         {
             periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().OrderBy(name => name).ToList();
-        }
-    }
-      
-    private async Task FillDayperiodsWithJobs()
-    {
-        foreach (var day in calendar.Days)
-        {
-            foreach (var period in day.DayPeriods)
-            {
-                if (period.Name == "A" || period.Name == "B")
-                {
-                    period.Jobs = new Job[] { new Job { Name = "Lierist" },
-                               new Job { Name = "Startofficier" },
-                               new Job { Name = "Instructeur" },
-                               new Job { Name = "Instructeur (DDI)"} };
-                }
-                else if (period.Name == "C")
-                {
-                    period.Jobs = new Job[] { new Job { Name = "Bardienst" } };
-                }
-
-            }
         }
     }
 

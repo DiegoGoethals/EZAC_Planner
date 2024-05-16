@@ -19,7 +19,7 @@ namespace Ezac.Roster.Domain.Services
             //create new calendar
             var calender = new ApplicationCalendar
             {
-                Id = Guid.NewGuid(),
+                Id = applicationCalendarCreateRequestModel.Id,
                 Name = applicationCalendarCreateRequestModel.Name,
                 Created = DateTime.Now,
                 Start = applicationCalendarCreateRequestModel.Start,
@@ -108,9 +108,7 @@ namespace Ezac.Roster.Domain.Services
             }
 
             //update event
-            selectedCalendar.Id = applicationCalendarUpdateRequestModel.Id;
             selectedCalendar.Name = applicationCalendarUpdateRequestModel.Name;
-            selectedCalendar.Updated = DateTime.Now;
             selectedCalendar.Start = applicationCalendarUpdateRequestModel.Start;
             selectedCalendar.End = applicationCalendarUpdateRequestModel.End;
             selectedCalendar.Days = applicationCalendarUpdateRequestModel.Days.ToList();

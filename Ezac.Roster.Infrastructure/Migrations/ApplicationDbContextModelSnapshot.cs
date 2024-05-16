@@ -43,6 +43,9 @@ namespace Ezac.Roster.Infrastructure.Migrations
                     b.Property<DateTime>("Start")
                         .HasColumnType("datetime2");
 
+                    b.Property<byte[]>("Timestamp")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
 
@@ -1216,6 +1219,7 @@ namespace Ezac.Roster.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
+
                             Id = new Guid("9e02b27e-1006-4254-8307-77f40d00e27a"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deleted = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
