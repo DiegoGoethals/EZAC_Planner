@@ -6,6 +6,7 @@
 @using Ezac.Roster.Infrastructure
 @using Ezac.Roster.Domain.Interfaces.Services
 @using Ezac.Roster.Domain.Models
+@using Ezac.Roster.Domain.Services.Models
 
 @inject ICalendarService CalendarService
 @inject IJobService JobService
@@ -54,14 +55,17 @@
 
                                             @foreach (var job in period.Jobs)
                                             {
-                                                <div ondragover="event.preventDefault();" draggable="true" @ondrop="(e => HandleDrop(e, job.Id.ToString()))">
+                                                <div ondragover="event.preventDefault();" draggable="true" @ondrop="(e => HandleDrop(e, job.Id))">
                                                     @job.Name
                                                     @if (Dropzones.ContainsKey(job.Id.ToString()))
                                                     {
-                                                        if (Dropzones[job.Id.ToString()] != null)
+                                                        
+                                                        @if (Dropzones[job.Id.ToString()] != null)
                                                         {
-                                                            <p>@Dropzones[job.Id.ToString()].Name</p>
-                                                            <button @onclick="() => CancelUserDropZone(job.Id.ToString())" style="background-color:red">X</button>
+                                                            <div class="d-flex align-items-center">
+                                                                <p class="mb-0 mr-2">@Dropzones[job.Id.ToString()].Name</p>
+                                                                <button @onclick="() => CancelUserDropZone(job.Id.ToString())" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.5rem; line-height: 1.5; border-radius: 0.2rem;">X</button>
+                                                            </div>
                                                         }
                                                     }
                                                 </div>
@@ -114,6 +118,7 @@ else
     private void CancelUserDropZone(string dropzoneId)
     {
         Dropzones[dropzoneId] = null;
+
     }
 
     public Task HandleDragStart(UserListModel user)
@@ -123,16 +128,34 @@ else
     }
 
 
-    private async Task HandleDrop(DragEventArgs e, string zone)
+    private async Task HandleDrop(DragEventArgs e, Guid jobId)
     {
         if (draggedMember != null)
         {
-            if (!Dropzones.ContainsKey(zone))
+            if (!Dropzones.ContainsKey(jobId.ToString()))
             {
-                Dropzones[zone] = new UserListModel();
+                Dropzones[jobId.ToString()] = new UserListModel();
             }
 
-            Dropzones[zone] = draggedMember;
+            Dropzones[jobId.ToString()] = draggedMember;
+
+            //get the job
+            var result = await JobService.GetByIdAsync(jobId);
+            if (result.IsSucces)
+            {
+                var job = new JobUpdateRequestModel
+                {
+                    Id = jobId,
+                    Name = result.Value.Name,
+                    Weight = result.Value.Weight,
+                    UserId = draggedMember.Id,
+                    DayPeriodId = result.Value.DayPeriodId,
+                    PermissionName = result.Value.PermissionName,
+                    Preferences = result.Value.Preferences,
+                };
+                //update job in db
+                var updateResult = await JobService.UpdateAsync(job);
+            }
             await InvokeAsync(StateHasChanged);
         }
     }
@@ -258,7 +281,7 @@ else
             periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().OrderBy(name => name).ToList();
         }
     }
-      
+
     private async Task FillDayperiodsWithJobs()
     {
         foreach (var day in calendar.Days)
