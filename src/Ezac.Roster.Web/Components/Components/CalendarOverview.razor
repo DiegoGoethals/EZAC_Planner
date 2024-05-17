@@ -47,7 +47,8 @@
                     IsOpen = day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday,
                     Name = day.DayOfWeek.ToString(),
                     CalendarId = Calendar.Id,
-                    DayPeriods = new List<DayPeriod>()
+                    DayPeriods = new List<DayPeriod>(),
+                    Preferences = new List<Preference>()
                 });
             }
         }
@@ -59,7 +60,7 @@
     {
         foreach (var date in Calendar.Days)
         {
-            if (date.IsOpen && date.DayPeriods.Count == 0)
+            if (date.DayPeriods.Count == 0)
             {
                 date.DayPeriods = new List<DayPeriod>()
 				{
@@ -70,6 +71,7 @@
 						Start = DateTime.Parse("08:30"),
 						End = DateTime.Parse("13:00"),
 						Name = "A",
+                        IsOpen = date.IsOpen,
 						Jobs = new List<Job>(),
 						Preferences = new List<Preference>()
 					},
@@ -80,6 +82,7 @@
 						Start = DateTime.Parse("13:00"),
 						End = DateTime.Parse("17:30"),
 						Name = "B",
+                        IsOpen = date.IsOpen,
 						Jobs = new List<Job>(),
 						Preferences = new List<Preference>()
 					},
@@ -90,6 +93,7 @@
 						Start = DateTime.Parse("17:30"),
 						End = DateTime.Parse("23:00"),
 						Name = "C",
+                        IsOpen = date.IsOpen,
 						Jobs = new List<Job>(),
 						Preferences = new List<Preference>()
 					}

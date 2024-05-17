@@ -40,7 +40,7 @@ namespace Ezac.Roster.Domain.Services
             //create new dayperiod
             var dayPeriod = new DayPeriod
             {
-                Id = Guid.NewGuid(),
+                Id = dayPeriodCreateRequestModel.Id,
                 Name = dayPeriodCreateRequestModel.Name,
                 IsOpen = dayPeriodCreateRequestModel.IsOpen,
                 Start = dayPeriodCreateRequestModel.Start,
@@ -201,14 +201,12 @@ namespace Ezac.Roster.Domain.Services
                 return new ResultModel<DayPeriod>
                 {
                     IsSucces = false,
-                    Errors = new List<string> { "Dayperiod does not exists!" }
+                    Errors = new List<string> { "Dayperiod does not exist!" }
                 };
             };
 
             //update event
-            selectedDayPeriod.Id = dayPeriodUpdateRequestModel.Id;
             selectedDayPeriod.Name = dayPeriodUpdateRequestModel.Name;
-            selectedDayPeriod.Updated = DateTime.Now;
             selectedDayPeriod.Start = dayPeriodUpdateRequestModel.Start;
             selectedDayPeriod.End = dayPeriodUpdateRequestModel.End;
             selectedDayPeriod.IsOpen = dayPeriodUpdateRequestModel.IsOpen;
