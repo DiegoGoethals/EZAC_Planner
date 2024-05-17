@@ -139,9 +139,10 @@ namespace Ezac.Roster.Domain.Services
             job.UserId = jobUpdateRequestModel.UserId;
             job.DayPeriodId = jobUpdateRequestModel.DayPeriodId;
             job.PermissionName = jobUpdateRequestModel.PermissionName;
-            job.Preferences = jobUpdateRequestModel.Preferences.ToList();
+            job.Preferences = jobUpdateRequestModel.Preferences?.ToList() ?? new List<Preference>();
 
-            if (await _jobRepository.UpdateAsync(job))
+            var result = await _jobRepository.UpdateAsync(job);
+            if (result)
             {
                 return new ResultModel<Job>
                 {
