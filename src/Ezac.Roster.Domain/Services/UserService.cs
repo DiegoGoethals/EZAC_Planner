@@ -66,12 +66,17 @@ namespace Ezac.Roster.Domain.Services
                 Email = userCreateRequestModel.Email,
                 Scaling = userCreateRequestModel.Scaling,
                 IsAdmin = userCreateRequestModel.IsAdmin,
-                UserPermissions = new List<UserPermission>(),
+                UserPermissions = userCreateRequestModel.Permissions.ToList(),
                 Preferences = userCreateRequestModel.Preferences.ToList(),
                 Jobs = userCreateRequestModel.Jobs.ToList()
             };
 
-            var userPermissions = new List<UserPermission>();
+			foreach (var permission in user.UserPermissions)
+			{
+				permission.UserId = user.Id;
+			}
+
+			var userPermissions = new List<UserPermission>();
             foreach (var permission in userCreateRequestModel.Permissions)
             {
                 userPermissions.Add(new UserPermission
