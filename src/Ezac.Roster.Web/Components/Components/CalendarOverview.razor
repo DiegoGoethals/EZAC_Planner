@@ -34,7 +34,7 @@
 
     private void SetDays()
     {
-        var allDays = Enumerable.Range(0, (Calendar.End - Calendar.Start).Days + 1)
+        var allDays = Enumerable.Range(0, (Calendar.End - Calendar.Start).Days + 2)
                                 .Select(offset => Calendar.Start.AddDays(offset));
         foreach (var day in allDays)
         {
@@ -47,12 +47,13 @@
                     IsOpen = day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday,
                     Name = day.DayOfWeek.ToString(),
                     CalendarId = Calendar.Id,
-                    DayPeriods = new List<DayPeriod>()
+                    DayPeriods = new List<DayPeriod>(),
+                    Preferences = new List<Preference>()
                 });
             }
         }
         FillDayPeriods();
-        Calendar.Days = Calendar.Days.Where(d => d.Date >= Calendar.Start && d.Date <= Calendar.End).OrderBy(d => d.Date).ToList();
+        Calendar.Days = Calendar.Days.Where(d => d.Date.Date >= Calendar.Start.Date && d.Date.Date <= Calendar.End.Date).OrderBy(d => d.Date).ToList();
     }
 
     private void FillDayPeriods()
@@ -70,6 +71,7 @@
 						Start = DateTime.Parse("08:30"),
 						End = DateTime.Parse("13:00"),
 						Name = "A",
+                        IsOpen = date.IsOpen,
 						Jobs = new List<Job>(),
 						Preferences = new List<Preference>()
 					},
@@ -80,6 +82,7 @@
 						Start = DateTime.Parse("13:00"),
 						End = DateTime.Parse("17:30"),
 						Name = "B",
+                        IsOpen = date.IsOpen,
 						Jobs = new List<Job>(),
 						Preferences = new List<Preference>()
 					},
@@ -90,6 +93,7 @@
 						Start = DateTime.Parse("17:30"),
 						End = DateTime.Parse("23:00"),
 						Name = "C",
+                        IsOpen = date.IsOpen,
 						Jobs = new List<Job>(),
 						Preferences = new List<Preference>()
 					}

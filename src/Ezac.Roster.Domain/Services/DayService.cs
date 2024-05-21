@@ -74,8 +74,19 @@ namespace Ezac.Roster.Domain.Services
             }
         }
 
-        public async Task<ResultModel<Day>> AddAsync(Day day)
+        public async Task<ResultModel<Day>> AddAsync(DayCreateRequestModel dayCreateRequestModel)
         {
+            var day = new Day
+            {
+                Id = dayCreateRequestModel.Id,
+                Name = dayCreateRequestModel.Name,
+                Date = dayCreateRequestModel.Date,
+                IsOpen = dayCreateRequestModel.IsOpen,
+                Created = DateTime.Now,
+                Preferences = dayCreateRequestModel.Preferences.ToList(),
+                CalendarId = dayCreateRequestModel.CalendarId,
+                DayPeriods = dayCreateRequestModel.DayPeriods.ToList()
+            };
             if (await _dayRepository.AddAsync(day))
             {
                 return new ResultModel<Day>
@@ -111,6 +122,43 @@ namespace Ezac.Roster.Domain.Services
                 {
                     IsSucces = false,
                     Errors = new List<string> { "Dag niet gevonden." }
+                };
+            }
+        }
+
+        public async Task<ResultModel<Day>> UpdateAsync(DayUpdateRequestModel dayUpdateRequestModel)
+        {
+            var day = await _dayRepository.GetByIdAsync(dayUpdateRequestModel.Id);
+            if (day == null)
+            {
+                return new ResultModel<Day>
+                {
+                    IsSucces = false,
+                    Errors = new List<string> { "Dag niet gevonden." }
+                };
+            }
+
+            day.Name = dayUpdateRequestModel.Name;
+            day.Date = dayUpdateRequestModel.Date;
+            day.IsOpen = dayUpdateRequestModel.IsOpen;
+            day.Preferences = dayUpdateRequestModel.Preferences.ToList();
+            day.CalendarId = dayUpdateRequestModel.CalendarId;
+            day.DayPeriods = dayUpdateRequestModel.DayPeriods.ToList();
+
+            if (await _dayRepository.UpdateAsync(day))
+            {
+                return new ResultModel<Day>
+                {
+                    IsSucces = true,
+                    Value = day
+                };
+            }
+            else
+            {
+                return new ResultModel<Day>
+                {
+                    IsSucces = false,
+                    Errors = new List<string> { "Kan de dag niet updaten." }
                 };
             }
         }

@@ -248,19 +248,8 @@ else
 
     private async Task ToggleDay(Day day)
     {
-        if (day.IsOpen)
-        {
-            var toggleResult = await DayService.ToggleAsync(day.Id);
-            if (toggleResult.IsSucces)
-            {
-                StateHasChanged();
-            }
-        }
-        else
-        {
-            day.IsOpen = !day.IsOpen;
-            StateHasChanged();
-        }
+        var toggleResult = await DayService.ToggleAsync(day.Id);
+        StateHasChanged();
     }
 
     private async Task TogglePeriod(Day day, DayPeriod period)
