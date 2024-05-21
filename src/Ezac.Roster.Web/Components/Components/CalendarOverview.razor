@@ -1,6 +1,7 @@
 ﻿@rendermode InteractiveServer
 
 @inject ICalendarService CalendarService
+@inject IDayService DayService
 
 <div id="calendar-creator">
     @if (Calendar != null)
@@ -38,18 +39,35 @@
                                 .Select(offset => Calendar.Start.AddDays(offset));
         foreach (var day in allDays)
         {
-            if (!Calendar.Days.Any(d => d.Date == day))
+            if (day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday)
             {
-                Calendar.Days.Add(new Day()
+                if (Calendar.Days.Count() == 0)
                 {
-                    Id = Guid.NewGuid(),
-                    Date = day,
-                    IsOpen = day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday,
-                    Name = day.DayOfWeek.ToString(),
-                    CalendarId = Calendar.Id,
-                    DayPeriods = new List<DayPeriod>(),
-                    Preferences = new List<Preference>()
-                });
+                    Calendar.Days.Add(new Day()
+                    {
+                        Id = Guid.NewGuid(),
+                        Date = day,
+                        IsOpen = true,
+                        Name = day.DayOfWeek.ToString(),
+                        CalendarId = Calendar.Id,
+                        DayPeriods = new List<DayPeriod>()
+                    });
+                }
+                else
+                {
+                    if (!Calendar.Days.Any(d => d.Date.DayOfYear == day.Date.DayOfYear))
+                    {
+                        Calendar.Days.Add(new Day()
+                        {
+                            Id = Guid.NewGuid(),
+                            Date = day,
+                            IsOpen = true,
+                            Name = day.DayOfWeek.ToString(),
+                            CalendarId = Calendar.Id,
+                            DayPeriods = new List<DayPeriod>()
+                        });
+                    }
+                }
             }
         }
         FillDayPeriods();
@@ -63,54 +81,54 @@
             if (date.DayPeriods.Count == 0)
             {
                 date.DayPeriods = new List<DayPeriod>()
-				{
-					new DayPeriod
-					{
-						Id = Guid.NewGuid(),
-						DayId = date.Id,
-						Start = DateTime.Parse("08:30"),
-						End = DateTime.Parse("13:00"),
-						Name = "A",
-                        IsOpen = date.IsOpen,
-						Jobs = new List<Job>(),
-						Preferences = new List<Preference>()
-					},
-					new DayPeriod
-					{
-						Id = Guid.NewGuid(),
-						DayId = date.Id,
-						Start = DateTime.Parse("13:00"),
-						End = DateTime.Parse("17:30"),
-						Name = "B",
-                        IsOpen = date.IsOpen,
-						Jobs = new List<Job>(),
-						Preferences = new List<Preference>()
-					},
-					new DayPeriod
-					{
-						Id = Guid.NewGuid(),
-						DayId = date.Id,
-						Start = DateTime.Parse("17:30"),
-						End = DateTime.Parse("23:00"),
-						Name = "C",
-                        IsOpen = date.IsOpen,
-						Jobs = new List<Job>(),
-						Preferences = new List<Preference>()
-					}
-				};
+            {
+                    new DayPeriod
+                    {
+                        Id = Guid.NewGuid(),
+                        DayId = date.Id,
+                        Start = DateTime.Parse("08:30"),
+                        End = DateTime.Parse("13:00"),
+                        Name = "A",
+                        Jobs = new List<Job>(),
+                        Preferences = new List<Preference>(),
+                        IsOpen = date.IsOpen == true,
+                    },
+                    new DayPeriod
+                    {
+                        Id = Guid.NewGuid(),
+                        DayId = date.Id,
+                        Start = DateTime.Parse("13:00"),
+                        End = DateTime.Parse("17:30"),
+                        Name = "B",
+                        Jobs = new List<Job>(),
+                        Preferences = new List<Preference>(),
+                        IsOpen = date.IsOpen == true,
+                    },
+                    new DayPeriod
+                    {
+                        Id = Guid.NewGuid(),
+                        DayId = date.Id,
+                        Start = DateTime.Parse("17:30"),
+                        End = DateTime.Parse("23:00"),
+                        Name = "C",
+                        Jobs = new List<Job>(),
+                        Preferences = new List<Preference>(),
+                        IsOpen = date.IsOpen == true,
+                    }
+                };
                 foreach (var period in date.DayPeriods)
                 {
                     if (period.Name == "A" || period.Name == "B")
                     {
                         period.Jobs = new Job[] { new Job { Name = "Lierist", Experience = 1, Weight = 5, PermissionName = "Lierist" },
-								   new Job { Name = "Startofficier", Experience = 1, Weight = 5, PermissionName = "Startofficier" },
-								   new Job { Name = "Instructeur", Experience = 1, Weight = 5, PermissionName = "Instructeur" },
-								   new Job { Name = "Instructeur (DDI)", Experience = 1, Weight = 5, PermissionName = "Instructeur" } 
+                                   new Job { Name = "Startofficier", Experience = 1, Weight = 5, PermissionName = "Startofficier" },
+                                   new Job { Name = "Instructeur", Experience = 1, Weight = 5, PermissionName = "Instructeur" },
+                                   new Job { Name = "Instructeur (DDI)", Experience = 1, Weight = 5, PermissionName = "Instructeur" }
                         };
                     }
                     else if (period.Name == "C")
                     {
-                        period.Jobs = new Job[] { new Job { Name = "Bardienst", Experience = 1, Weight = 5, PermissionName = "Bar" }};
+                        period.Jobs = new Job[] { new Job { Name = "Bardienst", Experience = 1, Weight = 5, PermissionName = "Bar" } };
                     }
                 }
             }
@@ -120,33 +138,32 @@
     private void UpdateStartDate(ChangeEventArgs e)
     {
         if (DateTime.TryParse(e.Value.ToString(), out DateTime startDate) && startDate <= Calendar.End)
-		{
-			Calendar.Start = startDate;
-			SetDays();
-		}
+        {
+            Calendar.Start = startDate;
+            SetDays();
+        }
     }
 
     private void UpdateEndDate(ChangeEventArgs e)
     {
-        if(DateTime.TryParse(e.Value.ToString(), out DateTime endDate) && endDate >= Calendar.Start)
-		{
-			Calendar.End = endDate;
-			SetDays();
-		}
+        if (DateTime.TryParse(e.Value.ToString(), out DateTime endDate) && endDate >= Calendar.Start)
+        {
+            Calendar.End = endDate;
+            SetDays();
+        }
     }
 
-    private void RemoveClosedDay(Day closedDay)
+    private async void RemoveClosedDay(Day closedDay)
     {
-        var dayToRemove = Calendar.Days.FirstOrDefault(day => day.Equals(closedDay));
-        if (dayToRemove != null)
+        if (closedDay != null)
         {
-            closedDay.DayPeriods.Clear();
-            Calendar.Days.Remove(dayToRemove);
-            closedDay.IsOpen = false;
-            Calendar.Days.Add(closedDay);
-            Calendar.Days = Calendar.Days.OrderBy(d => d.Date).ToList();
-            StateHasChanged();
+            var result = await DayService.DeleteAsync(closedDay.Id);
+            if (result.IsSucces)
+            {
+                Calendar.Days.Remove(closedDay);
+            }
         }
+        StateHasChanged();
     }
 
     private void AddExtraDay(DateTime dateToAdd)
@@ -155,26 +172,20 @@
         {
             return;
         }
-        var day = Calendar.Days.FirstOrDefault(d => d.Date.Date == dateToAdd.Date);
-        if (!day.IsOpen)
+
+        var newDay = new Day()
         {
-            var dayCopy = new Day()
-            {
-                Id = day.Id,
-                Date = day.Date,
-                IsOpen = true,
-                Name = day.Name,
-                CalendarId = day.CalendarId,
-                DayPeriods = new List<DayPeriod>(),
-                Preferences = new List<Preference>()
-            };
-            Calendar.Days.Remove(day);
-            Calendar.Days.Add(dayCopy);
-        }
-        else
-		{
-			return;
-		}
+            Id = Guid.NewGuid(),
+            Date = dateToAdd.Date,
+            IsOpen = true,
+            Name = dateToAdd.DayOfWeek.ToString(),
+            CalendarId = Calendar.Id,
+            DayPeriods = new List<DayPeriod>(),
+            Preferences = new List<Preference>()
+        };
+
+        Calendar.Days.Add(newDay);
+
         FillDayPeriods();
         Calendar.Days = Calendar.Days.OrderBy(d => d.Date).ToList();
         StateHasChanged();

@@ -1,0 +1,55 @@
+﻿@page "/calendarupdate/{calendarId}"
+@rendermode @(new InteractiveServerRenderMode(false))
+
+@inject ICalendarService CalendarService
+@inject NavigationManager NavigationManager
+@inject IDayService DayService
+
+<CalendarOverview Calendar="_calendar" FormHandler="UpdateCalendar" />
+
+@code {
+    [Parameter]
+    public string calendarId { get; set; }
+
+    private CalenderViewModel _calendar { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await CalendarService.GetByIdAsync(Guid.Parse(calendarId));
+        if (result.IsSucces)
+        {
+            _calendar = new CalenderViewModel()
+            {
+                Id = result.Value.Id,
+                Name = result.Value.Name,
+                Start = result.Value.Start,
+                End = result.Value.End,
+                Days = result.Value.Days.ToList()
+            };
+        }
+    }
+
+    private async Task UpdateCalendar()
+    {
+        var calendarUpdateRequestModel = new ApplicationCalendarUpdateRequestModel()
+        {
+            Id = _calendar.Id,
+            Name = _calendar.Name,
+            Start = _calendar.Start,
+            End = _calendar.End,
+            Days = _calendar.Days
+        };
+
+        foreach (var day in _calendar.Days)
+        {
+            var result = await DayService.GetByIdAsync(day.Id);
+            if (!result.IsSucces)
+            {
+                await DayService.AddAsync(day);
+            }
+        }
+
+        await CalendarService.UpdateAsync(calendarUpdateRequestModel);
+        NavigationManager.NavigateTo("calendarslist");
+    }
+}

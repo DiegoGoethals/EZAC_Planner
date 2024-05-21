@@ -8,6 +8,11 @@
 <div class="container">
     <div class="row">
         <div class="col col-lg-12">
+            @if (Day != null)
+            {
+                <h4>@Day.Date.ToString("ddd d/M")</h4>
+                <h4>@DayPeriod.Name</h4>
+            }
             <h6>Beschikbare/bevoegde leden</h6>
             <button @onclick="e => OnCancel.InvokeAsync()">Annuleren</button>
             <div class="mb-3">
@@ -41,9 +46,6 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <div class="mb-2">
-                <button class="btn btn-primary">Dagdeel toevoegen</button>
-            </div>
             <div>
                 <button class="btn btn-primary">Dienst toevoegen</button>
             </div>
@@ -62,6 +64,12 @@
     public EventCallback OnCancel { get; set; }
     [Parameter]
     public EventCallback<UserListModel> OnDragged { get; set; }
+
+    
+    [Parameter]
+    public Day Day { get; set; }
+    [Parameter]
+    public DayPeriod DayPeriod { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
