@@ -1,4 +1,4 @@
-﻿<form @onsubmit="FormHandler">
+﻿<form @onsubmit="HandleForm">
     <div class="form-group">
         <label for="calendarName">Kalender naam</label>
         <input type="text" class="form-control" id="calendarName" placeholder="Kalender naam" required @bind-value="Calendar.Name">
@@ -18,7 +18,7 @@
             <button type="button" class="btn btn-primary" @onclick="(e) => HandleClick(e)">Voeg toe</button>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Bewerk kalender</button>
+    <button type="submit" class="btn btn-primary" disabled="@isSubmitting">Bewerk kalender</button>
 </form>
 
 @code {
@@ -38,6 +38,8 @@
     public Action<DateTime> AddExtraDay { get; set; }
 
     private DateTime dateToAdd { get; set; }
+
+    private bool isSubmitting = false;
 
     protected override void OnInitialized()
     {
@@ -59,5 +61,30 @@
     private void HandleClick(MouseEventArgs e)
     {
         AddExtraDay(dateToAdd);
+    }
+
+    private async Task HandleForm()
+    {
+        try
+        {
+            isSubmitting = true;
+
+            await FormHandler();
+
+            isSubmitting = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void ResetForm()
+    {
+        isSubmitting = false;
     }
 }
