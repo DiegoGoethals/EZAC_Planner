@@ -33,42 +33,56 @@
                     <tbody>
                         @foreach (var day in calendar.Days)
                         {
-                            <tr>
-                                <td @onclick="() => ToggleDay(day)">
-                                    <p>
-                                        @day.Date.ToString("ddd d/M")
-                                    </p>
-                                </td>
-                                @foreach (var period in day.DayPeriods.OrderBy(dp => dp.Name))
-                                {
-
-                                    @if (!day.IsOpen)
+                            @if (day.IsOpen)
+                            {
+                                <tr>
+                                    <td @onclick="() => ToggleDay(day)">
+                                        <p>
+                                            @day.Date.ToString("ddd d/M")
+                                        </p>
+                                    </td>
+                                    @foreach (var period in day.DayPeriods.OrderBy(dp => dp.Name))
                                     {
-                                        <td style="background-color:tomato"></td>
-                                    }
-                                    else
-                                    {
-                                        <td @onclick="TogglePopUp" style="background-color:lightgreen">
-                                            <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">
-                                                @period.Name
-                                            </button>
 
-                                            @foreach (var job in period.Jobs)
+                                        @if (!period.IsOpen)
+                                        {
+                                            <td style="background-color:tomato" @onclick="() => TogglePopUp(day, period)">
+                                                <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">
+                                                    @period.Name
+                                                </button>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                <td @onclick="() => TogglePopUp(day, period)" style="background-color:lightgreen">
+                                    <div class="mb-2">
+                                        <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">
+                                            Sluit dagdeel
+                                        </button>
+                                        <p>Start: @period.Start.TimeOfDay</p>
+                                        <p>Einde: @period.End.TimeOfDay</p>
+                                    </div>
+                                    
+                                    @foreach (var job in period.Jobs)
+                                    {
+                                        <div ondragover="event.preventDefault();" draggable="true" @ondrop="(e => HandleDrop(e, job, day, period))" style="border-color:black">
+                                            <p style="text-decoration:underline">@job.Name</p>
+
+                                            @if (job.User != null)
                                             {
-                                                <div ondragover="event.preventDefault();" draggable="true" @ondrop="(e => HandleDrop(e, job, period))" style="border-color:black">
-                                                    <p style="text-decoration:underline">@job.Name</p>
-
-                                                    @if (job.User != null)
-                                                    {
-                                                        <p class="mb-0 mr-2">@job.User.Name</p>
-                                                        <button @onclick="() => CancelUserDropZone(job.Id)" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.5rem; line-height: 1.5; border-radius: 0.2rem;">X</button>
-                                                    }
-                                                </div>
+                                                <p class="mb-0 mr-2">@job.User.Name</p>
+                                                @if (ToggleSchedulerPopUp)
+                                                {
+                                                    <button @onclick="() => CancelUserDropZone(job.Id)" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.5rem; line-height: 1.5; border-radius: 0.2rem;">X</button>
+                                                }
                                             }
-                                        </td>
+                                        </div>
                                     }
-                                }
-                            </tr>
+                                </td>
+                                        }
+                                    }
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
@@ -83,8 +97,23 @@
                                                                           OnGetStaff="(e) => GetStaff(e)"
                                                                           Staff="Staff"
                                                                           OnCancel="CancelPopUp"
-                                                                          OnDragged="(user) => HandleDragStart(user)">
+                                                                          OnDragged="(user) => HandleDragStart(user)"
+                                                                          Day="selectedDay"
+                                                                          DayPeriod="selectedDayPeriod">
                     </Ezac.Roster.Web.Components.Components.SchedulerPopUp>
+                </div>
+            </div>
+        }
+
+        @if (ToggleUpdateDatePeriod)
+        {
+            <div class="col-lg-2">
+                <div class="position-fixed" style="top: 200px; right: 20px;">
+                    <Ezac.Roster.Web.Components.Components.UpdateDayPeriodsPopUp @rendermode="InteractiveServer"
+                                                                                 OnAddDayPeriod="AddDayPeriod"
+                                                                                 Day="selectedDay"
+                                                                                 OnDelete="(dayPeriod) => DeletePeriod(dayPeriod)">
+                    </Ezac.Roster.Web.Components.Components.UpdateDayPeriodsPopUp>
                 </div>
             </div>
         }
@@ -111,6 +140,38 @@ else
     private Dictionary<string, UserListModel> Dropzones = new();
     private List<UserListModel> _users { get; set; } = new List<UserListModel>();
     public List<UserListModel> Staff { get; set; } = new List<UserListModel>();
+
+    private Day selectedDay;
+    private DayPeriod selectedDayPeriod;
+    private bool ToggleUpdateDatePeriod { get; set; }
+
+    private async void AddDayPeriod()
+    {
+        var result = await DayPeriodService.AddAsync(new DayPeriodCreateRequestModel
+        {
+            Start = DateTime.Parse("23:00"),
+            End = DateTime.Parse("02:00"),
+            DayId = selectedDay.Id,
+            IsOpen = true,
+        });
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task DeletePeriod(DayPeriod dayPeriod)
+    {
+        var result = await DayPeriodService.DeleteAsync(dayPeriod.Id);
+
+        if (result.IsSucces)
+        {
+            foreach(var job in dayPeriod.Jobs)
+            {
+                await JobService.DeleteAsync(job.Id);
+            }
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
 
     private async void CancelUserDropZone(Guid dropzoneId)
     {
@@ -144,43 +205,49 @@ else
     }
 
 
-    private async Task HandleDrop(DragEventArgs e, Job job, DayPeriod dayPeriod)
+    private async Task HandleDrop(DragEventArgs e, Job job, Day day, DayPeriod dayPeriod)
     {
         if (draggedMember != null)
         {
-            if (!dayPeriod.Jobs.Any(j => j.UserId == draggedMember.Id))
+            if (day.Date == selectedDay.Date && dayPeriod.Name == selectedDayPeriod.Name)
             {
-                if(draggedMember.Permissions.Any(p => p.Name == job.Name))
+                if (!dayPeriod.Jobs.Any(j => j.UserId == draggedMember.Id))
                 {
-                    if (!Dropzones.ContainsKey(job.Id.ToString()))
+                    if (draggedMember.Permissions.Any(p => p.Name == job.Name))
                     {
-                        Dropzones[job.Id.ToString()] = new UserListModel();
+                        if (!Dropzones.ContainsKey(job.Id.ToString()))
+                        {
+                            Dropzones[job.Id.ToString()] = new UserListModel();
+                        }
+
+                        Dropzones[job.Id.ToString()] = draggedMember;
+
+                        var newJob = new JobUpdateRequestModel
+                        {
+                            Id = job.Id,
+                            Name = job.Name,
+                            Weight = job.Weight,
+                            User = draggedMember,
+                            UserId = draggedMember.Id,
+                            DayPeriodId = job.DayPeriodId,
+                            PermissionName = job.PermissionName,
+                            Preferences = job.Preferences,
+                        };
+                        //update job in db
+                        var updateResult = await JobService.UpdateAsync(newJob);
                     }
-
-                    Dropzones[job.Id.ToString()] = draggedMember;
-
-                    var newJob = new JobUpdateRequestModel
-                    {
-                        Id = job.Id,
-                        Name = job.Name,
-                        Weight = job.Weight,
-                        User = draggedMember,
-                        UserId = draggedMember.Id,
-                        DayPeriodId = job.DayPeriodId,
-                        PermissionName = job.PermissionName,
-                        Preferences = job.Preferences,
-                    };
-                    //update job in db
-                    var updateResult = await JobService.UpdateAsync(newJob);
                 }
             }
             await InvokeAsync(StateHasChanged);
         }
     }
 
-    private void TogglePopUp()
+    private void TogglePopUp(Day day, DayPeriod dayPeriod)
     {
+        ToggleUpdateDatePeriod = false;
         ToggleSchedulerPopUp = true;
+        selectedDay = day;
+        selectedDayPeriod = dayPeriod;
     }
 
     private void CancelPopUp()
@@ -246,39 +313,26 @@ else
               .SelectMany(dp => dp.Jobs);
     }
 
-    private async Task ToggleDay(Day day)
+    private async void ToggleDay(Day day)
     {
-        if (day.IsOpen)
-        {
-            var toggleResult = await DayService.ToggleAsync(day.Id);
-            if (toggleResult.IsSucces)
-            {
-                StateHasChanged();
-            }
-        }
-        else
-        {
-            day.IsOpen = !day.IsOpen;
-            StateHasChanged();
-        }
+        ToggleSchedulerPopUp = false;
+        ToggleUpdateDatePeriod = true;
+
+        selectedDay = day;
+
+        await InvokeAsync(StateHasChanged);
     }
 
-    private async Task TogglePeriod(Day day, DayPeriod period)
+    private async Task TogglePeriod(Day day, DayPeriod dayPeriod)
     {
-        var dayPeriod = day.DayPeriods.FirstOrDefault(dp => dp.Name == period.Name);
-        if (dayPeriod.IsOpen)
+        //var dayPeriod = day.DayPeriods.FirstOrDefault(dp => dp.Name == period.Name);
+        if (dayPeriod != null && ToggleSchedulerPopUp == true)
         {
             var toggleResult = await DayPeriodService.ToggleAsync(dayPeriod.Id);
             if (toggleResult.IsSucces)
             {
-                dayPeriod.IsOpen = !dayPeriod.IsOpen;
                 StateHasChanged();
             }
-        }
-        else
-        {
-            dayPeriod.IsOpen = !dayPeriod.IsOpen;
-            StateHasChanged();
         }
     }
 
@@ -308,3 +362,4 @@ else
         }
     }
 }
+
