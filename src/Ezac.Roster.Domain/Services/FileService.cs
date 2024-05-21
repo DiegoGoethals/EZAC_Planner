@@ -124,7 +124,7 @@ namespace Ezac.Roster.Domain.Services
 					}
 				}
 			}
-			return "File Uploaded successfully!";
+			return "Bestand is succesvol geupload!";
         }
 
 		private async Task ImportPermissions(ExcelWorksheet worksheet)
@@ -144,7 +144,7 @@ namespace Ezac.Roster.Domain.Services
 
 		private string ImportFailed(int row, int column)
 		{
-			return $"You made a mistake inside the file at row: {row}, column: {column}! Please see our template to see what type of values we expect!";
+			return $"Je hetb een fout gemaakt in rij: {row}, kolom: {column}! Bekijk de template om te zien welk soort data we verwachten!";
 		}
     }
 }

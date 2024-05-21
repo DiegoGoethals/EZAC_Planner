@@ -31,7 +31,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "No preferences found!"
+                    "Geen voorkeuren gevonden!"
                 }
             };
         }
@@ -52,7 +52,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "No preference found!"
+                    "Geen voorkeuren gevonden!"
                 }
             };
         }
@@ -83,7 +83,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "Couldn't add preference!"
+                    "Kon voorkeur niet creeëren!"
                 }
             };
         }
@@ -98,7 +98,7 @@ namespace Ezac.Roster.Domain.Services
                     IsSucces = false,
                     Errors = new List<string>
                     {
-                        "Couldn't find preference to delete"
+                        "Kon voorkeur niet verwijderen!"
                     }
                 };
             }
@@ -114,8 +114,8 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "Couldn't delete preference!"
-                }
+					"Kon voorkeur niet verwijderen!"
+				}
             };
         }
 
@@ -130,7 +130,7 @@ namespace Ezac.Roster.Domain.Services
                     IsSucces = false,
                     Errors = new List<string>
                     {
-                        "No preference found to update!"
+                        "Kon voorkeur niet aanpassen!"
                     }
                 };
             }
@@ -156,8 +156,8 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "Couldn't update preference"
-                }
+					"Kon voorkeur niet aanpassen!"
+				}
             };
         }
     }

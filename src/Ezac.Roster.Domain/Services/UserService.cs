@@ -30,7 +30,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "No users found!"
+                    "Geen leden gevonden!"
                 }
             };
         }
@@ -51,7 +51,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "No user found!"
+                    "Geen leden gevonden!"
                 }
             };
         }
@@ -97,7 +97,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "User couldn't be added!"
+                    "Kon lid niet toevoegen!"
                 }
             };
         }
@@ -112,7 +112,7 @@ namespace Ezac.Roster.Domain.Services
                     IsSucces = false,
                     Errors = new List<string>
                     {
-                        "No user found to delete!"
+                        "Geen lid gevonden!"
                     }
                 };
             }
@@ -128,7 +128,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "Couldn't delete user"
+                    "Kon lid niet verwijderen!"
                 }
             };
         }
@@ -144,7 +144,7 @@ namespace Ezac.Roster.Domain.Services
                     IsSucces = false,
                     Errors = new List<string>
                     {
-                        "No user found to update!"
+                        "Kon lid niet aanpassen!"
                     }
                 };
             }
@@ -182,8 +182,8 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "Couldn't update user"
-                }
+					"Kon lid niet aanpassen!"
+				}
             };
         }
 
@@ -203,7 +203,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "No users found matching this name"
+                    "geen leden met deze naam gevonden!"
                 }
             };
         }

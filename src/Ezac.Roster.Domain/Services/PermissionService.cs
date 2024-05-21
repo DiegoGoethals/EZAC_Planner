@@ -61,7 +61,7 @@ namespace Ezac.Roster.Domain.Services
 				IsSucces = false,
 				Errors = new List<string> 
 				{
-					"Permission not created!"
+					"Bevoegdheid niet gecreeërd!"
 				}
 			};
 		}
@@ -76,7 +76,7 @@ namespace Ezac.Roster.Domain.Services
 					IsSucces = false,
 					Errors = new List<string>
 					{
-						"No user found to delete!"
+						"Geen bevoegdheid gevonden!"
 					}
 				};
 			}
@@ -92,7 +92,7 @@ namespace Ezac.Roster.Domain.Services
 				IsSucces = false,
 				Errors = new List<string>
 				{
-					"Couldn't delete Permission"
+					"Verwijderen van bevoegdheid mislukt!"
 				}
 			};
 		}
@@ -105,7 +105,7 @@ namespace Ezac.Roster.Domain.Services
                 return new ResultModel<IEnumerable<Permission>>
                 {
                     IsSucces = false,
-                    Errors = new List<string>{"No permissions found for this user"}
+                    Errors = new List<string>{"Geen bevoegdheden gevonden!"}
                 };
             }
 
@@ -140,7 +140,7 @@ namespace Ezac.Roster.Domain.Services
 				IsSucces = false,
 				Errors = new List<string>
 				{
-					"No permissions found for this user"
+					"Geen bevoegdheden gevonden voor deze gebruiker!"
 				}
 			};
 		}
@@ -161,7 +161,7 @@ namespace Ezac.Roster.Domain.Services
 				IsSucces = false,
 				Errors = new List<string>
 				{
-					"No permission found!"
+					"Geen bevoegdheid gevonden!"
 				}
 			};
 		}
@@ -182,7 +182,7 @@ namespace Ezac.Roster.Domain.Services
 				IsSucces = false,
 				Errors = new List<string>
 				{
-					"No permission found matching this name"
+					"Geen bevoegdheid met deze naam gevonden!"
 				}
 			};
 		}
@@ -198,7 +198,7 @@ namespace Ezac.Roster.Domain.Services
 					IsSucces = false,
 					Errors = new List<string> 
 					{
-						"Permission not found!"
+						"Bevoegdheid niet gevonden!"
 					}
 				};
 			}
@@ -232,7 +232,7 @@ namespace Ezac.Roster.Domain.Services
 			return new ResultModel<Permission>
 			{
 				IsSucces = false,
-				Errors = new List<string> { "Permission update failed!" }
+				Errors = new List<string> { "Kon bevoegdheid niet aanpassen!" }
 			};
 		}
 	}
