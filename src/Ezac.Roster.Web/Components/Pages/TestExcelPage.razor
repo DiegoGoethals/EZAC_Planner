@@ -9,7 +9,7 @@
 
 <form @onsubmit="HandleFile">
 	<InputFile OnChange="LoadFile" />
-	<button type="submit" disabled="@isLoading">Importeer ledenlijst</button>
+	<button type="submit" disabled="@isLoading" class="btn btn-primary">Importeer ledenlijst</button>
 </form>
 
 <a href="templates/template.xlsx" download>Download template</a>
@@ -34,14 +34,14 @@
 	{
 		if (file == null)
 		{
-			errorMessage = "Please select a file.";
+			errorMessage = "Selecteer een bestand";
 			return;
 		}
 		var extension = Path.GetExtension(file.Name);
 
 		if (!(extension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) || (extension.Equals(".xls", StringComparison.OrdinalIgnoreCase))))
 		{
-			errorMessage = "Please upload an excel file!";
+			errorMessage = "Upload aan excel bestand!";
 			return;
 		}
 
