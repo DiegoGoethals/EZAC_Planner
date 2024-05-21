@@ -35,7 +35,7 @@
 
     private void SetDays()
     {
-        var allDays = Enumerable.Range(0, (Calendar.End - Calendar.Start).Days + 1)
+        var allDays = Enumerable.Range(0, (Calendar.End - Calendar.Start).Days + 2)
                                 .Select(offset => Calendar.Start.AddDays(offset));
         foreach (var day in allDays)
         {
@@ -71,7 +71,7 @@
             }
         }
         FillDayPeriods();
-        Calendar.Days = Calendar.Days.Where(d => d.Date >= Calendar.Start && d.Date <= Calendar.End).OrderBy(d => d.Date).ToList();
+        Calendar.Days = Calendar.Days.Where(d => d.Date.Date >= Calendar.Start.Date && d.Date.Date <= Calendar.End.Date).OrderBy(d => d.Date).ToList();
     }
 
     private void FillDayPeriods()

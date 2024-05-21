@@ -19,13 +19,13 @@
         if (result.IsSucces)
         {
             _calendar = new CalenderViewModel()
-			{
-				Id = result.Value.Id,
-				Name = result.Value.Name,
-				Start = result.Value.Start,
-				End = result.Value.End,
-				Days = result.Value.Days.ToList()
-			};
+            {
+                Id = result.Value.Id,
+                Name = result.Value.Name,
+                Start = result.Value.Start,
+                End = result.Value.End,
+                Days = result.Value.Days.ToList()
+            };
         }
     }
 
@@ -33,11 +33,11 @@
     {
         var calendarUpdateRequestModel = new ApplicationCalendarUpdateRequestModel()
         {
-                Id = _calendar.Id,
-                Name = _calendar.Name,
-                Start = _calendar.Start,
-                End = _calendar.End,
-                Days = _calendar.Days
+            Id = _calendar.Id,
+            Name = _calendar.Name,
+            Start = _calendar.Start,
+            End = _calendar.End,
+            Days = _calendar.Days
         };
 
         foreach (var day in _calendar.Days)
@@ -45,9 +45,18 @@
             var result = await DayService.GetByIdAsync(day.Id);
             if (!result.IsSucces)
             {
-                await DayService.AddAsync(day);
+                await DayService.AddAsync(new DayCreateRequestModel
+                {
+                    Id = day.Id,
+                    Name = day.Name,
+                    Date = day.Date,
+                    Preferences = day.Preferences,
+                    CalendarId = day.CalendarId,
+                    IsOpen = true,
+                    DayPeriods = day.DayPeriods,
+                });
             }
-		}
+        }
 
         await CalendarService.UpdateAsync(calendarUpdateRequestModel);
         NavigationManager.NavigateTo("calendarslist");
