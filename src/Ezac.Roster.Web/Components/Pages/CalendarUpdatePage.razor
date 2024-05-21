@@ -45,16 +45,7 @@
             var result = await DayService.GetByIdAsync(day.Id);
             if (!result.IsSucces)
             {
-                await DayService.AddAsync(new DayCreateRequestModel
-                {
-                    Id = day.Id,
-                    Name = day.Name,
-                    Date = day.Date,
-                    Preferences = day.Preferences,
-                    CalendarId = day.CalendarId,
-                    IsOpen = true,
-                    DayPeriods = day.DayPeriods,
-                });
+                await DayService.AddAsync(day);
             }
         }
 
