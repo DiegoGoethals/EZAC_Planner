@@ -18,7 +18,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" @onclick="CloseDialog">Annuleren</button>
-				<button type="button" class="btn btn-danger" @onclick="DeleteCalendar">Verwijderen</button>
+				<button type="button" class="btn btn-danger" @onclick="DeleteCalendar" disabled="@isDeleting">Verwijderen</button>
 			</div>
 		</div>
 	</div>
@@ -28,6 +28,8 @@
 	private ElementReference dialog;
 
 	private Guid calendarId;
+
+	private bool isDeleting = false;
 
 	[Parameter]
 	public Func<Guid, Task> deleteCalendar { get; set; }
@@ -45,7 +47,9 @@
 
 	private async Task DeleteCalendar()
 	{
+		isDeleting = true;
 		await deleteCalendar(calendarId);
 		await CloseDialog();
+		isDeleting = false;
 	}
 }

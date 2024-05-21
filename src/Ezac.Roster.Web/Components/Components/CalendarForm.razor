@@ -1,15 +1,15 @@
-﻿<form @onsubmit="FormHandler">
+﻿<form @onsubmit="HandleForm">
     <div class="form-group">
         <label for="calendarName">Kalender naam</label>
         <input type="text" class="form-control" id="calendarName" placeholder="Kalender naam" required @bind-value="Calendar.Name">
     </div>
     <div class="form-group">
         <label for="startDate">Start datum</label>
-        <input type="date" class="form-control" id="startDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" required value="@Calendar.Start.ToString("yyyy-MM-dd")" @onchange="UpdateStartDate">
+        <input type="date" class="form-control" id="startDate" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@Calendar.End" required value="@Calendar.Start.ToString("yyyy-MM-dd")" @onchange="UpdateStartDate">
     </div>
     <div class="form-group">
         <label for="endDate">Eind datum</label>
-        <input type="date" class="form-control" id="endDate" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")" required value="@Calendar.End.ToString("yyyy-MM-dd")" @onchange="UpdateEndDate">
+        <input type="date" class="form-control" id="endDate" min="@Calendar.Start" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")" required value="@Calendar.End.ToString("yyyy-MM-dd")" @onchange="UpdateEndDate">
     </div>
     <div>
         <div class="form-group">
@@ -18,7 +18,7 @@
             <button type="button" class="btn btn-primary" @onclick="(e) => HandleClick(e)">Voeg toe</button>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Bewerk kalender</button>
+    <button type="submit" class="btn btn-primary" disabled="@isSubmitting">Bewerk kalender</button>
 </form>
 
 @code {
@@ -38,6 +38,8 @@
     public Action<DateTime> AddExtraDay { get; set; }
 
     private DateTime dateToAdd { get; set; }
+
+    private bool isSubmitting = false;
 
     protected override void OnInitialized()
     {
@@ -59,5 +61,30 @@
     private void HandleClick(MouseEventArgs e)
     {
         AddExtraDay(dateToAdd);
+    }
+
+    private async Task HandleForm()
+    {
+        try
+        {
+            isSubmitting = true;
+
+            await FormHandler();
+
+            isSubmitting = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void ResetForm()
+    {
+        isSubmitting = false;
     }
 }
