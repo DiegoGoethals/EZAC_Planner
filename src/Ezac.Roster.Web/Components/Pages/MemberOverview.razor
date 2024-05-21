@@ -1,0 +1,69 @@
+﻿@page "/members"
+
+@inject IUserService UserService
+@inject IPermissionsService PermissionsService
+
+@if (members != null && permissions != null)
+{
+	<table class="table table-bordered" style="border-color:black">
+		<thead>
+			<tr>
+				<th>Naam</th>
+				<th>Email</th>
+				<th>Inschaling</th>
+				@foreach (var permission in permissions)
+				{
+					<th>@permission.Name</th>
+				}
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var member in members)
+			{
+				<tr>
+					<td>@member.Name</td>
+					<td>@member.Email</td>
+					<td>@member.Scaling</td>
+					@foreach (var permission in permissions)
+					{
+						<td>
+							@(member.UserPermissions.FirstOrDefault(up => up.PermissionId == permission.Id)?.Experience ?? 0)
+						</td>
+					}
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<p>Geen leden gevonden</p>
+}
+
+@code {
+	private List<User> members;
+	private List<Permission> permissions;
+
+	protected async override Task OnInitializedAsync()
+	{
+		var result = await UserService.GetAllAsync();
+		if (result.IsSucces)
+		{
+			members = result.Value.ToList();
+		}
+		else
+		{
+			members = new List<User>();
+		}
+
+		var permissionsResult = await PermissionsService.GetAllAsync();
+		if (permissionsResult.IsSucces)
+		{
+			permissions = permissionsResult.Value.ToList();
+		}
+		else
+		{
+			permissions = new List<Permission>();
+		}
+	}
+}
