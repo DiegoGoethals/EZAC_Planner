@@ -24,8 +24,10 @@ namespace Ezac.Roster.Domain.Tests
             calendarRepository.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(expectedResult);
 
-            var calendarService = new CalendarService(calendarRepository.Object);
-            
+            var jobRepository = new Mock<IJobRepository>(MockBehavior.Strict);
+
+            var calendarService = new CalendarService(calendarRepository.Object, jobRepository.Object);
+
             // Act
             var currentResult = await calendarService.GetByIdAsync(id);
 
@@ -43,7 +45,9 @@ namespace Ezac.Roster.Domain.Tests
             var calendarRepository = new Mock<ICalendarRepository>(MockBehavior.Strict);
             calendarRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync((ApplicationCalendar)null);
 
-            var calendarService = new CalendarService(calendarRepository.Object);
+            var jobRepository = new Mock<IJobRepository>(MockBehavior.Strict);
+
+            var calendarService = new CalendarService(calendarRepository.Object, jobRepository.Object);
 
             // Act
             var currentResult = await calendarService.GetByIdAsync(id);
@@ -54,3 +58,4 @@ namespace Ezac.Roster.Domain.Tests
         }
     }
 }
+

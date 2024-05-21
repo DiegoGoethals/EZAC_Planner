@@ -18,7 +18,7 @@ namespace Ezac.Roster.Domain.Tests.ServicesTest
         public DayServiceTests()
         {
             _mockDayRepository = new Mock<IDayRepository>();
-            _dayService = new DayService(_mockDayRepository.Object);
+            //_dayService = new DayService(_mockDayRepository.Object);
         }
 
         [Fact]
