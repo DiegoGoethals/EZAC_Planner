@@ -15,11 +15,13 @@ namespace Ezac.Roster.Domain.Services
     {
         private readonly IDayperiodRepository _dayPeriodRepository;
         private readonly IDayRepository _dayRepository;
+        private readonly IJobRepository _jobRepository;
 
-        public DayPeriodService(IDayperiodRepository dayPeriodRepository, IDayRepository dayRepository)
+        public DayPeriodService(IDayperiodRepository dayPeriodRepository, IDayRepository dayRepository, IJobRepository jobRepository)
         {
             _dayPeriodRepository = dayPeriodRepository;
             _dayRepository = dayRepository;
+            _jobRepository = jobRepository;
         }
 
         public async Task<ResultModel<DayPeriod>> AddAsync(DayPeriodCreateRequestModel dayPeriodCreateRequestModel)
@@ -28,12 +30,12 @@ namespace Ezac.Roster.Domain.Services
             var day = await _dayRepository.GetByIdAsync(dayPeriodCreateRequestModel.DayId);
 
             //check if dayperiod allrdy exist in selected day
-            if(day.DayPeriods.Any(d => d.Name == dayPeriodCreateRequestModel.Name))
+            if (day.DayPeriods.Any(d => d.Name == dayPeriodCreateRequestModel.Name))
             {
                 return new ResultModel<DayPeriod>
                 {
                     IsSucces = false,
-                    Errors = new List<string> { "Dayperiod allready exist!"},
+                    Errors = new List<string> { "Dayperiod allready exist!" },
                 };
             }
 
@@ -41,16 +43,28 @@ namespace Ezac.Roster.Domain.Services
             var dayPeriod = new DayPeriod
             {
                 Id = Guid.NewGuid(),
-                Name = dayPeriodCreateRequestModel.Name,
                 IsOpen = dayPeriodCreateRequestModel.IsOpen,
                 Start = dayPeriodCreateRequestModel.Start,
                 End = dayPeriodCreateRequestModel.End,
                 DayId = dayPeriodCreateRequestModel.DayId,
-                Created = DateTime.Now
+                Created = DateTime.Now,
+                Jobs = new List<Job>(),
             };
 
-            //Add new dayperiod to db
-            var result = await _dayPeriodRepository.AddAsync(dayPeriod);
+            var result = false;
+            switch (day.DayPeriods.Count())
+            {
+                case 3:
+                    dayPeriod.Name = "D";
+                    result = await _dayPeriodRepository.AddAsync(dayPeriod);
+                    break;
+                case 4:
+                    dayPeriod.Name = "E";
+                    result = await _dayPeriodRepository.AddAsync(dayPeriod);
+                    break;
+                default:
+                    break;
+            }
 
             //check result of addasync
             if (result)
@@ -154,7 +168,22 @@ namespace Ezac.Roster.Domain.Services
                 }
 
                 // toggle de status
-                day.IsOpen = !day.IsOpen;
+                if(day.IsOpen)
+                {
+                    day.IsOpen = false;
+                    if(day.Jobs.Count > 0)
+                    {
+                        foreach (var job in day.Jobs)
+                        {
+                            job.UserId = null;
+                            await _jobRepository.UpdateAsync(job);
+                        }
+                    }                 
+                }
+                else
+                {
+                    day.IsOpen = true;
+                }
 
                 // update the day period
                 var updateResult = await _dayPeriodRepository.UpdateAsync(day);
