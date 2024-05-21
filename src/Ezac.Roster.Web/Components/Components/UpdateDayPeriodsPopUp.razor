@@ -1,0 +1,82 @@
+﻿@inject IDayPeriodService DayPeriodService
+
+<div class="col col-lg-2">
+    <p>@Day.Date.ToString("ddd d/M")</p>
+
+    <div>
+        <div>
+            <select @onchange="HandleSelectChanged" >
+                <option value="">Selecteer een dagdeel</option>
+                @foreach (var period in Day.DayPeriods.OrderBy(dp => dp.Name))
+                {
+                    <option value="@period.Name">@period.Name</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label for="startDate">Start tijd</label>
+            <input type="datetime" @bind-value="startTime">
+        </div>
+        <div>
+            <label for="endDate">Eind tijd</label>
+            <input type="datetime" @bind-value="endTime">
+        </div>
+        <button class="btn btn-primary" @onclick="UpdatePeriod">Update dagdeel</button>
+        <button class="btn btn-primary" @onclick="e => OnDelete.InvokeAsync(selectedPeriod)">Dagdeel verwijderen</button>
+    </div>
+        
+
+    <div class="mb-2">
+        <button class="btn btn-primary" @onclick="e => OnAddDayPeriod.InvokeAsync()">Dagdeel toevoegen</button>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public EventCallback OnAddDayPeriod { get; set; }
+    [Parameter]
+    public Day Day { get; set; }
+    [Parameter]
+    public EventCallback<DayPeriod> OnDelete { get; set; }
+    [Parameter]
+    public DayPeriod DayPeriod { get; set; }
+
+    private DayPeriod selectedPeriod;
+    private DateTime startTime;
+    private DateTime endTime;
+
+    private void HandleSelectChanged(ChangeEventArgs e)
+    {
+        var selectedPeriodName = e.Value.ToString();
+        selectedPeriod = Day.DayPeriods.FirstOrDefault(dp => dp.Name == selectedPeriodName);
+        if (selectedPeriod != null)
+        {
+            GetDayPeriodDetails(selectedPeriod);
+        }
+    }
+
+    private void GetDayPeriodDetails(DayPeriod period)
+    {
+        startTime = period.Start;
+        endTime = period.End;
+    }
+
+    private async Task UpdatePeriod()
+    {
+        selectedPeriod.Start = startTime;
+        selectedPeriod.End = endTime;
+
+        var result = await DayPeriodService.UpdateAsync(new DayPeriodUpdateRequestModel
+        {
+            Id = selectedPeriod.Id,
+            Name = selectedPeriod.Name,
+            IsOpen = selectedPeriod.IsOpen,
+            Start = startTime,
+            End =  endTime,
+            Updated = DateTime.Now,
+        });
+
+        await InvokeAsync(StateHasChanged);
+    }
+}
