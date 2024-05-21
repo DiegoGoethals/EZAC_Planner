@@ -54,7 +54,7 @@ namespace Ezac.Roster.Domain.Tests
 
             // Assert
             Assert.False(currentResult.IsSucces);
-            Assert.Equal("No calendar found", currentResult.Errors.FirstOrDefault());
+            Assert.Equal("Geen kalender gevonden!", currentResult.Errors.FirstOrDefault());
         }
     }
 }

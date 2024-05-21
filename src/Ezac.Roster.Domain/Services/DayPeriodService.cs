@@ -35,7 +35,7 @@ namespace Ezac.Roster.Domain.Services
                 return new ResultModel<DayPeriod>
                 {
                     IsSucces = false,
-                    Errors = new List<string> { "Dayperiod allready exist!" },
+                    Errors = new List<string> { "Dagdeel bestaat al"}
                 };
             }
 
@@ -80,7 +80,7 @@ namespace Ezac.Roster.Domain.Services
             return new ResultModel<DayPeriod>
             {
                 IsSucces = false,
-                Errors = new List<string> { "Dayperiod not created!" }
+                Errors = new List<string> { "Dagdeel kon niet gecreeërd worden!" }
             };
         }
 
@@ -93,7 +93,7 @@ namespace Ezac.Roster.Domain.Services
                 return new ResultModel<DayPeriod>
                 {
                     IsSucces = false,
-                    Errors = new List<string> { "DayPeriod does not exist!"},
+                    Errors = new List<string> { "Dagdeel bestaat niet!"},
                 };
             }
 
@@ -107,7 +107,7 @@ namespace Ezac.Roster.Domain.Services
             return new ResultModel<DayPeriod>
             {
                 IsSucces = false,
-                Errors = new List<string> { "Some error occured!" }
+                Errors = new List<string> { "Verwijderen is mislukt!" }
             };
         }
 
@@ -119,7 +119,7 @@ namespace Ezac.Roster.Domain.Services
                 return new ResultModel<IEnumerable<DayPeriod>>
                 {
                     IsSucces = false,
-                    Errors = new List<string> { "No dayperiods found" }
+                    Errors = new List<string> { "Geen dagdelen gevonden!" }
                 };
             }
 
@@ -141,7 +141,7 @@ namespace Ezac.Roster.Domain.Services
             if (dayPeriod == null)
             {
                 resultModel.IsSucces = false;
-                resultModel.Errors = new List<string> { "Dayperiod does not exist" };
+                resultModel.Errors = new List<string> { "Dagdeel bestaat niet!" };
                 return resultModel;
             }
 
@@ -231,7 +231,8 @@ namespace Ezac.Roster.Domain.Services
                 return new ResultModel<DayPeriod>
                 {
                     IsSucces = false,
-                    Errors = new List<string> { "Dayperiod does not exist!" }
+                    Errors = new List<string> { "Dagdeel bestaat niet!" }
+
                 };
             };
 
@@ -255,7 +256,7 @@ namespace Ezac.Roster.Domain.Services
             return new ResultModel<DayPeriod>
             {
                 IsSucces = false,
-                Errors = new List<string> { "Dayperiod update failed!" }
+                Errors = new List<string> { "Dagdeel kon niet aangepast worden!" }
             };
         }
     }

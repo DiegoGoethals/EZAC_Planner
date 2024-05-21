@@ -44,7 +44,7 @@ namespace Ezac.Roster.Domain.Services
             return new ResultModel<ApplicationCalendar>
             {
                 IsSucces = false,
-                Errors = new List<string> { "Calendar not created!" }
+                Errors = new List<string> { "Kalender kon niet worden gecreeërd!" }
             };
         }
 
@@ -57,7 +57,7 @@ namespace Ezac.Roster.Domain.Services
                 return new ResultModel<ApplicationCalendar>
                 {
                     IsSucces = false,
-                    Errors = new List<string> { "Calendar does not exist!" }
+                    Errors = new List<string> { "Kalender bestaat niet!" }
                 };
             }
 
@@ -103,7 +103,7 @@ namespace Ezac.Roster.Domain.Services
             if (calendar == null)
             {
                 eventResultModel.IsSucces = false;
-                eventResultModel.Errors = new List<string> { "No calendar found" };
+                eventResultModel.Errors = new List<string> { "Geen kalender gevonden!" };
                 return eventResultModel;
             }
 
@@ -123,7 +123,7 @@ namespace Ezac.Roster.Domain.Services
                 return new ResultModel<ApplicationCalendar>
                 {
                     IsSucces = false,
-                    Errors = new List<string> { "Calendar does not exist!" }
+                    Errors = new List<string> { "Kalender bestaat niet!" }
                 };
             }
 
@@ -147,7 +147,7 @@ namespace Ezac.Roster.Domain.Services
             return new ResultModel<ApplicationCalendar>
             {
                 IsSucces = false,
-                Errors = new List<string> { "Calendar update failed!" }
+                Errors = new List<string> { "Kalender kon niet aangepast worden!" }
             };
         }
 
@@ -167,7 +167,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "No calendars found!"
+                    "Geen kalenders gevonden!"
                 }
             };
         }
