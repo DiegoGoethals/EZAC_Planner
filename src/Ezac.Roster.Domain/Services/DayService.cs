@@ -13,10 +13,12 @@ namespace Ezac.Roster.Domain.Services
     public class DayService : IDayService
     {
         private readonly IDayRepository _dayRepository;
+        private readonly IJobRepository _jobRepository;
 
-        public DayService(IDayRepository dayRepository)
+        public DayService(IDayRepository dayRepository, IJobRepository jobRepository)
         {
             _dayRepository = dayRepository;
+            _jobRepository = jobRepository;
         }
 
         public async Task<ResultModel<bool>> ToggleAsync(Guid id)
@@ -74,19 +76,8 @@ namespace Ezac.Roster.Domain.Services
             }
         }
 
-        public async Task<ResultModel<Day>> AddAsync(DayCreateRequestModel dayCreateRequestModel)
+        public async Task<ResultModel<Day>> AddAsync(Day day)
         {
-            var day = new Day
-            {
-                Id = dayCreateRequestModel.Id,
-                Name = dayCreateRequestModel.Name,
-                Date = dayCreateRequestModel.Date,
-                IsOpen = dayCreateRequestModel.IsOpen,
-                Created = DateTime.Now,
-                Preferences = dayCreateRequestModel.Preferences.ToList(),
-                CalendarId = dayCreateRequestModel.CalendarId,
-                DayPeriods = dayCreateRequestModel.DayPeriods.ToList()
-            };
             if (await _dayRepository.AddAsync(day))
             {
                 return new ResultModel<Day>
@@ -161,6 +152,43 @@ namespace Ezac.Roster.Domain.Services
                     Errors = new List<string> { "Kan de dag niet updaten." }
                 };
             }
+        }
+
+        public async Task<ResultModel<Day>> DeleteAsync(Guid id)
+        {
+            var day = await _dayRepository.GetByIdAsync(id);
+            if (day != null)
+            {
+                var result = await _dayRepository.DeleteAsync(day);
+                if (result)
+                {
+                    foreach (var period in day.DayPeriods)
+                    {
+                        foreach (var job in period.Jobs)
+                        {
+                            var deleteResult = await _jobRepository.DeleteAsync(job);
+                            if (!deleteResult)
+                            {
+                                return new ResultModel<Day>
+                                {
+                                    IsSucces = false,
+                                    Errors = new List<string> { $"Dagdeel {period} kon niet verwijdert worden!" }
+                                };
+                            }
+                        }
+                    }
+                    return new ResultModel<Day>
+                    {
+                        IsSucces = true,
+                        Value = day,
+                    };
+                }
+            }
+            return new ResultModel<Day>
+            {
+                IsSucces = false,
+                Errors = new List<string> { "Dag kon niet verwijdert worden!" }
+            };
         }
     }
 }

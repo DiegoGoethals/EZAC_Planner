@@ -8,10 +8,12 @@ namespace Ezac.Roster.Domain.Services
     public class CalendarService : ICalendarService
     {
         private readonly ICalendarRepository _calendarRepository;
+        private readonly IJobRepository _jobRepository;
 
-        public CalendarService(ICalendarRepository calendarRepository)
+        public CalendarService(ICalendarRepository calendarRepository, IJobRepository jobRepository)
         {
             _calendarRepository = calendarRepository;
+            _jobRepository = jobRepository;
         }
 
         public async Task<ResultModel<ApplicationCalendar>> AddAsync(ApplicationCalendarCreateRequestModel applicationCalendarCreateRequestModel)
@@ -62,6 +64,24 @@ namespace Ezac.Roster.Domain.Services
             //check result of DeleteAsync
             if (await _calendarRepository.DeleteAsync(calendar))
             {
+                foreach (var day in calendar.Days)
+                {
+                    foreach (var period in day.DayPeriods)
+                    {
+                        foreach (var job in period.Jobs)
+                        {
+                            var result = await _jobRepository.DeleteAsync(job);
+                            if (!result)
+                            {
+                                return new ResultModel<ApplicationCalendar>
+                                {
+                                    IsSucces = false,
+                                    Errors = new List<string> { "Job kon niet worden verwijderd!" }
+                                };
+                            }
+                        }
+                    }
+                }
                 return new ResultModel<ApplicationCalendar> { IsSucces = true, };
             }
 
@@ -69,7 +89,7 @@ namespace Ezac.Roster.Domain.Services
             return new ResultModel<ApplicationCalendar>
             {
                 IsSucces = false,
-                Errors = new List<string> { "Verwijderen is mislukt!" }
+                Errors = new List<string> { "Kalender kon niet worden verwijderd!" }
             };
         }
 
