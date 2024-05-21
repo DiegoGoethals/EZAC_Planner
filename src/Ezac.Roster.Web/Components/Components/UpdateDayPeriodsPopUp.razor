@@ -1,35 +1,41 @@
 ﻿@inject IDayPeriodService DayPeriodService
 
-<div class="col col-lg-2">
-    <p>@Day.Date.ToString("ddd d/M")</p>
+<div class="container">
+    <div class="row">
+        <div class="col col-lg-8">
+            <p>@Day.Date.ToString("ddd d/M")</p>
 
-    <div>
-        <div>
-            <select @onchange="HandleSelectChanged" >
-                <option value="">Selecteer een dagdeel</option>
-                @foreach (var period in Day.DayPeriods.OrderBy(dp => dp.Name))
-                {
-                    <option value="@period.Name">@period.Name</option>
-                }
-            </select>
-        </div>
-        <div>
-            <label for="startDate">Start tijd</label>
-            <input type="datetime" @bind-value="startTime">
-        </div>
-        <div>
-            <label for="endDate">Eind tijd</label>
-            <input type="datetime" @bind-value="endTime">
-        </div>
-        <button class="btn btn-primary" @onclick="UpdatePeriod">Update dagdeel</button>
-        <button class="btn btn-primary" @onclick="e => OnDelete.InvokeAsync(selectedPeriod)">Dagdeel verwijderen</button>
-    </div>
-        
+            <div>
+                <div>
+                    <select @onchange="HandleSelectChanged">
+                        <option value="">Selecteer een dagdeel</option>
+                        @foreach (var period in Day.DayPeriods.OrderBy(dp => dp.Name))
+                        {
+                            <option value="@period.Name">@period.Name</option>
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label for="startDate">Start tijd</label>
+                    <input type="datetime" @bind-value="startTime">
+                </div>
+                <div>
+                    <label for="endDate">Eind tijd</label>
+                    <input type="datetime" @bind-value="endTime">
+                </div>
+                <button class="btn btn-primary" @onclick="UpdatePeriod">Update dagdeel</button>
+                <button class="btn btn-primary" @onclick="e => OnDelete.InvokeAsync(selectedPeriod)">Dagdeel verwijderen</button>
+            </div>
 
-    <div class="mb-2">
-        <button class="btn btn-primary" @onclick="e => OnAddDayPeriod.InvokeAsync()">Dagdeel toevoegen</button>
+
+            <div class="mb-2">
+                <button class="btn btn-primary" @onclick="e => OnAddDayPeriod.InvokeAsync()">Dagdeel toevoegen</button>
+            </div>
+        </div>
     </div>
 </div>
+
+
 
 
 @code {
@@ -41,6 +47,8 @@
     public EventCallback<DayPeriod> OnDelete { get; set; }
     [Parameter]
     public DayPeriod DayPeriod { get; set; }
+    [Parameter]
+    public EventCallback<DayPeriod> OnUpdate { get; set; }
 
     private DayPeriod selectedPeriod;
     private DateTime startTime;
@@ -77,6 +85,6 @@
             Updated = DateTime.Now,
         });
 
-        await InvokeAsync(StateHasChanged);
+        await OnUpdate.InvokeAsync();
     }
 }
