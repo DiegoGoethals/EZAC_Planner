@@ -76,19 +76,8 @@ namespace Ezac.Roster.Domain.Services
             }
         }
 
-        public async Task<ResultModel<Day>> AddAsync(DayCreateRequestModel dayCreateRequestModel)
+        public async Task<ResultModel<Day>> AddAsync(Day day)
         {
-            var day = new Day
-            {
-                Id = dayCreateRequestModel.Id,
-                Name = dayCreateRequestModel.Name,
-                Date = dayCreateRequestModel.Date,
-                IsOpen = dayCreateRequestModel.IsOpen,
-                Created = DateTime.Now,
-                Preferences = dayCreateRequestModel.Preferences.ToList(),
-                CalendarId = dayCreateRequestModel.CalendarId,
-                DayPeriods = dayCreateRequestModel.DayPeriods.ToList()
-            };
             if (await _dayRepository.AddAsync(day))
             {
                 return new ResultModel<Day>
