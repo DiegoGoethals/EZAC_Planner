@@ -101,21 +101,21 @@ else
         Navigation.NavigateTo($"calendar/{calendarId}");
     }
 
-    //private async Task GenerateUniqueLink(Guid calendarId)
-    //{
-    //    var baseUrl = "https://localhost:44375/userpreferencecalendar";
-    //    var usersResult = await UserService.GetAllAsync();
+    private async Task GenerateUniqueLink(Guid calendarId)
+    {
+        var baseUrl = "https://localhost:44375/userpreferencecalendar";
+        var usersResult = await UserService.GetAllAsync();
 
-    //    if (usersResult.IsSucces)
-    //    {
-    //        foreach (var user in usersResult.Value)
-    //        {
-    //            var uniqueLink = $"{baseUrl}/{calendarId}/{user.Id}";
-    //            var subject = "Kalender link";
-    //            var body = $"Hello {user.Name},\n\nHere is your unique calendar link: {uniqueLink}";
+        if (usersResult.IsSucces)
+        {
+            foreach (var user in usersResult.Value)
+            {
+                var uniqueLink = $"{baseUrl}/{calendarId}/{user.Id}";
+                var subject = "Kalender link";
+                var body = $"Hello {user.Name},\n\nHere is your unique calendar link: {uniqueLink}";
 
-    //            await EmailService.SendEmailAsync("kerselaers.mitchell@hotmail.com", subject, body);
-    //        }
-    //    }
-    //}
+                await EmailService.SendEmailAsync("kerselaers.mitchell@hotmail.com", subject, body);
+            }
+        }
+    }
 }
