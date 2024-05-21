@@ -4,6 +4,7 @@
 @using Ezac.Roster.Domain.Interfaces.Services
 @using Ezac.Roster.Domain.Entities
 @using Ezac.Roster.Web.Components.Components
+@using Ezac.Roster.Domain.Services
 @rendermode InteractiveServer
 
 
@@ -113,7 +114,7 @@ else
                 var uniqueLink = $"{baseUrl}/{calendarId}/{user.Id}";
                 var subject = "Kalender link";
                 var body = $"Hello {user.Name},<br/><br/>Here is your unique calendar link: <a href=\"{uniqueLink}\">Klik hier</a>. <br/><br/> De Zweefvliegers";
-                await EmailService.SendEmailAsync("vosselmanblue@gmail.com", subject, body);
+                await EmailService.SendEmailAsync("goethalsdiego@gmail.com", subject, body);
             }
         }
     }
