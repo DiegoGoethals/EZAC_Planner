@@ -29,7 +29,7 @@ namespace Ezac.Roster.Domain.Services.Models
 			message.To.Add(new MailboxAddress(to,to));
 			message.Subject = subject;
 
-			message.Body = new TextPart("plain")
+			message.Body = new TextPart("html")
 			{
 				Text = body
 			};

@@ -112,9 +112,10 @@ else
             {
                 var uniqueLink = $"{baseUrl}/{calendarId}/{user.Id}";
                 var subject = "Kalender link";
-                var body = $"Hello {user.Name},\n\nHere is your unique calendar link: {uniqueLink}";
+                var body = $"Hello {user.Name},<br/><br/>Here is your unique calendar link: <a href=\"{uniqueLink}\">{uniqueLink}</a>. <br/><br/> De Zweefvliegers";
 
-                await EmailService.SendEmailAsync("kerselaers.mitchell@hotmail.com", subject, body);
+
+                await EmailService.SendEmailAsync("goethalsdiego@gmail.com", subject, body);
             }
         }
     }
