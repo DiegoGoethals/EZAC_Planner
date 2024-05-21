@@ -76,19 +76,6 @@ namespace Ezac.Roster.Domain.Services
 				permission.UserId = user.Id;
 			}
 
-			var userPermissions = new List<UserPermission>();
-            foreach (var permission in userCreateRequestModel.Permissions)
-            {
-                userPermissions.Add(new UserPermission
-                {
-                    Id = Guid.NewGuid(),
-                    PermissionId = permission.Id,
-                    UserId = user.Id,
-                    Experience = 1
-                });
-            }
-            user.UserPermissions = userPermissions;
-
             if (await  _userRepository.AddAsync(user))
             {
                 return new ResultModel<User>
