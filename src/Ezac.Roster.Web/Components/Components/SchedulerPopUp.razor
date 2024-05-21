@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col col-lg-12">
             <h6>Beschikbare/bevoegde leden</h6>
-            <button @onclick="e => OnCancel.InvokeAsync()">Cancel</button>
+            <button @onclick="e => OnCancel.InvokeAsync()">Annuleren</button>
             <div class="mb-3">
                 <select class="form-select" @onchange="e => OnGetStaff.InvokeAsync(e)">
                     <option value="">Selecteer een baan</option>
@@ -24,14 +24,13 @@
                 <table class="table table-dark">
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>Naam</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var user in Staff)
                         {
                             <tr class="userrow">
-                                @*<td id="@user.Id" draggable="true" ondragover="event.preventDefault();" @ondragstart="(e => HandleDragStart(e, user))">@user.Name (@user.Scaling)</td>*@
                                 <td id="@user.Id" draggable="true" ondragover="event.preventDefault();" @ondragstart="(e => OnDragged.InvokeAsync(user))">@user.Name (@user.Scaling)</td>
                             </tr>
                         }
@@ -54,7 +53,6 @@
 
 
 @code {
-    //public List<UserListModel> _users { get; set; } = new List<UserListModel>();
     private List<BaseListModel> _permissions { get; set; } = new List<BaseListModel>();
     [Parameter]
     public List<UserListModel> Staff { get; set; }

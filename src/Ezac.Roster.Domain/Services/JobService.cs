@@ -30,7 +30,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "Could not find any jobs!"
+                    "Geen jobs gevonden!"
                 }
             };
         }
@@ -51,7 +51,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "No job found!"
+                    "Geen job gevonden!"
                 }
             };
         }
@@ -82,7 +82,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "Failed to add job!"
+                    "Kon job niet toevoegen!"
                 }
             };
         }
@@ -97,7 +97,7 @@ namespace Ezac.Roster.Domain.Services
                     IsSucces = false,
                     Errors = new List<string>
                     {
-                        "No job to delete!"
+                        "Geen job gevonden!"
                     }
                 };
             }
@@ -113,7 +113,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "Couldn't delete this job!"
+                    "Verwijderen van job mislukt!"
                 }
             };
         }
@@ -129,7 +129,7 @@ namespace Ezac.Roster.Domain.Services
                     IsSucces = false,
                     Errors = new List<string>
                     {
-                        "No job found to update!"
+                        "Geen job gevonden!"
                     }
                 };
             }
@@ -155,7 +155,7 @@ namespace Ezac.Roster.Domain.Services
                 IsSucces = false,
                 Errors = new List<string>
                 {
-                    "Couldn't update job!"
+                    "Kon de job niet aanpassen!"
                 }
             };
         }
