@@ -1,7 +1,6 @@
 using Ezac.Roster.Domain.Interfaces.Repositories;
 using Ezac.Roster.Domain.Interfaces.Services;
 using Ezac.Roster.Domain.Services;
-using Ezac.Roster.Domain.Services.Models;
 using Ezac.Roster.Infrastructure.Data;
 using Ezac.Roster.Infrastructure.Repositories;
 using Ezac.Roster.Web.Components;
