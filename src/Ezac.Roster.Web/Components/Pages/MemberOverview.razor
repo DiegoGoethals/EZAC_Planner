@@ -22,7 +22,7 @@
 			@foreach (var member in members)
 			{
 				<tr>
-					<td>@member.Name</td>
+					<td>@member.Name <button type="button" @onclick="@(e => HandleDeleteUser(member.Id))">x</button></td>
 					<td>@member.Email</td>
 					<td>@member.Scaling</td>
 					@foreach (var permission in permissions)
@@ -122,9 +122,14 @@ else
 		{
 			StateHasChanged();
 		}
-		else
+	}
+
+	private async Task HandleDeleteUser(Guid userId)
+	{
+		var result = await UserService.DeleteAsync(userId);
+		if (result.IsSucces)
 		{
-			// Handle error
+			StateHasChanged();
 		}
 	}
 }
