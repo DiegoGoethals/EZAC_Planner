@@ -6,7 +6,7 @@
 
 @if (members != null && permissions != null)
 {
-	<MemberTable members="members" permissions="permissions" DeleteUser="HandleDeleteUser"/>
+	<MemberTable members="members" permissions="permissions" DeleteUser="HandleDeleteUser" UpdateUser="HandleUpdateUser"/>
 
 	<MemberForm CreateUser="CreateUser" permissions="permissions" PermissionValues="PermissionValues" />
 }
@@ -83,6 +83,25 @@ else
 	private async Task HandleDeleteUser(Guid userId)
 	{
 		var result = await UserService.DeleteAsync(userId);
+		if (result.IsSucces)
+		{
+			await LoadMembers();
+		}
+	}
+
+	private async Task HandleUpdateUser(User user)
+	{
+		var requestModel = new UserUpdateRequestModel
+		{
+			Id = user.Id,
+			Name = user.Name,
+			Email = user.Email,
+			Scaling = user.Scaling,
+			Permissions = user.UserPermissions,
+			Preferences = user.Preferences,
+			Jobs = user.Jobs
+		};
+		var result = await UserService.UpdateAsync(requestModel);
 		if (result.IsSucces)
 		{
 			await LoadMembers();

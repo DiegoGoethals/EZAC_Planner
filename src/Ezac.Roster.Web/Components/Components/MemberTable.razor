@@ -14,7 +14,7 @@
 	<tbody>
 		@foreach (var member in members)
 		{
-			<EditableTableRow member="member" permissions="permissions" DeleteUser="DeleteUser"/>
+			<EditableTableRow member="member" permissions="permissions" DeleteUser="DeleteUser" UpdateUser="UpdateUser"/>
 		}
 	</tbody>
 </table>
@@ -26,4 +26,6 @@
 	public List<Permission> permissions { get; set; }
 	[Parameter]
 	public EventCallback<Guid> DeleteUser { get; set; }
+	[Parameter]
+	public EventCallback<User> UpdateUser { get; set; }
 }

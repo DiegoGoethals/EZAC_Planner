@@ -7,11 +7,19 @@
         @foreach (var permission in permissions)
         {
             <td>
-                <input type="number" min="0" max="10" class="form-control" />
+                @{
+                    var userPermission = member.UserPermissions.FirstOrDefault(up => up.PermissionId == permission.Id);
+                    if (userPermission == null)
+                    {
+                        userPermission = new UserPermission { PermissionId = permission.Id, Experience = 0 };
+                        member.UserPermissions.Add(userPermission);
+                    }
+                }
+                <input type="number" min="0" max="10" class="form-control" @bind="userPermission.Experience" />
             </td>
         }
         <td>
-            <button type="button" class="btn btn-success">Aanpassen</button>
+            <button type="button" class="btn btn-success" @onclick="UpdateMember">Aanpassen</button>
             <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Annuleren</button>
         </td>
     }
@@ -40,6 +48,8 @@
     public List<Permission> permissions { get; set; }
     [Parameter]
     public EventCallback<Guid> DeleteUser { get; set; }
+    [Parameter]
+    public EventCallback<User> UpdateUser { get; set; }
 
     private bool IsEditing { get; set; }
 
@@ -57,4 +67,10 @@
     {
         await DeleteUser.InvokeAsync(member.Id);
     }
+
+    private async Task UpdateMember()
+	{
+		await UpdateUser.InvokeAsync(member);
+		IsEditing = false;
+	}
 }
