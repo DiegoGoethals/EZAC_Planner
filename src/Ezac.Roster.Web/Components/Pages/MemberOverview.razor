@@ -75,6 +75,12 @@ else
 
 	protected async override Task OnInitializedAsync()
 	{
+		await LoadMembers();
+		await LoadPermissions();
+	}
+
+	private async Task LoadMembers()
+	{
 		var result = await UserService.GetAllAsync();
 		if (result.IsSucces)
 		{
@@ -84,7 +90,10 @@ else
 		{
 			members = new List<User>();
 		}
+	}
 
+	private async Task LoadPermissions()
+	{
 		var permissionsResult = await PermissionsService.GetAllAsync();
 		if (permissionsResult.IsSucces)
 		{
@@ -120,7 +129,7 @@ else
 		var result = await UserService.AddAsync(user);
 		if (result.IsSucces)
 		{
-			StateHasChanged();
+			await LoadMembers();
 		}
 	}
 
@@ -129,7 +138,7 @@ else
 		var result = await UserService.DeleteAsync(userId);
 		if (result.IsSucces)
 		{
-			StateHasChanged();
+			await LoadMembers();
 		}
 	}
 }
