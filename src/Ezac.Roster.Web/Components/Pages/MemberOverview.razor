@@ -16,7 +16,7 @@ else
 }
 
 @code {
-	private List<User> members;
+	private List<MemberViewModel> members;
 	private List<Permission> permissions;
 	private Dictionary<Guid, int> PermissionValues { get; set; } = new Dictionary<Guid, int>();
 
@@ -31,11 +31,20 @@ else
 		var result = await UserService.GetAllAsync();
 		if (result.IsSucces)
 		{
-			members = result.Value.ToList();
+			members = result.Value.Select(user => new MemberViewModel
+			{
+				Id = user.Id,
+				Name = user.Name,
+				Email = user.Email,
+				Scaling = user.Scaling,
+				UserPermissions = user.UserPermissions,
+				Preferences = user.Preferences,
+				Jobs = user.Jobs
+			}).ToList();
 		}
 		else
 		{
-			members = new List<User>();
+			members = new List<MemberViewModel>();
 		}
 	}
 
@@ -89,7 +98,7 @@ else
 		}
 	}
 
-	private async Task HandleUpdateUser(User user)
+	private async Task HandleUpdateUser(MemberViewModel user)
 	{
 		if (user.Name.Length == 0 || user.Email.Length == 0 || user.Scaling < 0 || user.Scaling > 10)
 		{

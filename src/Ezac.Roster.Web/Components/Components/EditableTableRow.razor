@@ -1,4 +1,6 @@
-﻿<tr>
+﻿@inject IUserService UserService
+
+<tr>
     @if (IsEditing)
     {
         <td><input type="text" @bind="member.Name" class="form-control" /></td>
@@ -45,13 +47,13 @@
 
 @code {
     [Parameter]
-    public User member { get; set; }
+    public MemberViewModel member { get; set; }
     [Parameter]
     public List<Permission> permissions { get; set; }
     [Parameter]
     public Func<Guid, Task> DeleteUser { get; set; }
     [Parameter]
-    public EventCallback<User> UpdateUser { get; set; }
+    public EventCallback<MemberViewModel> UpdateUser { get; set; }
 
     private bool IsEditing { get; set; }
 
@@ -62,9 +64,24 @@
         IsEditing = true;
     }
 
-    private void CancelEdit()
+    private async Task CancelEdit()
     {
         IsEditing = false;
+        var result = await UserService.GetByIdAsync(member.Id);
+        if (result.IsSucces)
+		{
+			member = new MemberViewModel
+			{
+				Id = result.Value.Id,
+				Name = result.Value.Name,
+				Email = result.Value.Email,
+				Scaling = result.Value.Scaling,
+				UserPermissions = result.Value.UserPermissions,
+				Preferences = result.Value.Preferences,
+				Jobs = result.Value.Jobs
+			};
+		}
+        StateHasChanged();
     }
 
     private async Task DeleteMember()

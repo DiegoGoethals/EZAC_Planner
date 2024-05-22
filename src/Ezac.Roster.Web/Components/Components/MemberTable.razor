@@ -21,11 +21,11 @@
 
 @code {
 	[Parameter]
-	public List<User> members { get; set; }
+	public List<MemberViewModel> members { get; set; }
 	[Parameter]
 	public List<Permission> permissions { get; set; }
 	[Parameter]
 	public Func<Guid, Task> DeleteUser { get; set; }
 	[Parameter]
-	public EventCallback<User> UpdateUser { get; set; }
+	public EventCallback<MemberViewModel> UpdateUser { get; set; }
 }
