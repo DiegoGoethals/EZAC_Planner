@@ -4,6 +4,7 @@
 @inject ICalendarService CalendarService
 @inject IDayPeriodService DayPeriodService
 @inject IUserService UserService
+@inject IPreferenceService PreferenceService
 
 <h3>Kalender van @(user?.Name) voor het jaar @(calendar?.Start.ToString("(yyyy)"))</h3>
 @if (calendar != null && calendar.Days != null)
@@ -72,9 +73,11 @@ else
     <ul>
 		@foreach (var option in jobOptions)
 		{
-            <li><input type="checkbox" value="@option.Id" @onchange="@(e => OnJobSelected(e, option))"/><label>@option.Name</label></li>
+            <li><input type="checkbox" @onchange="@(e => OnJobSelected(e, option))"/><label>@option.Name</label></li>
 		}
     </ul>
+    <input type="checkbox" checked="checked" @onchange="SetAvailability"/><label>Beschikbaar</label>
+    <button @onclick="SaveJobPreference" class="btn btn-primary">Voeg voorkeur toe</button>
 </div>
 @foreach (var job in selectedJobs)
 {
@@ -95,6 +98,7 @@ else
     private List<Job> jobOptions = new List<Job>();
     private List<Job> selectedJobs = new List<Job>();
     private DayPeriod selectedPeriod;
+    private bool IsAvailable = true;
 
     protected async override Task OnInitializedAsync()
     {
@@ -143,14 +147,45 @@ else
 
     private void OnJobSelected(ChangeEventArgs e, Job job)
     {
-        var isChecked = e.Value;
-        if (isChecked != null && (bool)isChecked && !selectedJobs.Contains(job))
+        var isChecked = bool.Parse(e.Value.ToString());
+        if (isChecked && !selectedJobs.Contains(job))
         {
             selectedJobs.Add(job);
         }
-        if (!(bool)isChecked && selectedJobs.Contains(job)) {
+        if (!isChecked && selectedJobs.Contains(job)) {
             selectedJobs.Remove(job);
         }
         StateHasChanged();
+    }
+
+    private void SetAvailability(ChangeEventArgs e)
+    {
+        var isChecked = bool.Parse(e.Value.ToString());
+        if (isChecked)
+		{
+			IsAvailable = true;
+		}
+		else
+		{
+			IsAvailable = false;
+		}
+        StateHasChanged();
+	}
+
+    private async Task SaveJobPreference()
+    {
+        foreach (var job in selectedJobs)
+        {
+            var requestModel = new PreferenceCreateRequestModel
+            {
+                Name = $"{user.Name} - {job.Name} - {selectedPeriod.Name}",
+                Available = IsAvailable,
+                JobId = job.Id,
+                UserId = user.Id,
+                DayPeriodId = selectedPeriod.Id,
+                DayId = selectedPeriod.DayId
+            };
+            await PreferenceService.AddAsync(requestModel);
+        }
     }
 }
