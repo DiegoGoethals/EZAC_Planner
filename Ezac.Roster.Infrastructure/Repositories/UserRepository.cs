@@ -19,12 +19,23 @@ namespace Ezac.Roster.Infrastructure.Repositories
                 .Include(u => u.UserPermissions)
                 .ThenInclude(up => up.Permission)
                 .Include(u => u.Jobs)
+                .Include(u => u.Preferences)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<User>> GetByNameAsync(string name)
         {
             return await _table.Where(user => user.Name.Contains(name)).ToListAsync();
+        }
+
+        public override async Task<User> GetByIdAsync(Guid id)
+        {
+            return await _table
+                .Include(u => u.UserPermissions)
+                .ThenInclude(up => up.Permission)
+                .Include(u => u.Jobs)
+                .Include(u => u.Preferences)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
     }
 }

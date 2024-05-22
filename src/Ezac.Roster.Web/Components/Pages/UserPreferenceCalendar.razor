@@ -36,7 +36,7 @@
                                         </td>
                                         @foreach (var period in day.DayPeriods.OrderBy(dp => dp.Name))
                                         {
-                                            <td style="background-color:lightgreen" @onclick="@(e => OnCellClick(day, period))">
+                                            <td style="@(user.Preferences != null && user.Preferences.Any(p => p.DayPeriod == period && p.Available) ? "background-color: lime" : "background-color: lightgreen")" @onclick="@(e => OnCellClick(day, period))">
                                                 @if (period.IsOpen)
                                                 {
                                                     var jobs = GetJobsForUser(day, period.Name);
@@ -76,8 +76,8 @@ else
             <li><input type="checkbox" @onchange="@(e => OnJobSelected(e, option))"/><label>@option.Name</label></li>
 		}
     </ul>
-    <input type="checkbox" checked="checked" @onchange="SetAvailability"/><label>Beschikbaar</label>
-    <button @onclick="SaveJobPreference" class="btn btn-primary">Voeg voorkeur toe</button>
+    <input type="checkbox" checked="@IsAvailable" @onchange="SetAvailability"/><label>Beschikbaar</label>
+    <button @onclick="SavePreferences" class="btn btn-primary">Voeg voorkeur toe</button>
 </div>
 
 @code {
@@ -169,7 +169,7 @@ else
         StateHasChanged();
     }
 
-    private async Task SaveJobPreference()
+    private async Task SavePreferences()
     {
         if (selectedJobs.Count > 0)
         {
@@ -184,9 +184,12 @@ else
                     DayPeriodId = selectedPeriod.Id,
                     DayId = selectedPeriod.DayId
                 };
-                await PreferenceService.AddAsync(requestModel);
+                var result = await PreferenceService.GetAllAsync();
+                if(result.IsSucces && !result.Value.Any(p => p.JobId == job.Id && p.UserId == user.Id && p.DayPeriodId == selectedPeriod.Id))
+                {
+                    await PreferenceService.AddAsync(requestModel);
+                }
             }
-            selectedJobs.Clear();
         }
         else
         {
@@ -198,7 +201,14 @@ else
 				DayPeriodId = selectedPeriod.Id,
 				DayId = selectedPeriod.DayId
 			};
+            var result = await PreferenceService.GetAllAsync();
+            if(result.IsSucces && !result.Value.Any(p => p.UserId == user.Id && p.DayPeriodId == selectedPeriod.Id))
+            {
+                await PreferenceService.AddAsync(requestModel);
+            }
         }
+        selectedJobs.Clear();
+        IsAvailable = true;
         StateHasChanged();
     }
 }
