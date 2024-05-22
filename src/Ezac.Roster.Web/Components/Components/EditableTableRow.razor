@@ -1,0 +1,52 @@
+﻿<tr>
+    @if (IsEditing)
+    {
+        <td><input type="text" @bind="member.Name" class="form-control" /></td>
+        <td><input type="email" @bind="member.Email" class="form-control" /></td>
+        <td><input type="number" min="0" step="0.1" @bind="member.Scaling" class="form-control" /></td>
+        @foreach (var permission in permissions)
+        {
+            <td>
+                <input type="number" min="0" max="10" class="form-control" />
+            </td>
+        }
+        <td>
+            <button type="button" class="btn btn-success">Aanpassen</button>
+            <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Annuleren</button>
+        </td>
+    }
+    else
+    {
+        <td>@member.Name</td>
+        <td>@member.Email</td>
+        <td>@member.Scaling</td>
+        @foreach (var permission in permissions)
+        {
+            <td>
+                @(member.UserPermissions.FirstOrDefault(up => up.PermissionId == permission.Id)?.Experience ?? 0)
+            </td>
+        }
+        <td>
+            <button type="button" class="btn btn-primary" @onclick="EditMember">Aanpassen</button>
+        </td>
+    }
+</tr>
+
+@code {
+    [Parameter]
+    public User member { get; set; }
+    [Parameter]
+    public List<Permission> permissions { get; set; }
+
+    private bool IsEditing { get; set; }
+
+    private void EditMember()
+    {
+        IsEditing = true;
+    }
+
+    private void CancelEdit()
+    {
+        IsEditing = false;
+    }
+}

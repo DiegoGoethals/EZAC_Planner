@@ -16,22 +16,13 @@
 				{
 					<th>@permission.Name</th>
 				}
+				<th>Acties</th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach (var member in members)
 			{
-				<tr>
-					<td>@member.Name <button type="button" @onclick="@(e => HandleDeleteUser(member.Id))">x</button></td>
-					<td>@member.Email</td>
-					<td>@member.Scaling</td>
-					@foreach (var permission in permissions)
-					{
-						<td>
-							@(member.UserPermissions.FirstOrDefault(up => up.PermissionId == permission.Id)?.Experience ?? 0)
-						</td>
-					}
-				</tr>
+				<EditableTableRow member="member" permissions="permissions" />
 			}
 		</tbody>
 	</table>
