@@ -162,30 +162,45 @@ else
     {
         var isChecked = bool.Parse(e.Value.ToString());
         if (isChecked)
-		{
-			IsAvailable = true;
-		}
-		else
-		{
-			IsAvailable = false;
-		}
+        {
+            IsAvailable = true;
+        }
+        else
+        {
+            IsAvailable = false;
+        }
         StateHasChanged();
-	}
+    }
 
     private async Task SaveJobPreference()
     {
-        foreach (var job in selectedJobs)
+        if (selectedJobs.Count > 0)
+        {
+            foreach (var job in selectedJobs)
+            {
+                var requestModel = new PreferenceCreateRequestModel
+                {
+                    Name = $"{user.Name} - {job.Name} - {selectedPeriod.Name}",
+                    Available = IsAvailable,
+                    JobId = job.Id,
+                    UserId = user.Id,
+                    DayPeriodId = selectedPeriod.Id,
+                    DayId = selectedPeriod.DayId
+                };
+                await PreferenceService.AddAsync(requestModel);
+            }
+        }
+        else
         {
             var requestModel = new PreferenceCreateRequestModel
-            {
-                Name = $"{user.Name} - {job.Name} - {selectedPeriod.Name}",
-                Available = IsAvailable,
-                JobId = job.Id,
-                UserId = user.Id,
-                DayPeriodId = selectedPeriod.Id,
-                DayId = selectedPeriod.DayId
-            };
-            await PreferenceService.AddAsync(requestModel);
+			{
+				Name = $"{user.Name} - {selectedPeriod.Name}",
+				Available = IsAvailable,
+				UserId = user.Id,
+				DayPeriodId = selectedPeriod.Id,
+				DayId = selectedPeriod.DayId
+			};
         }
+        StateHasChanged();
     }
 }
