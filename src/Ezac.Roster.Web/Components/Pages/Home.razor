@@ -43,12 +43,36 @@
     private string Message = "Gelieve in te loggen";
     private bool showPassword;
 
+    private const string HardcodedPassword = "ezac";
+
     private async Task Login()
     {
-        if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password))
+        if (Password == "ezac")
         {
-            Message = "Gelieve een gebruikersnaam en wachtwoord in te vullen";
-            return;
+            var users = await UserService.GetAllAsync();
+            var user = users.Value.FirstOrDefault(u => u.Name == UserName);
+            if (user != null)
+            {
+                if (user.IsAdmin == true)
+                {
+
+                    Message = "Logging in";
+                    LogInBooLService.IsLoggedIn = true;
+                    NavigationManager.NavigateTo("/calendarslist");
+                }
+                else
+                {
+                    Message = "U heeft geen adminrechten";
+                }
+            }
+            else
+            {
+                Message = "Gebruiker bestaat niet";
+            }
+        }
+        else
+        {
+            Message = "Wachtwoord is onjuist";
         }
     }
 
