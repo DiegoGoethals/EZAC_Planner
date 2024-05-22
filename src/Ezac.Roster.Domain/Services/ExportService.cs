@@ -1,4 +1,5 @@
-﻿using Ezac.Roster.Domain.Interfaces.Services;
+﻿using Ezac.Roster.Domain.Entities;
+using Ezac.Roster.Domain.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +11,7 @@ namespace Ezac.Roster.Domain.Services
 {
     public class ExportService : IExportService
     {
-        public Task ExportCalendarToExcel(Calendar calendar, string filePath)
+        public Task ExportCalendarToExcel(ApplicationCalendar calendar, string filePath)
         {
             throw new NotImplementedException();
         }
