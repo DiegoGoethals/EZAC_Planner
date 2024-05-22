@@ -35,7 +35,7 @@
                                         </td>
                                         @foreach (var period in day.DayPeriods.OrderBy(dp => dp.Name))
                                         {
-                                            <td style="background-color:lightgreen">
+                                            <td style="background-color:lightgreen" @onclick="@(e => OnCellClick(day, period))">
                                                 @if (period.IsOpen)
                                                 {
                                                     var jobs = GetJobsForUser(day, period.Name);
@@ -45,6 +45,10 @@
                                                         {
                                                             <p>@job.Name</p>
                                                         }
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>Geen jobs beschikbaar</p>
                                                     }
                                                 }
                                             </td>
@@ -59,6 +63,19 @@
         </div>
     </div>
 }
+else
+{
+    <p>Gegevens worden geladen of kalender bevat geen dagen.</p>
+}
+<div class="col-md-4">
+    <label>Diensten</label>
+    <ul>
+		@foreach (var option in jobOptions)
+		{
+            <li><input type="checkbox" value="@option" /><label>@option</label></li>
+		}
+    </ul>
+</div>
 
 @code {
     [Parameter]
@@ -71,6 +88,7 @@
     private List<DayPeriod> dayPeriods;
     private List<string> periodNames;
     private List<UserPermission> userPermissions = new List<UserPermission>();
+    private List<string> jobOptions = new List<string>();
 
     protected async override Task OnInitializedAsync()
     {
@@ -82,15 +100,15 @@
         }
         var userResult = await UserService.GetByIdAsync(Guid.Parse(userId));
         if (userResult.IsSucces)
-		{
-			user = userResult.Value;
-		}
+        {
+            user = userResult.Value;
+        }
         var userPermissionsResult = await UserService.GetUserPermissionsAsync(Guid.Parse(userId));
         if (userPermissionsResult.IsSucces)
         {
             userPermissions = userPermissionsResult.Value.ToList();
         }
-	}
+    }
 
     private async Task GetUniquePeriodNames()
     {
@@ -109,5 +127,10 @@
         var jobs = period.Jobs.Where(job =>
             userPermissions.Any(up => up.Permission.Name == job.PermissionName && up.Experience >= job.Experience)).ToList();
         return jobs;
+    }
+
+    private void OnCellClick(Day day, DayPeriod period)
+    {
+        jobOptions = GetJobsForUser(day, period.Name).Select(j => j.Name).ToList();
     }
 }
