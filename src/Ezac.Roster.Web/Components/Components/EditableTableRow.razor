@@ -41,17 +41,21 @@
     }
 </tr>
 
+<DeleteUserPopUp deleteUser="DeleteUser" @ref="dialog" />
+
 @code {
     [Parameter]
     public User member { get; set; }
     [Parameter]
     public List<Permission> permissions { get; set; }
     [Parameter]
-    public EventCallback<Guid> DeleteUser { get; set; }
+    public Func<Guid, Task> DeleteUser { get; set; }
     [Parameter]
     public EventCallback<User> UpdateUser { get; set; }
 
     private bool IsEditing { get; set; }
+
+    private DeleteUserPopUp dialog;
 
     private void EditMember()
     {
@@ -65,7 +69,7 @@
 
     private async Task DeleteMember()
     {
-        await DeleteUser.InvokeAsync(member.Id);
+        await dialog.Show(member.Id);
     }
 
     private async Task UpdateMember()

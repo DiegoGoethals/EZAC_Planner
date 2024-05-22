@@ -1,0 +1,53 @@
+﻿@rendermode InteractiveServer
+
+@inject IJSRuntime JSRuntime
+
+<dialog @ref="dialog" class="popUp">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Delete Confirmation</h5>
+				<button type="button" class="close" @onclick="CloseDialog">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Bent u zeker dat u dit lid wilt verwijderen?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" @onclick="CloseDialog">Annuleren</button>
+				<button type="button" class="btn btn-danger" @onclick="DeleteUser" disabled="@isDeleting">Verwijderen</button>
+			</div>
+		</div>
+	</div>
+</dialog>
+
+@code {
+	private ElementReference dialog;
+
+	private Guid userId;
+
+	private bool isDeleting = false;
+
+	[Parameter]
+	public Func<Guid, Task> deleteUser { get; set; }
+
+	public async Task Show(Guid userId)
+	{
+		this.userId = userId;
+		await JSRuntime.InvokeVoidAsync("openDialog", dialog);
+	}
+
+	private async Task CloseDialog()
+	{
+		await JSRuntime.InvokeVoidAsync("closeDialog", dialog);
+	}
+
+	private async Task DeleteUser()
+	{
+		isDeleting = true;
+		await deleteUser(userId);
+		await CloseDialog();
+		isDeleting = false;
+	}
+}

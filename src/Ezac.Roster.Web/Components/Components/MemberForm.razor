@@ -36,5 +36,17 @@
 	private async Task HandleSubmit()
 	{
 		await CreateUser.InvokeAsync((Name, Email, Scaling));
+		ResetForm();
+	}
+
+	private void ResetForm()
+	{
+		Name = string.Empty;
+		Email = string.Empty;
+		Scaling = 0;
+		foreach (var permission in permissions)
+		{
+			PermissionValues[permission.Id] = 0;
+		}
 	}
 }

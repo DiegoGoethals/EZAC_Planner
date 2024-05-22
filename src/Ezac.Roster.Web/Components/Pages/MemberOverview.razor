@@ -91,6 +91,10 @@ else
 
 	private async Task HandleUpdateUser(User user)
 	{
+		if (user.Name.Length == 0 || user.Email.Length == 0 || user.Scaling < 0 || user.Scaling > 10)
+		{
+			return;
+		}
 		var requestModel = new UserUpdateRequestModel
 		{
 			Id = user.Id,

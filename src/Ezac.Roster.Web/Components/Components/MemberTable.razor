@@ -25,7 +25,7 @@
 	[Parameter]
 	public List<Permission> permissions { get; set; }
 	[Parameter]
-	public EventCallback<Guid> DeleteUser { get; set; }
+	public Func<Guid, Task> DeleteUser { get; set; }
 	[Parameter]
 	public EventCallback<User> UpdateUser { get; set; }
 }
