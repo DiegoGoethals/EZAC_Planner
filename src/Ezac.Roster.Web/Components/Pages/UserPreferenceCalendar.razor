@@ -72,10 +72,14 @@ else
     <ul>
 		@foreach (var option in jobOptions)
 		{
-            <li><input type="checkbox" value="@option" /><label>@option</label></li>
+            <li><input type="checkbox" value="@option.Id" @onchange="@(e => OnJobSelected(e, option))"/><label>@option.Name</label></li>
 		}
     </ul>
 </div>
+@foreach (var job in selectedJobs)
+{
+	<p>@job.Name</p>
+}
 
 @code {
     [Parameter]
@@ -88,7 +92,9 @@ else
     private List<DayPeriod> dayPeriods;
     private List<string> periodNames;
     private List<UserPermission> userPermissions = new List<UserPermission>();
-    private List<string> jobOptions = new List<string>();
+    private List<Job> jobOptions = new List<Job>();
+    private List<Job> selectedJobs = new List<Job>();
+    private DayPeriod selectedPeriod;
 
     protected async override Task OnInitializedAsync()
     {
@@ -131,6 +137,20 @@ else
 
     private void OnCellClick(Day day, DayPeriod period)
     {
-        jobOptions = GetJobsForUser(day, period.Name).Select(j => j.Name).ToList();
+        jobOptions = GetJobsForUser(day, period.Name).ToList();
+        selectedPeriod = period;
+    }
+
+    private void OnJobSelected(ChangeEventArgs e, Job job)
+    {
+        var isChecked = e.Value;
+        if (isChecked != null && (bool)isChecked && !selectedJobs.Contains(job))
+        {
+            selectedJobs.Add(job);
+        }
+        if (!(bool)isChecked && selectedJobs.Contains(job)) {
+            selectedJobs.Remove(job);
+        }
+        StateHasChanged();
     }
 }
