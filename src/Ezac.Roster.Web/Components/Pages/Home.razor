@@ -53,17 +53,9 @@
             var user = users.Value.FirstOrDefault(u => u.Name == UserName);
             if (user != null)
             {
-                if (user.IsAdmin == true)
-                {
-
-                    Message = "Logging in";
-                    LogInBooLService.IsLoggedIn = true;
-                    NavigationManager.NavigateTo("/calendarslist");
-                }
-                else
-                {
-                    Message = "U heeft geen adminrechten";
-                }
+                Message = "Logging in";
+                LogInBooLService.IsLoggedIn = true;
+                NavigationManager.NavigateTo("/calendarslist");
             }
             else
             {
