@@ -73,7 +73,7 @@ else
     <ul>
 		@foreach (var option in jobOptions)
 		{
-            <li><input type="checkbox" @onchange="@(e => OnJobSelected(e, option))"/><label>@option.Name</label></li>
+            <li><input type="checkbox" checked="@selectedJobs.Contains(option)" @onchange="@(e => OnJobSelected(e, option))"/><label>@option.Name</label></li>
 		}
     </ul>
     <input type="checkbox" checked="@IsAvailable" @onchange="SetAvailability"/><label>Beschikbaar</label>
