@@ -9,5 +9,6 @@ namespace Ezac.Roster.Domain.Interfaces.Repositories
 {
     public interface IUserPermissionRepository : IBaseRepository<UserPermission>
     {
+        Task<IEnumerable<UserPermission>> GetAllByUserAsync(Guid userId);
     }
 }

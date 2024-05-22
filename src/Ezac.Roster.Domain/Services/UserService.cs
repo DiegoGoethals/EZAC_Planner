@@ -8,10 +8,12 @@ namespace Ezac.Roster.Domain.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserPermissionRepository _userPermissionRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IUserPermissionRepository userPermissionRepository)
         {
             _userRepository = userRepository;
+            _userPermissionRepository = userPermissionRepository;
         }
 
         public async Task<ResultModel<IEnumerable<User>>> GetAllAsync()
@@ -204,6 +206,27 @@ namespace Ezac.Roster.Domain.Services
                 Errors = new List<string>
                 {
                     "geen leden met deze naam gevonden!"
+                }
+            };
+        }
+
+        public async Task<ResultModel<IEnumerable<UserPermission>>> GetUserPermissionsAsync(Guid userId)
+        {
+            var userPermissions = await _userPermissionRepository.GetAllByUserAsync(userId);
+            if (userPermissions != null)
+            {
+                return new ResultModel<IEnumerable<UserPermission>>
+                {
+                    IsSucces = true,
+                    Value = userPermissions
+                };
+            }
+            return new ResultModel<IEnumerable<UserPermission>>
+            {
+                IsSucces = false,
+                Errors = new List<string>
+                {
+                    "Geen bevoegdheden gevonden!"
                 }
             };
         }

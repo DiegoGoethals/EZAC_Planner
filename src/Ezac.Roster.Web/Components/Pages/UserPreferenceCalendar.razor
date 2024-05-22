@@ -1,0 +1,113 @@
+﻿@page "/user/{calendarId}/{userId}"
+@rendermode InteractiveServer
+
+@inject ICalendarService CalendarService
+@inject IDayPeriodService DayPeriodService
+@inject IUserService UserService
+
+<h3>Kalender van @(user?.Name) voor het jaar @(calendar?.Start.ToString("(yyyy)"))</h3>
+@if (calendar != null && calendar.Days != null)
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="table-responsive">
+                    <table class="table table-bordered" style="border-color:black">
+                        <thead>
+                            <tr>
+                                <th>Dag/Periode</th>
+                                @foreach (var period in periodNames)
+                                {
+                                    <th>@period</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var day in calendar.Days)
+                            {
+                                @if (day.IsOpen)
+                                {
+                                    <tr>
+                                        <td>
+                                            <p>
+                                                @day.Date.ToString("ddd d/M")
+                                            </p>
+                                        </td>
+                                        @foreach (var period in day.DayPeriods.OrderBy(dp => dp.Name))
+                                        {
+                                            <td style="background-color:lightgreen">
+                                                @if (period.IsOpen)
+                                                {
+                                                    var jobs = GetJobsForUser(day, period.Name);
+                                                    if (jobs.Any())
+                                                    {
+                                                        foreach (var job in jobs)
+                                                        {
+                                                            <p>@job.Name</p>
+                                                        }
+                                                    }
+                                                }
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string calendarId { get; set; }
+    [Parameter]
+    public string userId { get; set; }
+
+    private User user;
+    private ApplicationCalendar calendar;
+    private List<DayPeriod> dayPeriods;
+    private List<string> periodNames;
+    private List<UserPermission> userPermissions = new List<UserPermission>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        var calendarResult = await CalendarService.GetByIdAsync(Guid.Parse(calendarId));
+        if (calendarResult.IsSucces)
+        {
+            calendar = calendarResult.Value;
+            await GetUniquePeriodNames();
+        }
+        var userResult = await UserService.GetByIdAsync(Guid.Parse(userId));
+        if (userResult.IsSucces)
+		{
+			user = userResult.Value;
+		}
+        var userPermissionsResult = await UserService.GetUserPermissionsAsync(Guid.Parse(userId));
+        if (userPermissionsResult.IsSucces)
+        {
+            userPermissions = userPermissionsResult.Value.ToList();
+        }
+	}
+
+    private async Task GetUniquePeriodNames()
+    {
+        var dayPeriods = await DayPeriodService.GetAllAsync();
+        if (dayPeriods.IsSucces)
+        {
+            periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().OrderBy(name => name).ToList();
+        }
+    }
+
+    private IEnumerable<Job> GetJobsForUser(Day day, string periodName)
+    {
+        var period = day.DayPeriods.FirstOrDefault(dp => dp.Name == periodName);
+        if (period == null) return Enumerable.Empty<Job>();
+
+        var jobs = period.Jobs.Where(job =>
+            userPermissions.Any(up => up.Permission.Name == job.PermissionName && up.Experience >= job.Experience)).ToList();
+        return jobs;
+    }
+}
