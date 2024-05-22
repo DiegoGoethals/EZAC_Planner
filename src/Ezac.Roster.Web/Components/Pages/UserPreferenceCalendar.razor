@@ -77,7 +77,7 @@ else
 		}
     </ul>
     <input type="checkbox" checked="@IsAvailable" @onchange="SetAvailability"/><label>Beschikbaar</label>
-    <button @onclick="SavePreferences" class="btn btn-primary">Voeg voorkeur toe</button>
+    <button @onclick="SavePreferences" class="btn btn-primary" disabled="@twoWeekThresHoldReached">Voeg voorkeur toe</button>
 </div>
 
 @code {
@@ -95,6 +95,7 @@ else
     private List<Job> selectedJobs = new List<Job>();
     private DayPeriod selectedPeriod;
     private bool IsAvailable = true;
+    private bool twoWeekThresHoldReached = true;
 
     protected async override Task OnInitializedAsync()
     {
@@ -103,6 +104,10 @@ else
         {
             calendar = calendarResult.Value;
             await GetUniquePeriodNames();
+            if (DateTime.Now.Date <= calendar.Start.Date.AddDays(-14))
+            {
+                twoWeekThresHoldReached = false;
+            }
         }
         var userResult = await UserService.GetByIdAsync(Guid.Parse(userId));
         if (userResult.IsSucces)
@@ -174,48 +179,45 @@ else
 
     private async Task SavePreferences()
     {
-        if (DateTime.Now.Date <= calendar.Start.Date.AddDays(-14))
+        if (selectedJobs.Count > 0)
         {
-            if (selectedJobs.Count > 0)
-            {
-                foreach (var job in selectedJobs)
-                {
-                    var requestModel = new PreferenceCreateRequestModel
-                        {
-                            Name = $"{user.Name} - {job.Name} - {selectedPeriod.Name}",
-                            Available = IsAvailable,
-                            JobId = job.Id,
-                            UserId = user.Id,
-                            DayPeriodId = selectedPeriod.Id,
-                            DayId = selectedPeriod.DayId
-                        };
-                    var result = await PreferenceService.GetAllAsync();
-                    if (result.IsSucces && !result.Value.Any(p => p.JobId == job.Id && p.UserId == user.Id && p.DayPeriodId == selectedPeriod.Id))
-                    {
-                        await PreferenceService.AddAsync(requestModel);
-                    }
-                }
-            }
-            else
+            foreach (var job in selectedJobs)
             {
                 var requestModel = new PreferenceCreateRequestModel
-                    {
-                        Name = $"{user.Name} - {selectedPeriod.Name}",
-                        Available = IsAvailable,
-                        UserId = user.Id,
-                        DayPeriodId = selectedPeriod.Id,
-                        DayId = selectedPeriod.DayId
-                    };
+                {
+                    Name = $"{user.Name} - {job.Name} - {selectedPeriod.Name}",
+                    Available = IsAvailable,
+                    JobId = job.Id,
+                    UserId = user.Id,
+                    DayPeriodId = selectedPeriod.Id,
+                    DayId = selectedPeriod.DayId
+                };
                 var result = await PreferenceService.GetAllAsync();
-                if (result.IsSucces && !result.Value.Any(p => p.UserId == user.Id && p.DayPeriodId == selectedPeriod.Id))
+                if (result.IsSucces && !result.Value.Any(p => p.JobId == job.Id && p.UserId == user.Id && p.DayPeriodId == selectedPeriod.Id))
                 {
                     await PreferenceService.AddAsync(requestModel);
                 }
             }
-            selectedJobs.Clear();
-            IsAvailable = true;
-            StateHasChanged();
         }
+        else
+        {
+            var requestModel = new PreferenceCreateRequestModel
+            {
+                Name = $"{user.Name} - {selectedPeriod.Name}",
+                Available = IsAvailable,
+                UserId = user.Id,
+                DayPeriodId = selectedPeriod.Id,
+                DayId = selectedPeriod.DayId
+            };
+            var result = await PreferenceService.GetAllAsync();
+            if (result.IsSucces && !result.Value.Any(p => p.UserId == user.Id && p.DayPeriodId == selectedPeriod.Id))
+            {
+                await PreferenceService.AddAsync(requestModel);
+            }
+        }
+        selectedJobs.Clear();
+        IsAvailable = true;
+        StateHasChanged();
     }
 
     private string GetCellStyle(DayPeriod period)
