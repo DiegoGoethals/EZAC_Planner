@@ -79,10 +79,6 @@ else
     <input type="checkbox" checked="checked" @onchange="SetAvailability"/><label>Beschikbaar</label>
     <button @onclick="SaveJobPreference" class="btn btn-primary">Voeg voorkeur toe</button>
 </div>
-@foreach (var job in selectedJobs)
-{
-	<p>@job.Name</p>
-}
 
 @code {
     [Parameter]
@@ -143,6 +139,7 @@ else
     {
         jobOptions = GetJobsForUser(day, period.Name).ToList();
         selectedPeriod = period;
+        selectedJobs.Clear();
     }
 
     private void OnJobSelected(ChangeEventArgs e, Job job)
@@ -189,6 +186,7 @@ else
                 };
                 await PreferenceService.AddAsync(requestModel);
             }
+            selectedJobs.Clear();
         }
         else
         {
