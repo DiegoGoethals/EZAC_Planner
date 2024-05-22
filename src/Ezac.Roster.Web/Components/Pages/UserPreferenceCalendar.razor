@@ -36,7 +36,7 @@
                                         </td>
                                         @foreach (var period in day.DayPeriods.OrderBy(dp => dp.Name))
                                         {
-                                            <td style="@(user.Preferences != null && user.Preferences.Any(p => p.DayPeriod == period && p.Available) ? "background-color: lime" : "background-color: lightgreen")" @onclick="@(e => OnCellClick(day, period))">
+                                            <td style="@(GetCellStyle(period))" @onclick="@(e => OnCellClick(day, period))">
                                                 @if (period.IsOpen)
                                                 {
                                                     var jobs = GetJobsForUser(day, period.Name);
@@ -210,5 +210,18 @@ else
         selectedJobs.Clear();
         IsAvailable = true;
         StateHasChanged();
+    }
+
+    private string GetCellStyle(DayPeriod period)
+    {
+        if (user.Preferences != null && user.Preferences.Any(p => p.DayPeriod == period && p.Available))
+        {
+            return "background-color: lime";
+        }
+        else if (user.Preferences != null && user.Preferences.Any(p => p.DayPeriod == period && !p.Available))
+        {
+            return "background-color: tomato";
+        }
+        return "background-color: lightgreen";
     }
 }
