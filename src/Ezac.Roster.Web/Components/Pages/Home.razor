@@ -47,7 +47,7 @@
 
     private async Task Login()
     {
-        if (Password == "ezac")
+        if (Password == HardcodedPassword)
         {
             var users = await UserService.GetAllAsync();
             var user = users.Value.FirstOrDefault(u => u.Name == UserName);
