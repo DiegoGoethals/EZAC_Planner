@@ -28,6 +28,7 @@
         }
         <td>
             <button type="button" class="btn btn-primary" @onclick="EditMember">Aanpassen</button>
+            <button type="button" class="btn btn-danger" @onclick="DeleteMember">Verwijderen</button>
         </td>
     }
 </tr>
@@ -37,6 +38,8 @@
     public User member { get; set; }
     [Parameter]
     public List<Permission> permissions { get; set; }
+    [Parameter]
+    public EventCallback<Guid> DeleteUser { get; set; }
 
     private bool IsEditing { get; set; }
 
@@ -48,5 +51,10 @@
     private void CancelEdit()
     {
         IsEditing = false;
+    }
+
+    private async Task DeleteMember()
+    {
+        await DeleteUser.InvokeAsync(member.Id);
     }
 }

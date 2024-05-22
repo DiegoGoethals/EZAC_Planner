@@ -1,0 +1,29 @@
+﻿<table class="table table-bordered" style="border-color:black">
+	<thead>
+		<tr>
+			<th>Naam</th>
+			<th>Email</th>
+			<th>Inschaling</th>
+			@foreach (var permission in permissions)
+			{
+				<th>@permission.Name</th>
+			}
+			<th>Acties</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var member in members)
+		{
+			<EditableTableRow member="member" permissions="permissions" DeleteUser="DeleteUser"/>
+		}
+	</tbody>
+</table>
+
+@code {
+	[Parameter]
+	public List<User> members { get; set; }
+	[Parameter]
+	public List<Permission> permissions { get; set; }
+	[Parameter]
+	public EventCallback<Guid> DeleteUser { get; set; }
+}
