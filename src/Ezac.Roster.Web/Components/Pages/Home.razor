@@ -47,6 +47,11 @@
 
     private async Task Login()
     {
+        if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password))
+        {
+            Message = "Gebruikersnaam en wachtwoord zijn verplicht";
+            return;
+        }
         if (Password == HardcodedPassword)
         {
             var users = await UserService.GetAllAsync();
