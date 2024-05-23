@@ -10,7 +10,7 @@
         <div>
             <h3>Aangeduide data</h3>
             <ul id="date-list">
-                @foreach (var day in Calendar.Days)
+                @foreach (var day in Calendar.Days.OrderBy(d => d.Date))
                 {
                     if (day.IsOpen)
                     {

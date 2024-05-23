@@ -40,7 +40,6 @@
                                         </td>
                                         @foreach (var period in day.DayPeriods.OrderBy(dp => dp.Name))
                                         {
-
                                             @if (!period.IsOpen)
                                             {
                                                 <td style="background-color:tomato" @onclick="() => TogglePopUp(day, period)">
@@ -165,6 +164,7 @@ else
     private bool ToggleUpdateDatePeriodJobs { get; set; }
     private bool ToggleUpdateDatePeriod { get; set; }
 
+<<<<<<< HEAD
     private List<Preference> dayPeriodJobAvailableUsers = new List<Preference>();
     private List<Preference> dayPeriodAvailableUsers = new List<Preference>();
 
@@ -222,6 +222,33 @@ else
             }
         }
         await InvokeAsync(StateHasChanged);
+=======
+    protected override async Task OnInitializedAsync()
+    {
+        // get the calendar
+        var calendarResult = await CalendarService.GetByIdAsync(Guid.Parse(Id));
+
+        if (calendarResult.IsSucces)
+        {
+            calendar = calendarResult.Value;
+            calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
+
+            await GetUniquePeriodNames();
+        }
+
+        var usersResult = await _userService.GetAllAsync();
+        if (usersResult.IsSucces)
+        {
+            _users = usersResult.Value.Select(p => new Ezac.Roster.Domain.Models.UserListModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Permissions = p.UserPermissions,
+                    Scaling = p.Scaling,
+                }).ToList();
+        }
+
+>>>>>>> dev
     }
 
     private async void ToggleDayPeriodPopUp(DayPeriod dayPeriod)
@@ -234,9 +261,9 @@ else
         await InvokeAsync(StateHasChanged);
     }
 
-    private void UpdatePeriod()
+    private async Task UpdatePeriod()
     {
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async void AddDayPeriod()
@@ -366,34 +393,6 @@ else
                 Staff.Add(user);
             }
         }
-    }
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        // get the calendar
-        var calendarResult = await CalendarService.GetByIdAsync(Guid.Parse(Id));
-
-        if (calendarResult.IsSucces)
-        {
-            calendar = calendarResult.Value;
-            calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
-
-            await GetUniquePeriodNames();
-        }
-
-        var usersResult = await _userService.GetAllAsync();
-        if (usersResult.IsSucces)
-        {
-            _users = usersResult.Value.Select(p => new Ezac.Roster.Domain.Models.UserListModel
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Permissions = p.UserPermissions,
-                Scaling = p.Scaling,
-            }).ToList();
-        }
-
     }
 
     private IEnumerable<DayPeriod> GetDayPeriodsForDay(Guid dayId)
