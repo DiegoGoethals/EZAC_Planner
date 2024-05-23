@@ -2,9 +2,8 @@
 
 @if (string.IsNullOrWhiteSpace(feedback) == false)
 {
-    <div class="alert alert-success" role="alert">
-        @feedback
-    </div>
+    <Feedback Message="@feedback">
+    </Feedback>
 }
 
 <div class="container">
