@@ -72,8 +72,8 @@
     private string selectedJob { get; set; }
     private Job selectedDayPeriodJob { get; set; }
     private string feedback = string.Empty;
-    private double weight;
-    private int experience;
+    private double weight = 5;
+    private int experience = 1;
     private double updateWeight;
     private int updateExperience;
 
@@ -147,17 +147,17 @@
                 await RefreshData();
                 feedback = "Dienst werd succesvol toegevoegd";
                 StateHasChanged();
-                await Task.Delay(3000);
-                feedback = string.Empty;
-
                 await OnAddJob.InvokeAsync();
+                await Task.Delay(2000);
+                feedback = string.Empty;
+                StateHasChanged();
             }
         }
         else
         {
             feedback = "Gelieve een dienst te selecteren";
             StateHasChanged();
-            await Task.Delay(3000);
+            await Task.Delay(2000);
             feedback = string.Empty;
         }
     }
@@ -172,10 +172,10 @@
                 await RefreshData();
                 feedback = "Dienst werd succesvol verwijderd";
                 StateHasChanged();
+                await OnDeleteJob.InvokeAsync();
                 await Task.Delay(3000);
                 feedback = string.Empty;
-
-                await OnDeleteJob.InvokeAsync();
+                StateHasChanged();
             }
         }
         else
@@ -209,10 +209,10 @@
                 await RefreshData();
                 feedback = "Dienst werd succesvol bijgewerkt";
                 StateHasChanged();
+                await OnDeleteJob.InvokeAsync();
                 await Task.Delay(3000);
                 feedback = string.Empty;
-
-                await OnDeleteJob.InvokeAsync();
+                StateHasChanged();
             }
         }
         else
