@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ezac.Roster.Domain.Interfaces.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,15 @@ namespace Ezac.Roster.Domain.Services
 {
 	public class WorkloadService
 	{
+		private readonly IJobRepository _jobRepository;
+
+
+
+		public WorkloadService(IJobRepository jobRepository)
+		{
+			_jobRepository = jobRepository;
+
+
+		}
 	}
 }
