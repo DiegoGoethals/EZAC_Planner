@@ -24,7 +24,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var day in calendar.Days)
+                            @foreach (var day in calendar.Days.OrderBy(d => d.Date))
                             {
                                 @if (day.IsOpen)
                                 {
@@ -76,6 +76,17 @@ else
     <p>Gegevens worden geladen of kalender bevat geen dagen.</p>
 }
 <div class="col-md-4">
+    <p>
+        @if(selectedDay != null)
+        {
+            <span>Geselecteerde dag: @selectedDay.Name @selectedDay.Date.Date.ToString("dd/MM")</span>
+        }
+        <br />
+        @if(selectedPeriod != null)
+        {
+                <span>periode: @selectedPeriod.Name</span>
+        }
+    </p>
     <label>Diensten</label>
     <ul>
 		@foreach (var option in jobOptions)
@@ -159,6 +170,7 @@ else
         if (DateTime.Now.Date <= calendar.Start.Date.AddDays(-14))
         {
             selectedDay = day;
+            selectedPeriod = null;
         }
     }
 
