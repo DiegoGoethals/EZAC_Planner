@@ -31,5 +31,21 @@ namespace Ezac.Roster.Domain.Services
 			return workload;
 		}
 
+		public async Task<double> CalculateUserWorkload(Guid userid, Guid calendarId)
+		{
+			var workload = await CalculateTotalWorkload(calendarId);
+			var users = await _userRepository.GetUsersByCalendarIdAsync(calendarId);
+			double scaling = 0;
+
+			foreach (var applicationUser in users)
+			{
+				scaling += applicationUser.Scaling;
+			}
+			var AverageWorkload = workload / scaling;
+			var user = await _userRepository.GetByIdAsync(userid);
+			var userWorkload = AverageWorkload * user.Scaling;
+			return userWorkload;
+		}
+
 	}
 }
