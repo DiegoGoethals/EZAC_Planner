@@ -44,7 +44,14 @@
                                                     {
                                                         foreach (var job in jobs)
                                                         {
-                                                            <p>@job.Name</p>
+                                                            if (user.Preferences.Any(p => p.JobId == job.Id && p.DayPeriodId == period.Id))
+															{
+																<p style="color: red">@job.Name</p>
+															}
+															else
+															{
+																<p>@job.Name</p>
+															}
                                                         }
                                                     }
                                                     else
@@ -142,11 +149,13 @@ else
 
     private void OnCellClick(Day day, DayPeriod period)
     {
+        var periodPrefs = period.Preferences.Where(p => p.UserId.ToString() == userId).ToList();
+        selectedJobs = periodPrefs.Select(p => p.Job).ToList();
+        IsAvailable = periodPrefs.Select(p => p.Available).FirstOrDefault();
         if (DateTime.Now.Date <= calendar.Start.Date.AddDays(-14))
         {
             jobOptions = GetJobsForUser(day, period.Name).ToList();
             selectedPeriod = period;
-            selectedJobs.Clear();
         }
     }
 
