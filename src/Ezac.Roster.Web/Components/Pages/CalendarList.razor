@@ -29,10 +29,11 @@
                     <td>@calendar.Name</td>
                     <td>@calendar.Start.ToString("yyyy/MM") tot @calendar.End.ToString("yyyy/MM")</td>
                     <td>
-                        <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">bewerken</button>
-                        <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
                         <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
+                        <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">Bewerken</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
                         <button class="btn btn-info btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
+                        <button class="btn btn-info btn-sm" @onclick="() => ImportUsers(calendar.Id)">Leden importeren</button>
                     </td>
                 </tr>
             }
@@ -93,6 +94,11 @@ else
     private void OverviewCalendar(Guid calendarId)
     {
         Navigation.NavigateTo($"calendar/{calendarId}");
+    }
+
+    private void ImportUsers(Guid calendarId)
+    {
+        Navigation.NavigateTo($"/import/{calendarId}");
     }
 
     private async Task GenerateUniqueLink(Guid calendarId)

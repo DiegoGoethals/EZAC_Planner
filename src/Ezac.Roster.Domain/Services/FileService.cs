@@ -19,9 +19,8 @@ namespace Ezac.Roster.Domain.Services
 			_userPermissionRepository = userPermissionRepository;
         }
 
-        public async Task<string> ImportUsers(Stream fileStream)
+        public async Task<string> ImportUsers(Stream fileStream, Guid calendarId)
         {
-			await _userRepository.DeleteAllAsync();
             using (var memoryStream = new MemoryStream())
             {
                 await fileStream.CopyToAsync(memoryStream);
@@ -69,7 +68,8 @@ namespace Ezac.Roster.Domain.Services
 							Scaling = scaling,
 							Preferences = new List<Preference>(),
 							UserPermissions = new List<UserPermission>(),
-							Jobs = new List<Job>()
+							Jobs = new List<Job>(),
+							CalendarId = calendarId
 						};
 
                         await _userRepository.AddAsync(user);
@@ -143,7 +143,7 @@ namespace Ezac.Roster.Domain.Services
 
 		private string ImportFailed(int row, int column)
 		{
-			return $"Je hetb een fout gemaakt in rij: {row}, kolom: {column}! Bekijk de template om te zien welk soort data we verwachten!";
+			return $"Je hebt een fout gemaakt in rij: {row}, kolom: {column}! Bekijk de template om te zien welk soort data we verwachten!";
 		}
     }
 }

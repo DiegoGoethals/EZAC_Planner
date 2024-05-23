@@ -16,5 +16,15 @@ namespace Ezac.Roster.Infrastructure.Repositories
         public UserPermissionRepository(ApplicationDbContext applicationDbContext, ILogger<IBaseRepository<UserPermission>> logger) : base(applicationDbContext, logger)
         {
         }
-    }
+
+		public override async Task<IEnumerable<UserPermission>> GetAllAsync()
+		{
+			return await _table.Include(up => up.User).Include(up => up.Permission).ToListAsync();
+		}
+
+		public override async Task<UserPermission> GetByIdAsync(Guid id)
+		{
+			return await _table.Include(up => up.User).Include(up => up.Permission).FirstOrDefaultAsync(up => up.Id == id);
+		}
+	}
 }

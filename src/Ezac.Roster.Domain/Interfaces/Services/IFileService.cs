@@ -8,6 +8,6 @@ namespace Ezac.Roster.Domain.Interfaces.Services
 {
     public interface IFileService
     {
-        Task<string> ImportUsers(Stream fileStream);
+        Task<string> ImportUsers(Stream fileStream, Guid calendarId);
     }
 }
