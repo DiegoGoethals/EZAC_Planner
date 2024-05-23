@@ -38,7 +38,7 @@ namespace Ezac.Roster.Infrastructure.Repositories
 
 		public async Task<IEnumerable<User>> GetUsersByCalendarIdAsync(Guid calendarId)
 		{
-			return await _applicationDbContext.Users.Where(u => u.ApplicationCalendars.Any(ac => ac.Id == calendarId)).ToListAsync();
+			return await _table.Where(u => u.CalendarId == calendarId).ToListAsync();
 		}
 	}
 }
