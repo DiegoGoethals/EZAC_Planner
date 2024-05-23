@@ -19,6 +19,7 @@ namespace Ezac.Roster.Infrastructure.Repositories
                 .Include(c => c.Days)
                 .ThenInclude(d => d.DayPeriods)
                 .ThenInclude(dp => dp.Jobs)
+                .ThenInclude(j => j.Preferences)
                 .ToListAsync();
         }
 
@@ -28,6 +29,7 @@ namespace Ezac.Roster.Infrastructure.Repositories
                 .Include(c => c.Days)
                 .ThenInclude(d => d.DayPeriods)
                 .ThenInclude(dp => dp.Jobs)
+                .ThenInclude(j => j.Preferences)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
     }

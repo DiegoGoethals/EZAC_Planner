@@ -257,7 +257,7 @@ else
             {
                 if (!dayPeriod.Jobs.Any(j => j.UserId == draggedMember.Id))
                 {
-                    if (draggedMember.Permissions.Any(p => p.Name == job.Name))
+                    if (draggedMember.Permissions.Any(p => p.Name == job.PermissionName))
                     {
                         if (!Dropzones.ContainsKey(job.Id.ToString()))
                         {
