@@ -20,15 +20,6 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 			new Permission { Id = Guid.Parse("00000000-0000-0000-0000-000000000004"), Name = "Instructeur" }
 			};
 
-			var jobs = new Job[]
-			{
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000008"), Name = "Lierist", PermissionName ="Lierist", Experience = 1},
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000009"), Name = "Startofficier",PermissionName ="Startofficier", Experience = 1},
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000010"), Name = "Bardienst", PermissionName ="Bardienst", Experience = 1},
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000011"), Name = "Instructeur", PermissionName ="Instructeur", Experience = 1},
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000012"), Name = "Instructeur(DDI)", PermissionName ="Instructeur", Experience = 1},
-			};
-
 
 			var users = new User[]
 			{
@@ -116,7 +107,6 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 			}
 
 			modelBuilder.Entity<Permission>().HasData(permissions);
-			modelBuilder.Entity<Job>().HasData(jobs);
 			modelBuilder.Entity<User>().HasData(users);
 			modelBuilder.Entity<UserPermission>().HasData(userPermissions);
 			modelBuilder.Entity<ApplicationCalendar>().HasData(calendar);
