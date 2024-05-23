@@ -88,5 +88,34 @@
     [Parameter]
     public Day Day { get; set; }
 
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    await RefreshData();
+    //    await InvokeAsync(StateHasChanged);
+    //}
+
+    protected async override Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
+
+    public async Task RefreshData()
+    {
+        var jobs = await _jobService.GetAllAsync();
+        if (jobs.IsSucces)
+        {
+            _Jobs = jobs.Value.Select(p => p.Name).Distinct().ToList();
+            _dayPeriodJobs = jobs.Value.Where(j => j.DayPeriodId == DayPeriod.Id).ToList();
+        }
+    }
+
+    
+
+    
+
+    
+
+    
+
     
 }
