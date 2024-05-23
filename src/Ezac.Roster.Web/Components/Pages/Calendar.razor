@@ -7,10 +7,12 @@
 @inject IDayPeriodService DayPeriodService
 @inject IPermissionsService PermissionService
 @inject IUserService _userService
+@inject IPreferenceService _preferenceService
+@inject IDayService _dayService
 
 @if (calendar != null && calendar.Days != null)
 {
-    <button class="btn btn-info">automatisch kalender genereren</button>
+    <button class="btn btn-info" @onclick="AutoFillCalendar">automatisch kalender genereren</button>
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-9">
@@ -164,6 +166,13 @@ else
     private DayPeriod selectedDayPeriod;
     private bool ToggleUpdateDatePeriodJobs { get; set; }
     private bool ToggleUpdateDatePeriod { get; set; }
+
+    private async void AutoFillCalendar()
+    {
+        var users = await _userService.GetAllAsync();
+        var preferences = await _preferenceService.GetAllAsync();
+        var days = calendar.Days;
+    }
 
     private async void ToggleDayPeriodPopUp(DayPeriod dayPeriod)
     {
