@@ -53,18 +53,15 @@ namespace Ezac.Roster.Domain.Services
                     var jobNames = calendar.Days.SelectMany(d => d.DayPeriods)
                         .Where(dp => dp.Name == period)
                         .SelectMany(dp => dp.Jobs)
-                        .GroupBy(j => j.Name)
-                        .OrderBy(g => g.Key)
+                        .Select(j => j.Name)
+                        .Distinct()
+                        .OrderBy(name => name)
                         .ToList();
 
-                    foreach (var group in jobNames)
+                    foreach (var jobName in jobNames)
                     {
-                        int count = 1;
-                        foreach (var job in group)
-                        {
-                            headers.Add($"{job.Name} ({period}) {count}");
-                            count++;
-                        }
+                        
+                        headers.Add($"{jobName} ({period})");
                     }
                 }
 
@@ -118,6 +115,7 @@ namespace Ezac.Roster.Domain.Services
                     row++;
                 }
 
+                worksheet.Columns().AdjustToContents();
                 // Save the workbook to a memory stream
                 var stream = new MemoryStream();
                 workbook.SaveAs(stream);
