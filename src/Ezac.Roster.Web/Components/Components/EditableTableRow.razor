@@ -1,0 +1,97 @@
+﻿@inject IUserService UserService
+
+<tr>
+    @if (IsEditing)
+    {
+        <td><input type="text" @bind="member.Name" class="form-control" /></td>
+        <td><input type="email" @bind="member.Email" class="form-control" /></td>
+        <td><input type="number" min="0" step="0.1" @bind="member.Scaling" class="form-control" /></td>
+        @foreach (var permission in permissions)
+        {
+            <td>
+                @{
+                    var userPermission = member.UserPermissions.FirstOrDefault(up => up.PermissionId == permission.Id);
+                    if (userPermission == null)
+                    {
+                        userPermission = new UserPermission { PermissionId = permission.Id, Experience = 0 };
+                        member.UserPermissions.Add(userPermission);
+                    }
+                }
+                <input type="number" min="0" max="10" class="form-control" @bind="userPermission.Experience" />
+            </td>
+        }
+        <td>
+            <button type="button" class="btn btn-success" @onclick="UpdateMember">Aanpassen</button>
+            <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Annuleren</button>
+        </td>
+    }
+    else
+    {
+        <td>@member.Name</td>
+        <td>@member.Email</td>
+        <td>@member.Scaling</td>
+        @foreach (var permission in permissions)
+        {
+            <td>
+                @(member.UserPermissions.FirstOrDefault(up => up.PermissionId == permission.Id)?.Experience ?? 0)
+            </td>
+        }
+        <td>
+            <button type="button" class="btn btn-primary" @onclick="EditMember">Aanpassen</button>
+            <button type="button" class="btn btn-danger" @onclick="DeleteMember">Verwijderen</button>
+        </td>
+    }
+</tr>
+
+<DeleteUserPopUp deleteUser="DeleteUser" @ref="dialog" />
+
+@code {
+    [Parameter]
+    public MemberViewModel member { get; set; }
+    [Parameter]
+    public List<Permission> permissions { get; set; }
+    [Parameter]
+    public Func<Guid, Task> DeleteUser { get; set; }
+    [Parameter]
+    public EventCallback<MemberViewModel> UpdateUser { get; set; }
+
+    private bool IsEditing { get; set; }
+
+    private DeleteUserPopUp dialog;
+
+    private void EditMember()
+    {
+        IsEditing = true;
+    }
+
+    private async Task CancelEdit()
+    {
+        IsEditing = false;
+        var result = await UserService.GetByIdAsync(member.Id);
+        if (result.IsSucces)
+		{
+			member = new MemberViewModel
+			{
+				Id = result.Value.Id,
+				Name = result.Value.Name,
+				Email = result.Value.Email,
+				Scaling = result.Value.Scaling,
+				UserPermissions = result.Value.UserPermissions,
+				Preferences = result.Value.Preferences,
+				Jobs = result.Value.Jobs
+			};
+		}
+        StateHasChanged();
+    }
+
+    private async Task DeleteMember()
+    {
+        await dialog.Show(member.Id);
+    }
+
+    private async Task UpdateMember()
+	{
+		await UpdateUser.InvokeAsync(member);
+		IsEditing = false;
+	}
+}

@@ -14,7 +14,7 @@ namespace Ezac.Roster.Domain.Services.Models
         public string Email { get; set; }
         public double Scaling { get; set; }
         public bool IsAdmin { get; set; }
-        public IEnumerable<Permission> Permissions { get; set; }
+        public IEnumerable<UserPermission> Permissions { get; set; }
         public IEnumerable<Preference> Preferences { get; set; }
         public IEnumerable<Job> Jobs { get; set; }
     }

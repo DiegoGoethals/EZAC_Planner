@@ -26,5 +26,14 @@ namespace Ezac.Roster.Infrastructure.Repositories
         {
             return await _table.Where(user => user.Name.Contains(name)).ToListAsync();
         }
+
+        public override async Task<User> GetByIdAsync(Guid id)
+        {
+            return await _table
+                .Include(u => u.UserPermissions)
+                .ThenInclude(up => up.Permission)
+                .Include(u => u.Jobs)
+                .FirstOrDefaultAsync(u => u.Id == id);
+        }
     }
 }

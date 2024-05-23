@@ -8,10 +8,12 @@ namespace Ezac.Roster.Domain.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserPermissionRepository _userPermissionRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IUserPermissionRepository userPermissionRepository)
         {
             _userRepository = userRepository;
+            _userPermissionRepository = userPermissionRepository;
         }
 
         public async Task<ResultModel<IEnumerable<User>>> GetAllAsync()
@@ -66,23 +68,15 @@ namespace Ezac.Roster.Domain.Services
                 Email = userCreateRequestModel.Email,
                 Scaling = userCreateRequestModel.Scaling,
                 IsAdmin = userCreateRequestModel.IsAdmin,
-                UserPermissions = new List<UserPermission>(),
+                UserPermissions = userCreateRequestModel.Permissions.ToList(),
                 Preferences = userCreateRequestModel.Preferences.ToList(),
                 Jobs = userCreateRequestModel.Jobs.ToList()
             };
 
-            var userPermissions = new List<UserPermission>();
-            foreach (var permission in userCreateRequestModel.Permissions)
-            {
-                userPermissions.Add(new UserPermission
-                {
-                    Id = Guid.NewGuid(),
-                    PermissionId = permission.Id,
-                    UserId = user.Id,
-                    Experience = 1
-                });
-            }
-            user.UserPermissions = userPermissions;
+			foreach (var permission in user.UserPermissions)
+			{
+				permission.UserId = user.Id;
+			}
 
             if (await  _userRepository.AddAsync(user))
             {
@@ -149,24 +143,24 @@ namespace Ezac.Roster.Domain.Services
                 };
             }
 
-            var userPermissions = new List<UserPermission>();
             foreach (var permission in userUpdateRequestModel.Permissions)
             {
-                userPermissions.Add(new UserPermission
-                {
-                    Id = Guid.NewGuid(),
-                    PermissionId = permission.Id,
-                    UserId = user.Id,
-                    Experience = 1
-                });
+                await _userPermissionRepository.UpdateAsync(permission);
             }
 
             user.Name = userUpdateRequestModel.Name;
             user.Email = userUpdateRequestModel.Email;
             user.Scaling = userUpdateRequestModel.Scaling;
             user.IsAdmin = userUpdateRequestModel.IsAdmin;
-            user.UserPermissions = userPermissions;
-            user.Preferences = userUpdateRequestModel.Preferences.ToList();
+            user.UserPermissions = userUpdateRequestModel.Permissions.ToList();
+            if (userUpdateRequestModel.Preferences != null)
+            {
+                user.Preferences = userUpdateRequestModel.Preferences.ToList();
+            }
+            else
+            {
+                user.Preferences = new List<Preference>();
+            }
             user.Jobs = userUpdateRequestModel.Jobs.ToList();
 
             if(await _userRepository.UpdateAsync(user))
