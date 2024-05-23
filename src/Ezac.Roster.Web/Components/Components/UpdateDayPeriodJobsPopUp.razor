@@ -162,7 +162,30 @@
         }
     }
 
-    
+    private async void DeleteJob()
+    {
+        if (selectedDayPeriodJob != null)
+        {
+            var result = await _jobService.DeleteAsync(selectedDayPeriodJob.Id);
+            if (result.IsSucces)
+            {
+                await RefreshData();
+                feedback = "Dienst werd succesvol verwijderd";
+                StateHasChanged();
+                await Task.Delay(3000);
+                feedback = string.Empty;
+
+                await OnDeleteJob.InvokeAsync();
+            }
+        }
+        else
+        {
+            feedback = "Gelieve een dienst te selecteren";
+            StateHasChanged();
+            await Task.Delay(3000);
+            feedback = string.Empty;
+        }
+    }
 
     
 }
