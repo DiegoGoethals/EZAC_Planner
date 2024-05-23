@@ -127,7 +127,40 @@
         }
     }
 
-    
+    private async void AddJobToDayPeriod()
+    {
+        if (selectedJob != null)
+        {
+            var result = await _jobService.AddAsync(new JobCreateRequestModel
+            {
+                Name = selectedJob,
+                Weight = weight,
+                UserId = null,
+                DayPeriodId = DayPeriod.Id,
+                Preferences = new List<Preference>(),
+                PermissionName = selectedJob,
+                Experience = experience,
+            });
+
+            if (result.IsSucces)
+            {
+                await RefreshData();
+                feedback = "Dienst werd succesvol toegevoegd";
+                StateHasChanged();
+                await Task.Delay(3000);
+                feedback = string.Empty;
+
+                await OnAddJob.InvokeAsync();
+            }
+        }
+        else
+        {
+            feedback = "Gelieve een dienst te selecteren";
+            StateHasChanged();
+            await Task.Delay(3000);
+            feedback = string.Empty;
+        }
+    }
 
     
 
