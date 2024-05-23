@@ -30,7 +30,7 @@
                                 {
                                     <tr>
                                         <td>
-                                            <p>
+                                            <p @onclick="@(e => OnCellClick(day))">
                                                 @day.Date.ToString("ddd d/M")
                                             </p>
                                         </td>
@@ -101,6 +101,7 @@ else
     private List<Job> jobOptions = new List<Job>();
     private List<Job> selectedJobs = new List<Job>();
     private DayPeriod selectedPeriod;
+    private Day selectedDay;
     private bool IsAvailable = true;
     private bool twoWeekThresHoldReached = true;
 
@@ -147,6 +148,20 @@ else
         return jobs;
     }
 
+    private void OnCellClick(Day day)
+    {
+        var dayPrefs = new List<Preference>();
+        if (day.Preferences != null)
+        {
+            dayPrefs = day.Preferences.Where(p => p.UserId.ToString() == userId).ToList();
+        }
+        IsAvailable = dayPrefs.Select(p => p.Available).DefaultIfEmpty(true).FirstOrDefault();
+        if (DateTime.Now.Date <= calendar.Start.Date.AddDays(-14))
+        {
+            selectedDay = day;
+        }
+    }
+
     private void OnCellClick(Day day, DayPeriod period)
     {
         var periodPrefs = period.Preferences.Where(p => p.UserId.ToString() == userId).ToList();
@@ -156,6 +171,7 @@ else
         {
             jobOptions = GetJobsForUser(day, period.Name).ToList();
             selectedPeriod = period;
+            selectedDay = day;
         }
     }
 
@@ -194,44 +210,63 @@ else
             return;
         }
         var preferences = result.Value.Where(p => p.DayPeriod == selectedPeriod).ToList();
-        foreach(var preference in preferences)
+        if(selectedPeriod != null)
         {
-            if ((preference.Job != null && !selectedJobs.Contains(preference.Job)) || preference.Available != IsAvailable)
+            var periodPrefs = preferences.Where(p => p.DayPeriod == selectedPeriod).ToList();
+            foreach (var preference in periodPrefs)
             {
-                await PreferenceService.DeleteAsync(preference.Id);
+                if ((preference.Job != null && !selectedJobs.Contains(preference.Job)) || preference.Available != IsAvailable)
+                {
+                    await PreferenceService.DeleteAsync(preference.Id);
+                }
             }
-        }
-        if (selectedJobs != null && selectedJobs.Count > 0)
-        {
-            foreach (var job in selectedJobs)
+            if (selectedJobs != null && selectedJobs.Count > 0)
+            {
+                foreach (var job in selectedJobs)
+                {
+                    var requestModel = new PreferenceCreateRequestModel
+                        {
+                            Name = $"{user.Name} - {job.Name} - {selectedPeriod.Name}",
+                            Available = IsAvailable,
+                            JobId = job.Id,
+                            UserId = user.Id,
+                            DayPeriodId = selectedPeriod.Id,
+                            DayId = selectedDay.Id
+                        };
+                    if (!periodPrefs.Any(p => p.JobId == job.Id && p.UserId == user.Id))
+                    {
+                        await PreferenceService.AddAsync(requestModel);
+                    }
+                }
+            }
+            else
             {
                 var requestModel = new PreferenceCreateRequestModel
-                {
-                    Name = $"{user.Name} - {job.Name} - {selectedPeriod.Name}",
-                    Available = IsAvailable,
-                    JobId = job.Id,
-                    UserId = user.Id,
-                    DayPeriodId = selectedPeriod.Id,
-                    DayId = selectedPeriod.DayId
-                };
-                if (!preferences.Any(p => p.JobId == job.Id && p.UserId == user.Id && p.DayPeriodId == selectedPeriod.Id))
+                    {
+                        Name = $"{user.Name} - {selectedPeriod.Name}",
+                        Available = IsAvailable,
+                        UserId = user.Id,
+                        DayPeriodId = selectedPeriod.Id,
+                        DayId = selectedDay.Id
+                    };
+                if (!periodPrefs.Any(p => p.UserId == user.Id))
                 {
                     await PreferenceService.AddAsync(requestModel);
                 }
             }
         }
-        else
+        else if (selectedPeriod == null && selectedDay != null && !preferences.Any(p => p.UserId == user.Id))
         {
-            var requestModel = new PreferenceCreateRequestModel
+            foreach (var period in selectedDay.DayPeriods)
             {
-                Name = $"{user.Name} - {selectedPeriod.Name}",
-                Available = IsAvailable,
-                UserId = user.Id,
-                DayPeriodId = selectedPeriod.Id,
-                DayId = selectedPeriod.DayId
-            };
-            if (preferences.Any(p => p.UserId == user.Id && p.DayPeriodId == selectedPeriod.Id))
-            {
+                var requestModel = new PreferenceCreateRequestModel
+                {
+                    Name = $"{user.Name} - {period.Name}",
+                    Available = IsAvailable,
+                    UserId = user.Id,
+                    DayId = selectedDay.Id,
+                    DayPeriodId = period.Id
+                };
                 await PreferenceService.AddAsync(requestModel);
             }
         }
