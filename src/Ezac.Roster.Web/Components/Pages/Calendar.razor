@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-lg-9">
                 <div class="table-responsive">
-                    <table class="table table-bordered" style="border-color:black">
+                    <table class="table table-bordered table-hover" style="border-color:black">
                         <thead>
                             <tr>
                                 <th>Dag/Periode</th>
@@ -58,7 +58,7 @@
                                                     @foreach (var job in period.Jobs)
                                                     {
                                                         <div ondragover="event.preventDefault();" draggable="true" @ondrop="(e => HandleDrop(e, job, day, period))" style="border-color:black">
-                                                            <p style="text-decoration:underline">@job.Name</p>
+                                                            <p style="text-decoration:underline; cursor:pointer">@job.Name</p>
 
                                                             @if (job.User != null)
                                                             {
@@ -131,6 +131,16 @@ else
 {
     <p>Gegevens worden geladen of kalender bevat geen dagen.</p>
 }
+
+<style>
+    .table-hover tbody tr td:hover {
+        background-color: cornflowerblue !important;
+        cursor: pointer;
+    }
+
+
+</style>
+
 
 
 @code {
