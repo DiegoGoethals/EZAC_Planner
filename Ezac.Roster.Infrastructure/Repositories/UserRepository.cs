@@ -35,5 +35,10 @@ namespace Ezac.Roster.Infrastructure.Repositories
                 .Include(u => u.Jobs)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
-    }
+
+		public async Task<IEnumerable<User>> GetUsersByCalendarIdAsync(Guid calendarId)
+		{
+			return await _applicationDbContext.Users.Where(u => u.ApplicationCalendars.Any(ac => ac.Id == calendarId)).ToListAsync();
+		}
+	}
 }
