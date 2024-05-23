@@ -118,6 +118,8 @@
         if (!string.IsNullOrEmpty(selectedJobId))
         {
             selectedDayPeriodJob = _dayPeriodJobs.FirstOrDefault(job => job.Id.ToString() == selectedJobId);
+            updateWeight = selectedDayPeriodJob.Weight;
+            updateExperience = selectedDayPeriodJob.Experience;
         }
     }
 
@@ -125,26 +127,34 @@
     {
         if (selectedJob != null)
         {
-            var result = await _jobService.AddAsync(new JobCreateRequestModel
-            {
-                Name = selectedJob,
-                Weight = weight,
-                UserId = null,
-                DayPeriodId = DayPeriod.Id,
-                Preferences = new List<Preference>(),
-                PermissionName = selectedJob,
-                Experience = experience,
-            });
 
-            if (result.IsSucces)
+            if (weight < 1 || weight > 10 || experience < 1 || experience > 10)
             {
-                await RefreshData();
-                feedback = "Dienst werd succesvol toegevoegd";
-                StateHasChanged();
-                await OnAddJob.InvokeAsync();
-                await Task.Delay(2000);
-                feedback = string.Empty;
-                StateHasChanged();
+                feedback = "gewicht en ervaring moet tussen 1 en 10 zijn!";
+            }
+            else
+            {
+                var result = await _jobService.AddAsync(new JobCreateRequestModel
+                {
+                    Name = selectedJob,
+                    Weight = weight,
+                    UserId = null,
+                    DayPeriodId = DayPeriod.Id,
+                    Preferences = new List<Preference>(),
+                    PermissionName = selectedJob,
+                    Experience = experience,
+                });
+
+                if (result.IsSucces)
+                {
+                    await RefreshData();
+                    feedback = "Dienst werd succesvol toegevoegd";
+                    StateHasChanged();
+                    await OnAddJob.InvokeAsync();
+                    await Task.Delay(2000);
+                    feedback = string.Empty;
+                    StateHasChanged();
+                }
             }
         }
         else
@@ -167,7 +177,7 @@
                 feedback = "Dienst werd succesvol verwijderd";
                 StateHasChanged();
                 await OnDeleteJob.InvokeAsync();
-                await Task.Delay(3000);
+                await Task.Delay(2000);
                 feedback = string.Empty;
                 StateHasChanged();
             }
@@ -185,28 +195,35 @@
     {
         if (selectedDayPeriodJob != null)
         {
-            var result = await _jobService.UpdateAsync(new JobUpdateRequestModel
+            if (updateWeight < 1 || updateWeight > 10 || updateExperience < 1 || updateExperience > 10)
             {
-                Id = selectedDayPeriodJob.Id,
-                Name = selectedDayPeriodJob.Name,
-                PermissionName = selectedDayPeriodJob.PermissionName,
-                Weight = updateWeight,
-                Experience = updateExperience,
-                DayPeriodId = selectedDayPeriodJob.DayPeriodId,
-                Preferences = selectedDayPeriodJob.Preferences,
-                UserId =selectedDayPeriodJob.UserId,
-            });
+                feedback = "gewicht en ervaring moet tussen 1 en 10 zijn!";
+            }
+            else
+            {
+                var result = await _jobService.UpdateAsync(new JobUpdateRequestModel
+                {
+                    Id = selectedDayPeriodJob.Id,
+                    Name = selectedDayPeriodJob.Name,
+                    PermissionName = selectedDayPeriodJob.PermissionName,
+                    Weight = updateWeight,
+                    Experience = updateExperience,
+                    DayPeriodId = selectedDayPeriodJob.DayPeriodId,
+                    Preferences = selectedDayPeriodJob.Preferences,
+                    UserId = selectedDayPeriodJob.UserId,
+                });
 
 
-            if (result.IsSucces)
-            {
-                await RefreshData();
-                feedback = "Dienst werd succesvol bijgewerkt";
-                StateHasChanged();
-                await OnDeleteJob.InvokeAsync();
-                await Task.Delay(3000);
-                feedback = string.Empty;
-                StateHasChanged();
+                if (result.IsSucces)
+                {
+                    await RefreshData();
+                    feedback = "Dienst werd succesvol bijgewerkt";
+                    StateHasChanged();
+                    await OnDeleteJob.InvokeAsync();
+                    await Task.Delay(2000);
+                    feedback = string.Empty;
+                    StateHasChanged();
+                }
             }
         }
         else
