@@ -19,7 +19,7 @@
 {
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-10">
+            <div class="col-lg-9">
                 <div class="table-responsive">
                     <table class="table table-bordered" style="border-color:black">
                         <thead>
@@ -57,9 +57,7 @@
                                             {
                                                 <td @onclick="() => TogglePopUp(day, period)" style="background-color:lightgreen">
                                                     <div class="mb-2">
-                                                        <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">
-                                                            Sluit dagdeel
-                                                        </button>
+                                                        <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">X</button>
                                                         <p>Start: @period.Start.TimeOfDay</p>
                                                         <p>Einde: @period.End.TimeOfDay</p>
                                                     </div>
@@ -92,7 +90,7 @@
 
             @if (ToggleSchedulerPopUp)
             {
-                <div class="col-lg-2">
+                <div class="col-lg-3">
                     <div class="position-fixed" style="top: 100px; right: 20px;">
                         <Ezac.Roster.Web.Components.Components.SchedulerPopUp @rendermode="InteractiveServer"
                                                                               OnGetStaff="(e) => GetStaff(e)"
@@ -100,7 +98,8 @@
                                                                               OnCancel="CancelPopUp"
                                                                               OnDragged="(user) => HandleDragStart(user)"
                                                                               Day="selectedDay"
-                                                                              DayPeriod="selectedDayPeriod">
+                                                                              DayPeriod="selectedDayPeriod"
+                                                                              OnUpdate="(dayPeriod) =>ToggleDayPeriodPopUp(dayPeriod)">
                         </Ezac.Roster.Web.Components.Components.SchedulerPopUp>
                     </div>
                 </div>
@@ -119,255 +118,266 @@
                     </div>
                 </div>
             }
+            @if (ToggleUpdateDatePeriodJobs)
+            {
+                <div class="col-lg-2">
+                    <div class="position-fixed" style="top: 100px; right: 20px;">
+                        <Ezac.Roster.Web.Components.Components.UpdateDayPeriodJobsPopUp @rendermode="InteractiveServer"
+                                                                                        Day="selectedDay"
+                                                                                        DayPeriod="selectedDayPeriod"
+                                                                                        OnAddJob="UpdatePeriod"
+                                                                                        OnDeleteJob="UpdatePeriod">
+                        </Ezac.Roster.Web.Components.Components.UpdateDayPeriodJobsPopUp>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 }
 else
 {
-<p>Gegevens worden geladen of kalender bevat geen dagen.</p>
+    <p>Gegevens worden geladen of kalender bevat geen dagen.</p>
 }
 
 
-        @code {
-            [Parameter]
-            public string Id { get; set; }
+@code {
+    [Parameter]
+    public string Id { get; set; }
 
     private ApplicationCalendar calendar;
-        private List<DayPeriod> dayPeriods;
-        private static List<Job> jobs;
-        private static List<Permission> permissions;
-        private string SelectedMonth;
-        private List<string> periodNames = new List<string>();
-        private bool ToggleSchedulerPopUp { get; set; }
-        private UserListModel draggedMember = null;
-        private Dictionary<string, UserListModel> Dropzones = new();
-        private List<UserListModel> _users { get; set; } = new List<UserListModel>();
-        public List<UserListModel> Staff { get; set; } = new List<UserListModel>();
+    private List<DayPeriod> dayPeriods;
+    private static List<Job> jobs;
+    private static List<Permission> permissions;
+    private string SelectedMonth;
+    private List<string> periodNames = new List<string>();
+    private bool ToggleSchedulerPopUp { get; set; }
+    private UserListModel draggedMember = null;
+    private Dictionary<string, UserListModel> Dropzones = new();
+    private List<UserListModel> _users { get; set; } = new List<UserListModel>();
+    public List<UserListModel> Staff { get; set; } = new List<UserListModel>();
 
-        private Day selectedDay;
-        private DayPeriod selectedDayPeriod;
-        private bool ToggleUpdateDatePeriod { get; set; }
+    private Day selectedDay;
+    private DayPeriod selectedDayPeriod;
+    private bool ToggleUpdateDatePeriod { get; set; }
 
-        private async Task UpdatePeriod()
+
+    private async void AddDayPeriod()
+    {
+        var result = await DayPeriodService.AddAsync(new DayPeriodCreateRequestModel
         {
-            await InvokeAsync(StateHasChanged);
-        }
+            Start = DateTime.Parse("23:00"),
+            End = DateTime.Parse("02:00"),
+            DayId = selectedDay.Id,
+            IsOpen = true,
+        });
 
-        private async void AddDayPeriod()
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task DeletePeriod(DayPeriod dayPeriod)
+    {
+        var result = await DayPeriodService.DeleteAsync(dayPeriod.Id);
+
+        if (result.IsSucces)
         {
-            var result = await DayPeriodService.AddAsync(new DayPeriodCreateRequestModel
+            foreach (var job in dayPeriod.Jobs)
             {
-                Start = DateTime.Parse("23:00"),
-                End = DateTime.Parse("02:00"),
-                DayId = selectedDay.Id,
-                IsOpen = true,
-            });
-
-            await InvokeAsync(StateHasChanged);
-        }
-
-        private async Task DeletePeriod(DayPeriod dayPeriod)
-        {
-            var result = await DayPeriodService.DeleteAsync(dayPeriod.Id);
-
-            if (result.IsSucces)
-            {
-                foreach (var job in dayPeriod.Jobs)
-                {
-                    await JobService.DeleteAsync(job.Id);
-                }
+                await JobService.DeleteAsync(job.Id);
             }
-
-            await InvokeAsync(StateHasChanged);
         }
 
-        private async void CancelUserDropZone(Guid dropzoneId)
-        {
-            Dropzones[dropzoneId.ToString()] = null;
+        await InvokeAsync(StateHasChanged);
+    }
 
-            //get the job
-            var result = await JobService.GetByIdAsync(dropzoneId);
-            if (result.IsSucces)
+    private async void CancelUserDropZone(Guid dropzoneId)
+    {
+        Dropzones[dropzoneId.ToString()] = null;
+
+        //get the job
+        var result = await JobService.GetByIdAsync(dropzoneId);
+        if (result.IsSucces)
+        {
+            var job = new JobUpdateRequestModel
             {
-                var job = new JobUpdateRequestModel
-                {
-                    Id = dropzoneId,
-                    Name = result.Value.Name,
-                    Weight = result.Value.Weight,
-                    User = null,
-                    UserId = null,
-                    DayPeriodId = result.Value.DayPeriodId,
-                    PermissionName = result.Value.PermissionName,
-                    Preferences = result.Value.Preferences,
-                };
-                //update job in db
-                var updateResult = await JobService.UpdateAsync(job);
-            }
-            await InvokeAsync(StateHasChanged);
+                Id = dropzoneId,
+                Name = result.Value.Name,
+                Weight = result.Value.Weight,
+                User = null,
+                UserId = null,
+                DayPeriodId = result.Value.DayPeriodId,
+                PermissionName = result.Value.PermissionName,
+                Preferences = result.Value.Preferences,
+            };
+            //update job in db
+            var updateResult = await JobService.UpdateAsync(job);
         }
+        await InvokeAsync(StateHasChanged);
+    }
 
-        public Task HandleDragStart(UserListModel user)
+    public Task HandleDragStart(UserListModel user)
+    {
+        draggedMember = user;
+        return Task.CompletedTask;
+    }
+
+
+    private async Task HandleDrop(DragEventArgs e, Job job, Day day, DayPeriod dayPeriod)
+    {
+        if (draggedMember != null)
         {
-            draggedMember = user;
-            return Task.CompletedTask;
-        }
-
-
-        private async Task HandleDrop(DragEventArgs e, Job job, Day day, DayPeriod dayPeriod)
-        {
-            if (draggedMember != null)
+            if (day.Date == selectedDay.Date && dayPeriod.Name == selectedDayPeriod.Name)
             {
-                if (day.Date == selectedDay.Date && dayPeriod.Name == selectedDayPeriod.Name)
+                if (!dayPeriod.Jobs.Any(j => j.UserId == draggedMember.Id))
                 {
-                    if (!dayPeriod.Jobs.Any(j => j.UserId == draggedMember.Id))
+                    if (draggedMember.Permissions.Any(p => p.Name == job.Name))
                     {
-                        if (draggedMember.Permissions.Any(p => p.Name == job.Name))
+                        if (!Dropzones.ContainsKey(job.Id.ToString()))
                         {
-                            if (!Dropzones.ContainsKey(job.Id.ToString()))
-                            {
-                                Dropzones[job.Id.ToString()] = new UserListModel();
-                            }
-
-                            Dropzones[job.Id.ToString()] = draggedMember;
-
-                            var newJob = new JobUpdateRequestModel
-                            {
-                                Id = job.Id,
-                                Name = job.Name,
-                                Weight = job.Weight,
-                                User = draggedMember,
-                                UserId = draggedMember.Id,
-                                DayPeriodId = job.DayPeriodId,
-                                PermissionName = job.PermissionName,
-                                Preferences = job.Preferences,
-                            };
-                            //update job in db
-                            var updateResult = await JobService.UpdateAsync(newJob);
+                            Dropzones[job.Id.ToString()] = new UserListModel();
                         }
+
+                        Dropzones[job.Id.ToString()] = draggedMember;
+
+                        var newJob = new JobUpdateRequestModel
+                        {
+                            Id = job.Id,
+                            Name = job.Name,
+                            Weight = job.Weight,
+                            User = draggedMember,
+                            UserId = draggedMember.Id,
+                            DayPeriodId = job.DayPeriodId,
+                            PermissionName = job.PermissionName,
+                            Preferences = job.Preferences,
+                        };
+                        //update job in db
+                        var updateResult = await JobService.UpdateAsync(newJob);
                     }
                 }
-                await InvokeAsync(StateHasChanged);
             }
-        }
-
-        private void TogglePopUp(Day day, DayPeriod dayPeriod)
-        {
-            ToggleUpdateDatePeriod = false;
-            ToggleSchedulerPopUp = true;
-            selectedDay = day;
-            selectedDayPeriod = dayPeriod;
-        }
-
-        private void CancelPopUp()
-        {
-            ToggleSchedulerPopUp = false;
-        }
-
-        private void GetStaff(ChangeEventArgs e)
-        {
-            if (Staff.Count > 0)
-            {
-                Staff.Clear();
-            }
-
-            foreach (var user in _users)
-            {
-                if (user.Permissions.Any(p => p.Name == e.Value?.ToString()))
-                {
-                    Staff.Add(user);
-                }
-            }
-        }
-
-
-        protected override async Task OnInitializedAsync()
-        {
-            // get the calendar
-            var calendarResult = await CalendarService.GetByIdAsync(Guid.Parse(Id));
-
-            if (calendarResult.IsSucces)
-            {
-                calendar = calendarResult.Value;
-                calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
-
-                await GetUniquePeriodNames();
-            }
-
-            var usersResult = await _userService.GetAllAsync();
-            if (usersResult.IsSucces)
-            {
-                _users = usersResult.Value.Select(p => new Ezac.Roster.Domain.Models.UserListModel
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Permissions = p.UserPermissions,
-                    Scaling = p.Scaling,
-                }).ToList();
-            }
-
-        }
-
-        private IEnumerable<DayPeriod> GetDayPeriodsForDay(Guid dayId)
-        {
-            // get day periods for the specific day
-            return dayPeriods.Where(dp => dp.DayId == dayId);
-        }
-
-        private IEnumerable<Job> GetJobsForDayAndPeriod(Day day, DayPeriod period)
-        {
-            // get jobs for the specific day and period
-            return day.DayPeriods
-                  .Where(dp => dp.Id == period.Id)
-                  .SelectMany(dp => dp.Jobs);
-        }
-
-        private async void ToggleDay(Day day)
-        {
-            ToggleSchedulerPopUp = false;
-            ToggleUpdateDatePeriod = true;
-
-            selectedDay = day;
-
             await InvokeAsync(StateHasChanged);
         }
+    }
 
-        private async Task TogglePeriod(Day day, DayPeriod dayPeriod)
+    private async void TogglePopUp(Day day, DayPeriod dayPeriod)
+    {
+        //ToggleUpdateDatePeriodJobs = false;
+        ToggleUpdateDatePeriod = false;
+        ToggleSchedulerPopUp = true;
+        selectedDay = day;
+        selectedDayPeriod = dayPeriod;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void CancelPopUp()
+    {
+        ToggleSchedulerPopUp = false;
+    }
+
+    private void GetStaff(ChangeEventArgs e)
+    {
+        if (Staff.Count > 0)
         {
-            //var dayPeriod = day.DayPeriods.FirstOrDefault(dp => dp.Name == period.Name);
-            if (dayPeriod != null && ToggleSchedulerPopUp == true)
+            Staff.Clear();
+        }
+
+        foreach (var user in _users)
+        {
+            if (user.Permissions.Any(p => p.Name == e.Value?.ToString()))
             {
-                var toggleResult = await DayPeriodService.ToggleAsync(dayPeriod.Id);
-                if (toggleResult.IsSucces)
-                {
-                    StateHasChanged();
-                }
+                Staff.Add(user);
             }
         }
+    }
 
-        private IEnumerable<DayPeriod> GetDistinctPeriods(ICollection<Day> days)
+
+    protected override async Task OnInitializedAsync()
+    {
+        // get the calendar
+        var calendarResult = await CalendarService.GetByIdAsync(Guid.Parse(Id));
+
+        if (calendarResult.IsSucces)
         {
-            return days.SelectMany(d => d.DayPeriods)
-                       .GroupBy(p => p.Id)
-                       .Select(g => g.First())
-                       .ToList();
+            calendar = calendarResult.Value;
+            calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
+
+            await GetUniquePeriodNames();
         }
 
-        private async Task GetUniquePeriodNames()
+        var usersResult = await _userService.GetAllAsync();
+        if (usersResult.IsSucces)
         {
-            var dayPeriods = await DayPeriodService.GetAllAsync();
-            if (dayPeriods.IsSucces)
+            _users = usersResult.Value.Select(p => new Ezac.Roster.Domain.Models.UserListModel
             {
-                periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().OrderBy(name => name).ToList();
+                Id = p.Id,
+                Name = p.Name,
+                Permissions = p.UserPermissions,
+                Scaling = p.Scaling,
+            }).ToList();
+        }
+
+    }
+
+    private IEnumerable<DayPeriod> GetDayPeriodsForDay(Guid dayId)
+    {
+        // get day periods for the specific day
+        return dayPeriods.Where(dp => dp.DayId == dayId);
+    }
+
+    private IEnumerable<Job> GetJobsForDayAndPeriod(Day day, DayPeriod period)
+    {
+        // get jobs for the specific day and period
+        return day.DayPeriods
+              .Where(dp => dp.Id == period.Id)
+              .SelectMany(dp => dp.Jobs);
+    }
+
+    private async void ToggleDay(Day day)
+    {
+        ToggleSchedulerPopUp = false;
+        ToggleUpdateDatePeriod = true;
+
+        selectedDay = day;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task TogglePeriod(Day day, DayPeriod dayPeriod)
+    {
+        if (dayPeriod != null && ToggleSchedulerPopUp == true)
+        {
+            var toggleResult = await DayPeriodService.ToggleAsync(dayPeriod.Id);
+            if (toggleResult.IsSucces)
+            {
+                StateHasChanged();
             }
         }
+    }
 
-        private async Task GetPermissions()
+    private IEnumerable<DayPeriod> GetDistinctPeriods(ICollection<Day> days)
+    {
+        return days.SelectMany(d => d.DayPeriods)
+                   .GroupBy(p => p.Id)
+                   .Select(g => g.First())
+                   .ToList();
+    }
+
+    private async Task GetUniquePeriodNames()
+    {
+        var dayPeriods = await DayPeriodService.GetAllAsync();
+        if (dayPeriods.IsSucces)
         {
-            var permissionsResult = await PermissionService.GetAllAsync();
-            if (permissionsResult.IsSucces)
-            {
-                permissions = permissionsResult.Value.ToList();
-            }
+            periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().OrderBy(name => name).ToList();
         }
+    }
+
+    private async Task GetPermissions()
+    {
+        var permissionsResult = await PermissionService.GetAllAsync();
+        if (permissionsResult.IsSucces)
+        {
+            permissions = permissionsResult.Value.ToList();
         }
+    }
+}
 
