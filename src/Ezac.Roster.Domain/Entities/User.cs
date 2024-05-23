@@ -13,7 +13,7 @@ namespace Ezac.Roster.Domain.Entities
         public ICollection<Preference> Preferences { get; set; }
         public ICollection<Job>? Jobs { get; set; }
         public ICollection<UserPermission> UserPermissions { get; set; }
-        public ICollection<ApplicationCalendar> ApplicationCalendars { get; set; }
+        public ApplicationCalendar ApplicationCalendar { get; set; }
         public int OriginalId { get; set; }
 
     }
