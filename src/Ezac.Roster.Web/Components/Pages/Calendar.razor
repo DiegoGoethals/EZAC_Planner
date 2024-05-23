@@ -12,9 +12,9 @@
 {
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-10">
+            <div class="col-lg-9">
                 <div class="table-responsive">
-                    <table class="table table-bordered" style="border-color:black">
+                    <table class="table table-bordered table-hover" style="border-color:black">
                         <thead>
                             <tr>
                                 <th>Dag/Periode</th>
@@ -49,9 +49,7 @@
                                             {
                                                 <td @onclick="() => TogglePopUp(day, period)" style="background-color:lightgreen">
                                                     <div class="mb-2">
-                                                        <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">
-                                                            Sluit dagdeel
-                                                        </button>
+                                                        <button @onclick="() => TogglePeriod(day, period)" class="btn btn-primary">X</button>
                                                         <p>Start: @period.Start.TimeOfDay</p>
                                                         <p>Einde: @period.End.TimeOfDay</p>
                                                     </div>
@@ -59,7 +57,7 @@
                                                     @foreach (var job in period.Jobs)
                                                     {
                                                         <div ondragover="event.preventDefault();" draggable="true" @ondrop="(e => HandleDrop(e, job, day, period))" style="border-color:black">
-                                                            <p style="text-decoration:underline">@job.Name</p>
+                                                            <p style="text-decoration:underline; cursor:pointer">@job.Name</p>
 
                                                             @if (job.User != null)
                                                             {
@@ -84,7 +82,7 @@
 
             @if (ToggleSchedulerPopUp)
             {
-                <div class="col-lg-2">
+                <div class="col-lg-3">
                     <div class="position-fixed" style="top: 100px; right: 20px;">
                         <Ezac.Roster.Web.Components.Components.SchedulerPopUp @rendermode="InteractiveServer"
                                                                               OnGetStaff="(e) => GetStaff(e)"
@@ -92,7 +90,8 @@
                                                                               OnCancel="CancelPopUp"
                                                                               OnDragged="(user) => HandleDragStart(user)"
                                                                               Day="selectedDay"
-                                                                              DayPeriod="selectedDayPeriod">
+                                                                              DayPeriod="selectedDayPeriod"
+                                                                              OnUpdate="(dayPeriod) =>ToggleDayPeriodPopUp(dayPeriod)">
                         </Ezac.Roster.Web.Components.Components.SchedulerPopUp>
                     </div>
                 </div>
@@ -111,13 +110,36 @@
                     </div>
                 </div>
             }
+            @if (ToggleUpdateDatePeriodJobs)
+            {
+                <div class="col-lg-2">
+                    <div class="position-fixed" style="top: 100px; right: 20px;">
+                        <Ezac.Roster.Web.Components.Components.UpdateDayPeriodJobsPopUp @rendermode="InteractiveServer"
+                                                                                        Day="selectedDay"
+                                                                                        DayPeriod="selectedDayPeriod"
+                                                                                        OnAddJob="UpdatePeriod"
+                                                                                        OnDeleteJob="UpdatePeriod">
+                        </Ezac.Roster.Web.Components.Components.UpdateDayPeriodJobsPopUp>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 }
 else
 {
-<p>Gegevens worden geladen of kalender bevat geen dagen.</p>
+    <p>Gegevens worden geladen of kalender bevat geen dagen.</p>
 }
+
+<style>
+    .table-hover tbody tr td:hover {
+        background-color: cornflowerblue !important;
+        cursor: pointer;
+    }
+
+
+</style>
+
 
 
 @code {
@@ -138,8 +160,18 @@ else
 
     private Day selectedDay;
     private DayPeriod selectedDayPeriod;
+    private bool ToggleUpdateDatePeriodJobs { get; set; }
     private bool ToggleUpdateDatePeriod { get; set; }
 
+    private async void ToggleDayPeriodPopUp(DayPeriod dayPeriod)
+    {
+        ToggleUpdateDatePeriod = false;
+        ToggleSchedulerPopUp = false;
+        ToggleUpdateDatePeriodJobs = true;
+        selectedDayPeriod = dayPeriod;
+
+        await InvokeAsync(StateHasChanged);
+    }
     protected override async Task OnInitializedAsync()
     {
         // get the calendar
@@ -169,6 +201,11 @@ else
     private async Task UpdatePeriod()
     {
         await InvokeAsync(StateHasChanged);
+    }
+
+    private void UpdatePeriod()
+    {
+        StateHasChanged();
     }
 
     private async void AddDayPeriod()
@@ -230,6 +267,7 @@ else
         return Task.CompletedTask;
     }
 
+
     private async Task HandleDrop(DragEventArgs e, Job job, Day day, DayPeriod dayPeriod)
     {
         if (draggedMember != null)
@@ -267,12 +305,15 @@ else
         }
     }
 
-    private void TogglePopUp(Day day, DayPeriod dayPeriod)
+    private async void TogglePopUp(Day day, DayPeriod dayPeriod)
     {
+        ToggleUpdateDatePeriodJobs = false;
         ToggleUpdateDatePeriod = false;
         ToggleSchedulerPopUp = true;
         selectedDay = day;
         selectedDayPeriod = dayPeriod;
+
+        await InvokeAsync(StateHasChanged);
     }
 
     private void CancelPopUp()
@@ -296,6 +337,34 @@ else
         }
     }
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        // get the calendar
+        var calendarResult = await CalendarService.GetByIdAsync(Guid.Parse(Id));
+
+        if (calendarResult.IsSucces)
+        {
+            calendar = calendarResult.Value;
+            calendar.Days = calendar.Days.OrderBy(day => day.Date).ToList();
+
+            await GetUniquePeriodNames();
+        }
+
+        var usersResult = await _userService.GetAllAsync();
+        if (usersResult.IsSucces)
+        {
+            _users = usersResult.Value.Select(p => new Ezac.Roster.Domain.Models.UserListModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Permissions = p.UserPermissions,
+                Scaling = p.Scaling,
+            }).ToList();
+        }
+
+    }
+
     private IEnumerable<DayPeriod> GetDayPeriodsForDay(Guid dayId)
     {
         // get day periods for the specific day
@@ -306,22 +375,22 @@ else
     {
         // get jobs for the specific day and period
         return day.DayPeriods
-            .Where(dp => dp.Id == period.Id)
-            .SelectMany(dp => dp.Jobs);
+              .Where(dp => dp.Id == period.Id)
+              .SelectMany(dp => dp.Jobs);
     }
 
     private async void ToggleDay(Day day)
     {
         ToggleSchedulerPopUp = false;
         ToggleUpdateDatePeriod = true;
-        
+
         selectedDay = day;
+
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task TogglePeriod(Day day, DayPeriod dayPeriod)
     {
-        //var dayPeriod = day.DayPeriods.FirstOrDefault(dp => dp.Name == period.Name);
         if (dayPeriod != null && ToggleSchedulerPopUp == true)
         {
             var toggleResult = await DayPeriodService.ToggleAsync(dayPeriod.Id);
@@ -358,3 +427,4 @@ else
         }
     }
 }
+

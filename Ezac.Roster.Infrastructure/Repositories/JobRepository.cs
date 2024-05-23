@@ -1,6 +1,7 @@
 ﻿using Ezac.Roster.Domain.Entities;
 using Ezac.Roster.Domain.Interfaces.Repositories;
 using Ezac.Roster.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,11 @@ namespace Ezac.Roster.Infrastructure.Repositories
 			: base(applicationDbContext, logger)
 		{
 		}
-	}
+
+		public async Task<IEnumerable<Job>> GetAllJobsByDayPeriodIdAsync(Guid id)
+		{
+			var result = await _table.Where(j => j.DayPeriodId == id).ToListAsync();
+            return result;
+		}
+    }
 }
