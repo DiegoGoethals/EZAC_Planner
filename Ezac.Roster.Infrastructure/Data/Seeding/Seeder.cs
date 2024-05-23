@@ -20,27 +20,18 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 			new Permission { Id = Guid.Parse("00000000-0000-0000-0000-000000000004"), Name = "Instructeur" }
 			};
 
-			var jobs = new Job[]
-			{
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000008"), Name = "Lierist", PermissionName ="Lierist", Experience = 1},
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000009"), Name = "Startofficier",PermissionName ="Startofficier", Experience = 1},
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000010"), Name = "Bardienst", PermissionName ="Bardienst", Experience = 1},
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000011"), Name = "Instructeur", PermissionName ="Instructeur", Experience = 1},
-				new Job { Id = Guid.Parse("00000000-0000-0000-0000-000000000012"), Name = "Instructeur(DDI)", PermissionName ="Instructeur", Experience = 1},
-			};
-
 
 			var users = new User[]
 			{
-			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000005"), Name = "Johnny Debeer", Email = "johnny@ezac.com", Scaling = 1, IsAdmin = false},
-			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000006"), Name = "Alfonso Rosseel", Email = "Alfie@ezac.com", Scaling = 0.5, IsAdmin = false,},
-			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000007"), Name = "Mohammed Ali", Email = "Admin@ezac.com", Scaling = 1, IsAdmin = true,},
-			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000008"), Name = "Diego Maradonna", Email = "Diego@ezac.com", Scaling = 1, IsAdmin = false,},
-			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000009"), Name = "Mitch Mitchell", Email = "Mitch@ezac.com", Scaling = 1, IsAdmin = false,},
-			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000010"), Name = "Mileto Di Marco", Email = "Mileto@ezac.com", Scaling = 1, IsAdmin = false,},
-			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000011"), Name = "Antoinne De Vlieger", Email = "Antoinne@ezac.com", Scaling = 1, IsAdmin = true,},
-			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000012"), Name = "Siegfried Dedeyne", Email = "Siegfried@ezac.com", Scaling = 1, IsAdmin = true,},
-			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000013"), Name = "Dries Deboosere", Email = "Dries@ezac.com", Scaling = 1, IsAdmin = false,},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000005"), Name = "Johnny Debeer", Email = "johnny@ezac.com", Scaling = 1},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000006"), Name = "Alfonso Rosseel", Email = "Alfie@ezac.com", Scaling = 0.5},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000007"), Name = "Mohammed Ali", Email = "Admin@ezac.com", Scaling = 1},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000008"), Name = "Diego Maradonna", Email = "Diego@ezac.com", Scaling = 1},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000009"), Name = "Mitch Mitchell", Email = "Mitch@ezac.com", Scaling = 1},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000010"), Name = "Mileto Di Marco", Email = "Mileto@ezac.com", Scaling = 1},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000011"), Name = "Antoinne De Vlieger", Email = "Antoinne@ezac.com", Scaling = 1},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000012"), Name = "Siegfried Dedeyne", Email = "Siegfried@ezac.com", Scaling = 1},
+			new User { Id = Guid.Parse("00000000-0000-0000-0000-000000000013"), Name = "Dries Deboosere", Email = "Dries@ezac.com", Scaling = 1},
 			};
 
 			var userPermissions = new[]
@@ -116,7 +107,6 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 			}
 
 			modelBuilder.Entity<Permission>().HasData(permissions);
-			modelBuilder.Entity<Job>().HasData(jobs);
 			modelBuilder.Entity<User>().HasData(users);
 			modelBuilder.Entity<UserPermission>().HasData(userPermissions);
 			modelBuilder.Entity<ApplicationCalendar>().HasData(calendar);

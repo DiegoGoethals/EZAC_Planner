@@ -1,0 +1,123 @@
+﻿@page "/members"
+@rendermode InteractiveServer
+
+@inject IUserService UserService
+@inject IPermissionsService PermissionsService
+
+@if (members != null && permissions != null)
+{
+	<MemberTable members="members" permissions="permissions" DeleteUser="HandleDeleteUser" UpdateUser="HandleUpdateUser"/>
+
+	<MemberForm CreateUser="CreateUser" permissions="permissions" PermissionValues="PermissionValues" />
+}
+else
+{
+	<p>Geen leden gevonden</p>
+}
+
+@code {
+	private List<MemberViewModel> members;
+	private List<Permission> permissions;
+	private Dictionary<Guid, int> PermissionValues { get; set; } = new Dictionary<Guid, int>();
+
+	protected async override Task OnInitializedAsync()
+	{
+		await LoadMembers();
+		await LoadPermissions();
+	}
+
+	private async Task LoadMembers()
+	{
+		var result = await UserService.GetAllAsync();
+		if (result.IsSucces)
+		{
+			members = result.Value.Select(user => new MemberViewModel
+			{
+				Id = user.Id,
+				Name = user.Name,
+				Email = user.Email,
+				Scaling = user.Scaling,
+				UserPermissions = user.UserPermissions,
+				Preferences = user.Preferences,
+				Jobs = user.Jobs
+			}).ToList();
+		}
+		else
+		{
+			members = new List<MemberViewModel>();
+		}
+	}
+
+	private async Task LoadPermissions()
+	{
+		var permissionsResult = await PermissionsService.GetAllAsync();
+		if (permissionsResult.IsSucces)
+		{
+			permissions = permissionsResult.Value.ToList();
+			foreach (var permission in permissions)
+			{
+				PermissionValues[permission.Id] = 0;
+			}
+		}
+		else
+		{
+			permissions = new List<Permission>();
+		}
+	}
+
+	private async Task CreateUser((string Name, string Email, double Scaling) userInfo)
+	{
+		var user = new UserCreateRequestModel
+			{
+				Name = userInfo.Name,
+				Email = userInfo.Email,
+				Scaling = userInfo.Scaling,
+				Jobs = new List<Job>(),
+				Preferences = new List<Preference>(),
+				Permissions = PermissionValues.Select(pv => new UserPermission
+				{
+					Id = Guid.NewGuid(),
+					PermissionId = pv.Key,
+					Experience = pv.Value
+				}).ToList()
+			};
+
+		var result = await UserService.AddAsync(user);
+		if (result.IsSucces)
+		{
+			await LoadMembers();
+		}
+	}
+
+	private async Task HandleDeleteUser(Guid userId)
+	{
+		var result = await UserService.DeleteAsync(userId);
+		if (result.IsSucces)
+		{
+			await LoadMembers();
+		}
+	}
+
+	private async Task HandleUpdateUser(MemberViewModel user)
+	{
+		if (user.Name.Length == 0 || user.Email.Length == 0 || user.Scaling < 0 || user.Scaling > 10)
+		{
+			return;
+		}
+		var requestModel = new UserUpdateRequestModel
+		{
+			Id = user.Id,
+			Name = user.Name,
+			Email = user.Email,
+			Scaling = user.Scaling,
+			Permissions = user.UserPermissions,
+			Preferences = user.Preferences,
+			Jobs = user.Jobs
+		};
+		var result = await UserService.UpdateAsync(requestModel);
+		if (result.IsSucces)
+		{
+			await LoadMembers();
+		}
+	}
+}

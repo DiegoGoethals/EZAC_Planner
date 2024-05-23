@@ -1,13 +1,6 @@
 ﻿@page "/calendar/{id}"
 @rendermode InteractiveServer
 
-@using Ezac.Roster.Domain
-@using Ezac.Roster.Domain.Entities
-@using Ezac.Roster.Infrastructure
-@using Ezac.Roster.Domain.Interfaces.Services
-@using Ezac.Roster.Domain.Models
-@using Ezac.Roster.Domain.Services.Models
-
 @inject ICalendarService CalendarService
 @inject IJobService JobService
 @inject IDayService DayService
