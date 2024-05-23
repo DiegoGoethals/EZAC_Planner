@@ -18,6 +18,6 @@ namespace Ezac.Roster.Domain.Services.Models
         public Guid? UserId { get; set; }
         public Guid? DayPeriodId { get; set; }
         public IEnumerable<Preference> Preferences { get; set; }
-
+        public int Experience { get; set; }
     }
 }
