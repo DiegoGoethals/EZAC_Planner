@@ -19,5 +19,17 @@ namespace Ezac.Roster.Domain.Services
 			_userRepository = userRepository;
 
 		}
+
+		public async Task<double> CalculateTotalWorkload(Guid calendarId)
+		{
+			var jobs = await _jobRepository.GetJobsByCalendarIdAsync(calendarId);
+			double workload = 0;
+			foreach (var job in jobs)
+			{
+				workload += job.Weight;
+			}
+			return workload;
+		}
+
 	}
 }
