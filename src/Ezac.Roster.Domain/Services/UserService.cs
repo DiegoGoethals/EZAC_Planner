@@ -199,5 +199,25 @@ namespace Ezac.Roster.Domain.Services
                 }
             };
         }
-    }
+		public async Task<ResultModel<IEnumerable<User>>> GetUsersByCalendarIdAsync(Guid calendarId)
+		{
+			var users = await _userRepository.GetUsersByCalendarIdAsync(calendarId);
+			if (users != null)
+			{
+				return new ResultModel<IEnumerable<User>>
+				{
+					IsSucces = true,
+					Value = users
+				};
+			}
+			return new ResultModel<IEnumerable<User>>
+			{
+				IsSucces = false,
+				Errors = new List<string>
+				{
+					"Geen leden gevonden!"
+				}
+			};
+		}
+	}
 }
