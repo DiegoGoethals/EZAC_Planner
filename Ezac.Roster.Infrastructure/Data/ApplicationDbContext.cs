@@ -30,7 +30,7 @@ namespace Ezac.Roster.Infrastructure.Data
 
             modelBuilder.Entity<ApplicationCalendar>()
                 .HasMany(calendar => calendar.Users)
-				.WithMany(user => user.ApplicationCalendars);
+				.WithOne(user => user.ApplicationCalendar);
 
             modelBuilder.Entity<Day>()
                 .HasMany(day => day.Preferences)

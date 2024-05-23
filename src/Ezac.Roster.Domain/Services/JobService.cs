@@ -64,6 +64,7 @@ namespace Ezac.Roster.Domain.Services
                 Name = jobCreateRequestModel.Name,
                 Created = DateTime.Now,
                 Weight = jobCreateRequestModel.Weight,
+                Experience = jobCreateRequestModel.Experience,
                 UserId = jobCreateRequestModel.UserId,
                 DayPeriodId = jobCreateRequestModel.DayPeriodId,
                 PermissionName = jobCreateRequestModel.PermissionName,
@@ -120,7 +121,7 @@ namespace Ezac.Roster.Domain.Services
 
         public async Task<ResultModel<Job>> UpdateAsync(JobUpdateRequestModel jobUpdateRequestModel)
         {
-            var job = await _jobRepository.GetByIdAsync(jobUpdateRequestModel.Id);
+            var job = await _jobRepository.GetByIdAsync(jobUpdateRequestModel.Id); // hier disposed
 
             if (job == null)
             {
@@ -136,6 +137,7 @@ namespace Ezac.Roster.Domain.Services
 
             job.Name = jobUpdateRequestModel.Name;
             job.Weight = jobUpdateRequestModel.Weight;
+            job.Experience = jobUpdateRequestModel.Experience;
             job.UserId = jobUpdateRequestModel.UserId;
             job.DayPeriodId = jobUpdateRequestModel.DayPeriodId;
             job.PermissionName = jobUpdateRequestModel.PermissionName;
@@ -156,6 +158,29 @@ namespace Ezac.Roster.Domain.Services
                 Errors = new List<string>
                 {
                     "Kon de job niet aanpassen!"
+                }
+            };
+        }
+
+        public async Task<ResultModel<IEnumerable<Job>>> GetAllJobsByDayPeriodId(Guid id)
+        {
+            var jobs = await _jobRepository.GetAllJobsByDayPeriodIdAsync(id);
+
+            if (jobs != null)
+            {
+                return new ResultModel<IEnumerable<Job>>
+                {
+                    IsSucces = true,
+                    Value = jobs
+                };
+            }
+
+            return new ResultModel<IEnumerable<Job>>
+            {
+                IsSucces = false,
+                Errors = new List<string>
+                {
+                    "Geen jobs beschikbaar"
                 }
             };
         }

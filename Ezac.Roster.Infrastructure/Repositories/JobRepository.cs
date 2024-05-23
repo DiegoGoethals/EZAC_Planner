@@ -18,6 +18,13 @@ namespace Ezac.Roster.Infrastructure.Repositories
 		{
 		}
 
+		public async Task<IEnumerable<Job>> GetAllJobsByDayPeriodIdAsync(Guid id)
+		{
+			var result = await _table.Where(j => j.DayPeriodId == id).ToListAsync();
+            return result;
+		}
+    }
+
 		public async Task<List<Job>> GetJobsByCalendarIdAsync(Guid calendarId)
 		{
 			var jobs = await _applicationDbContext.Jobs

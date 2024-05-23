@@ -1,0 +1,236 @@
+﻿@inject IJobService _jobService
+
+@if (string.IsNullOrWhiteSpace(feedback) == false)
+{
+    <Feedback Message="@feedback">
+    </Feedback>
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            @if (Day != null)
+            {
+                <h4>@Day.Date.ToString("ddd d/M")</h4>
+                <h4>@DayPeriod.Name</h4>
+            }
+            <div>
+                <label>Gewicht:</label>
+                <input type="number" required @bind-value="weight">
+            </div>
+            <div>
+                <label>Ervaring:</label>
+                <input type="number" required @bind-value="experience">
+            </div>
+            <div class="mb-3">
+                <select class="form-select" @onchange="e => SetSelectedJob(e)">
+                    <option value="">Selecteer een dienst</option>
+                    @foreach (var job in _Jobs)
+                    {
+                        <option>@job</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <button class="btn btn-primary" @onclick="AddJobToDayPeriod">Dienst toevoegen</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="mb-3">
+                <select class="form-select" @onchange="SetSelectedDayPeriodJob">
+                    <option value="">Selecteer een dienst</option>
+                    @foreach (var job in _dayPeriodJobs)
+                    {
+                        <option value="@job.Id">@job.Name</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <label>Gewicht:</label>
+                <input type="number" min="1" max="10" required @bind-value="updateWeight">
+            </div>
+            <div>
+                <label>Ervaring:</label>
+                <input type="number" min="1" max="10" required @bind-value="updateExperience">
+            </div>
+            <div>
+                <button class="btn btn-primary" @onclick="DeleteJob">Dienst verwijderen</button>
+            </div>
+            <div>
+                <button class="btn btn-primary" @onclick="UpdateJob">Dienst bijwerken</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<string> _Jobs { get; set; } = new List<string>();
+    private List<Job> _dayPeriodJobs { get; set; } = new List<Job>();
+    private string selectedJob { get; set; }
+    private Job selectedDayPeriodJob { get; set; }
+    private string feedback = string.Empty;
+    private double weight = 5;
+    private int experience = 1;
+    private double updateWeight;
+    private int updateExperience;
+
+    [Parameter]
+    public EventCallback OnAddJob { get; set; }
+    [Parameter]
+    public EventCallback OnDeleteJob { get; set; }
+    [Parameter]
+    public bool TogglePopUp { get; set; }
+    [Parameter]
+    public DayPeriod DayPeriod { get; set; }
+    [Parameter]
+    public Day Day { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
+
+    public async Task RefreshData()
+    {
+        var jobs = await _jobService.GetAllAsync();
+        if (jobs.IsSucces)
+        {
+            _Jobs = jobs.Value.Select(p => p.Name).Distinct().ToList();
+            _dayPeriodJobs = jobs.Value.Where(j => j.DayPeriodId == DayPeriod.Id).ToList();
+        }
+    }
+
+    private void SetSelectedJob(ChangeEventArgs e)
+    {
+        var selectedJobName = e.Value.ToString();
+        if (!string.IsNullOrEmpty(selectedJobName))
+        {
+            selectedJob = selectedJobName;
+        }
+    }
+
+    private void SetSelectedDayPeriodJob(ChangeEventArgs e)
+    {
+        var selectedJobId = e.Value.ToString();
+        if (!string.IsNullOrEmpty(selectedJobId))
+        {
+            selectedDayPeriodJob = _dayPeriodJobs.FirstOrDefault(job => job.Id.ToString() == selectedJobId);
+            updateWeight = selectedDayPeriodJob.Weight;
+            updateExperience = selectedDayPeriodJob.Experience;
+        }
+    }
+
+    private async void AddJobToDayPeriod()
+    {
+        if (selectedJob != null)
+        {
+
+            if (weight < 1 || weight > 10 || experience < 1 || experience > 10)
+            {
+                feedback = "gewicht en ervaring moet tussen 1 en 10 zijn!";
+            }
+            else
+            {
+                var result = await _jobService.AddAsync(new JobCreateRequestModel
+                {
+                    Name = selectedJob,
+                    Weight = weight,
+                    UserId = null,
+                    DayPeriodId = DayPeriod.Id,
+                    Preferences = new List<Preference>(),
+                    PermissionName = selectedJob,
+                    Experience = experience,
+                });
+
+                if (result.IsSucces)
+                {
+                    await RefreshData();
+                    feedback = "Dienst werd succesvol toegevoegd";
+                    StateHasChanged();
+                    await OnAddJob.InvokeAsync();
+                    await Task.Delay(2000);
+                    feedback = string.Empty;
+                    StateHasChanged();
+                }
+            }
+        }
+        else
+        {
+            feedback = "Gelieve een dienst te selecteren";
+            StateHasChanged();
+            await Task.Delay(2000);
+            feedback = string.Empty;
+        }
+    }
+
+    private async void DeleteJob()
+    {
+        if (selectedDayPeriodJob != null)
+        {
+            var result = await _jobService.DeleteAsync(selectedDayPeriodJob.Id);
+            if (result.IsSucces)
+            {
+                await RefreshData();
+                feedback = "Dienst werd succesvol verwijderd";
+                StateHasChanged();
+                await OnDeleteJob.InvokeAsync();
+                await Task.Delay(2000);
+                feedback = string.Empty;
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            feedback = "Gelieve een dienst te selecteren";
+            StateHasChanged();
+            await Task.Delay(3000);
+            feedback = string.Empty;
+        }
+    }
+
+    private async void UpdateJob()
+    {
+        if (selectedDayPeriodJob != null)
+        {
+            if (updateWeight < 1 || updateWeight > 10 || updateExperience < 1 || updateExperience > 10)
+            {
+                feedback = "gewicht en ervaring moet tussen 1 en 10 zijn!";
+            }
+            else
+            {
+                var result = await _jobService.UpdateAsync(new JobUpdateRequestModel
+                {
+                    Id = selectedDayPeriodJob.Id,
+                    Name = selectedDayPeriodJob.Name,
+                    PermissionName = selectedDayPeriodJob.PermissionName,
+                    Weight = updateWeight,
+                    Experience = updateExperience,
+                    DayPeriodId = selectedDayPeriodJob.DayPeriodId,
+                    Preferences = selectedDayPeriodJob.Preferences,
+                    UserId = selectedDayPeriodJob.UserId,
+                });
+
+
+                if (result.IsSucces)
+                {
+                    await RefreshData();
+                    feedback = "Dienst werd succesvol bijgewerkt";
+                    StateHasChanged();
+                    await OnDeleteJob.InvokeAsync();
+                    await Task.Delay(2000);
+                    feedback = string.Empty;
+                    StateHasChanged();
+                }
+            }
+        }
+        else
+        {
+            feedback = "Gelieve een dienst te selecteren";
+            StateHasChanged();
+            await Task.Delay(3000);
+            feedback = string.Empty;
+        }
+    }
+}
