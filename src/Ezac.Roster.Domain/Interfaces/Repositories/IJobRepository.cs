@@ -9,5 +9,6 @@ namespace Ezac.Roster.Domain.Interfaces.Repositories
 {
     public interface IJobRepository : IBaseRepository<Job>
     {
+        Task<IEnumerable<Job>> GetAllJobsByDayPeriodIdAsync(Guid id);
     }
 }
