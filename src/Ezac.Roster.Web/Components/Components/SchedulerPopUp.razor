@@ -36,7 +36,7 @@
                             <th>Naam</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="scrollable-tbody">
                         @foreach (var user in Staff)
                         {
                             <tr class="userrow">
@@ -52,6 +52,14 @@
         </div>
     </div>
 </div>
+
+<style>
+    .scrollable-tbody {
+        display: block;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+</style>
 
 
 @code {
