@@ -67,7 +67,6 @@ namespace Ezac.Roster.Domain.Services
                 Created = DateTime.Now,
                 Email = userCreateRequestModel.Email,
                 Scaling = userCreateRequestModel.Scaling,
-                IsAdmin = userCreateRequestModel.IsAdmin,
                 UserPermissions = userCreateRequestModel.Permissions.ToList(),
                 Preferences = userCreateRequestModel.Preferences.ToList(),
                 Jobs = userCreateRequestModel.Jobs.ToList()
@@ -151,7 +150,6 @@ namespace Ezac.Roster.Domain.Services
             user.Name = userUpdateRequestModel.Name;
             user.Email = userUpdateRequestModel.Email;
             user.Scaling = userUpdateRequestModel.Scaling;
-            user.IsAdmin = userUpdateRequestModel.IsAdmin;
             user.UserPermissions = userUpdateRequestModel.Permissions.ToList();
             if (userUpdateRequestModel.Preferences != null)
             {
