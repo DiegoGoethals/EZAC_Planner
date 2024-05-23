@@ -28,6 +28,7 @@ namespace Ezac.Roster.Web
                 .AddInteractiveServerComponents();
 
 			builder.Services.AddSingleton<LogInBooLService>();
+			builder.Services.AddSingleton<EmailService>();
 
 			builder.Services.AddScoped<ICalendarService, CalendarService>();
             builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();

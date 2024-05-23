@@ -15,7 +15,6 @@ namespace Ezac.Roster.Domain.Entities
         public DayPeriod DayPeriod { get; set; }
         public Day Day { get; set; }
         public Guid DayId { get; set; }
-
         public Job Job{ get; set; }
         public Guid? JobId { get; set; }
     }
