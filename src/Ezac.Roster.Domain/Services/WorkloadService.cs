@@ -10,13 +10,13 @@ namespace Ezac.Roster.Domain.Services
 	public class WorkloadService
 	{
 		private readonly IJobRepository _jobRepository;
+		private readonly IUserRepository _userRepository;
 
 
-
-		public WorkloadService(IJobRepository jobRepository)
+		public WorkloadService(IJobRepository jobRepository, IUserRepository userRepository)
 		{
 			_jobRepository = jobRepository;
-
+			_userRepository = userRepository;
 
 		}
 	}
