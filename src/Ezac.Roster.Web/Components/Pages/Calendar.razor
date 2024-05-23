@@ -140,8 +140,6 @@ else
         background-color: cornflowerblue !important;
         cursor: pointer;
     }
-
-
 </style>
 
 
@@ -167,11 +165,63 @@ else
     private bool ToggleUpdateDatePeriodJobs { get; set; }
     private bool ToggleUpdateDatePeriod { get; set; }
 
+    private List<Preference> dayPeriodJobAvailableUsers = new List<Preference>();
+    private List<Preference> dayPeriodAvailableUsers = new List<Preference>();
+
     private async void AutoFillCalendar()
     {
-        var users = await _userService.GetAllAsync();
-        var preferences = await _preferenceService.GetAllAsync();
-        var days = calendar.Days;
+        foreach (var dayperiod in calendar.Days)
+        {
+            if (dayperiod.Preferences.Count() > 0)
+            {
+                foreach (var preference in dayperiod.Preferences)
+                {
+                    if (preference.Job != null)
+                    {
+                        dayPeriodJobAvailableUsers.Add(preference);
+                    }
+                    else
+                    {
+                        dayPeriodAvailableUsers.Add(preference);
+                    }
+                }
+
+                Preference dayPeriodJobPreference = new Preference();
+                if (dayPeriodJobAvailableUsers.Count() > 0)
+                {
+                    dayPeriodJobPreference = dayPeriodJobAvailableUsers.FirstOrDefault();
+                }
+                else
+                {
+                    dayPeriodJobPreference = dayPeriodAvailableUsers.FirstOrDefault();
+                }
+
+
+                //get the job
+                var result = await JobService.GetByIdAsync(dayPeriodJobPreference.Job.Id);
+                if (result.IsSucces)
+                {
+                    var job = new JobUpdateRequestModel
+                    {
+                        Id = dayPeriodJobPreference.Job.Id,
+                        Name = result.Value.Name,
+                        Weight = result.Value.Weight,
+                        UserId = dayPeriodJobPreference.UserId,
+                        DayPeriodId = result.Value.DayPeriodId,
+                        PermissionName = result.Value.PermissionName,
+                        Preferences = result.Value.Preferences,
+                    };
+                    //update job in db
+                    var updateResult = await JobService.UpdateAsync(job);
+                    if (updateResult.IsSucces)
+                    {
+                        dayPeriodJobAvailableUsers = new List<Preference>();
+                        dayPeriodAvailableUsers = new List<Preference>();
+                    }
+                }
+            }
+        }
+        await InvokeAsync(StateHasChanged);
     }
 
     private async void ToggleDayPeriodPopUp(DayPeriod dayPeriod)
