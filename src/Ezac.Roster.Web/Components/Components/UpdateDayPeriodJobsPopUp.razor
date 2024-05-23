@@ -88,12 +88,6 @@
     [Parameter]
     public Day Day { get; set; }
 
-    //protected override async Task OnParametersSetAsync()
-    //{
-    //    await RefreshData();
-    //    await InvokeAsync(StateHasChanged);
-    //}
-
     protected async override Task OnInitializedAsync()
     {
         await RefreshData();
