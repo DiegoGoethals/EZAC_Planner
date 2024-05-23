@@ -161,6 +161,12 @@ else
     private bool ToggleUpdateDatePeriodJobs { get; set; }
     private bool ToggleUpdateDatePeriod { get; set; }
 
+    
+
+    private void UpdatePeriod()
+    {
+        StateHasChanged();
+    }
 
     private async void AddDayPeriod()
     {
