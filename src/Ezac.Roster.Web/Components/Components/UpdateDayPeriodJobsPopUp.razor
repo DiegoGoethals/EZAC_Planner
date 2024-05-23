@@ -1,0 +1,71 @@
+﻿@inject IJobService _jobService
+
+@if (string.IsNullOrWhiteSpace(feedback) == false)
+{
+    <div class="alert alert-success" role="alert">
+        @feedback
+    </div>
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            @if (Day != null)
+            {
+                <h4>@Day.Date.ToString("ddd d/M")</h4>
+                <h4>@DayPeriod.Name</h4>
+            }
+            <div>
+                <label>Gewicht:</label>
+                <input type="text" required @bind-value="weight">
+            </div>
+            <div>
+                <label>Ervaring:</label>
+                <input type="text" required @bind-value="experience">
+            </div>
+            <div class="mb-3">
+                <select class="form-select" @onchange="e => SetSelectedJob(e)">
+                    <option value="">Selecteer een dienst</option>
+                    @foreach (var job in _Jobs)
+                    {
+                        <option>@job</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <button class="btn btn-primary" @onclick="AddJobToDayPeriod">Dienst toevoegen</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="mb-3">
+                <select class="form-select" @onchange="SetSelectedDayPeriodJob">
+                    <option value="">Selecteer een dienst</option>
+                    @foreach (var job in _dayPeriodJobs)
+                    {
+                        <option value="@job.Id">@job.Name</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <label>Gewicht:</label>
+                <input type="text" required @bind-value="updateWeight">
+            </div>
+            <div>
+                <label>Ervaring:</label>
+                <input type="text" required @bind-value="updateExperience">
+            </div>
+            <div>
+                <button class="btn btn-primary" @onclick="DeleteJob">Dienst verwijderen</button>
+            </div>
+            <div>
+                <button class="btn btn-primary" @onclick="UpdateJob">Dienst bijwerken</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    
+}
