@@ -161,7 +161,15 @@ else
     private bool ToggleUpdateDatePeriodJobs { get; set; }
     private bool ToggleUpdateDatePeriod { get; set; }
 
-    
+    private async void ToggleDayPeriodPopUp(DayPeriod dayPeriod)
+    {
+        ToggleUpdateDatePeriod = false;
+        ToggleSchedulerPopUp = false;
+        ToggleUpdateDatePeriodJobs = true;
+        selectedDayPeriod = dayPeriod;
+
+        await InvokeAsync(StateHasChanged);
+    }
 
     private void UpdatePeriod()
     {
