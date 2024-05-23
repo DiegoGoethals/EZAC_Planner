@@ -109,7 +109,14 @@
         }
     }
 
-    
+    private void SetSelectedJob(ChangeEventArgs e)
+    {
+        var selectedJobName = e.Value.ToString();
+        if (!string.IsNullOrEmpty(selectedJobName))
+        {
+            selectedJob = selectedJobName;
+        }
+    }
 
     
 
