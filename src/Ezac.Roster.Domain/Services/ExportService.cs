@@ -53,18 +53,21 @@ namespace Ezac.Roster.Domain.Services
                     var jobNames = calendar.Days.SelectMany(d => d.DayPeriods)
                         .Where(dp => dp.Name == period)
                         .SelectMany(dp => dp.Jobs)
-                        .Select(j => j.Name)
-                        .Distinct()
-                        .OrderBy(name => name)
+                        .GroupBy(j => j.Name)
+                        .OrderBy(g => g.Key)
                         .ToList();
 
-                    foreach (var jobName in jobNames)
+                    foreach (var group in jobNames)
                     {
                         int count = 1;
-                        headers.Add($"{jobName} ({period}) {count}");
-                        count++;
+                        foreach (var job in group)
+                        {
+                            headers.Add($"{job.Name} ({period}) {count}");
+                            count++;
+                        }
                     }
                 }
+
 
                 // add the headers to the first row
                 for (int i = 0; i < headers.Count; i++)
