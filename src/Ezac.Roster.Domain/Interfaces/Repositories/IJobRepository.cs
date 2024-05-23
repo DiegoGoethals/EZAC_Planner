@@ -9,5 +9,7 @@ namespace Ezac.Roster.Domain.Interfaces.Repositories
 {
     public interface IJobRepository : IBaseRepository<Job>
     {
-    }
+		public Task<List<Job>> GetJobsByCalendarIdAsync(Guid calendarId);
+
+	}
 }
