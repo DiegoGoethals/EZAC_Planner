@@ -158,6 +158,7 @@ else
 
     private Day selectedDay;
     private DayPeriod selectedDayPeriod;
+    private bool ToggleUpdateDatePeriodJobs { get; set; }
     private bool ToggleUpdateDatePeriod { get; set; }
 
 
@@ -260,7 +261,7 @@ else
 
     private async void TogglePopUp(Day day, DayPeriod dayPeriod)
     {
-        //ToggleUpdateDatePeriodJobs = false;
+        ToggleUpdateDatePeriodJobs = false;
         ToggleUpdateDatePeriod = false;
         ToggleSchedulerPopUp = true;
         selectedDay = day;
