@@ -187,5 +187,40 @@
         }
     }
 
-    
+    private async void UpdateJob()
+    {
+        if (selectedDayPeriodJob != null)
+        {
+            var result = await _jobService.UpdateAsync(new JobUpdateRequestModel
+            {
+                Id = selectedDayPeriodJob.Id,
+                Name = selectedDayPeriodJob.Name,
+                PermissionName = selectedDayPeriodJob.PermissionName,
+                Weight = updateWeight,
+                Experience = updateExperience,
+                DayPeriodId = selectedDayPeriodJob.DayPeriodId,
+                Preferences = selectedDayPeriodJob.Preferences,
+                UserId =selectedDayPeriodJob.UserId,
+            });
+
+
+            if (result.IsSucces)
+            {
+                await RefreshData();
+                feedback = "Dienst werd succesvol bijgewerkt";
+                StateHasChanged();
+                await Task.Delay(3000);
+                feedback = string.Empty;
+
+                await OnDeleteJob.InvokeAsync();
+            }
+        }
+        else
+        {
+            feedback = "Gelieve een dienst te selecteren";
+            StateHasChanged();
+            await Task.Delay(3000);
+            feedback = string.Empty;
+        }
+    }
 }
