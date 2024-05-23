@@ -118,7 +118,14 @@
         }
     }
 
-    
+    private void SetSelectedDayPeriodJob(ChangeEventArgs e)
+    {
+        var selectedJobId = e.Value.ToString();
+        if (!string.IsNullOrEmpty(selectedJobId))
+        {
+            selectedDayPeriodJob = _dayPeriodJobs.FirstOrDefault(job => job.Id.ToString() == selectedJobId);
+        }
+    }
 
     
 
