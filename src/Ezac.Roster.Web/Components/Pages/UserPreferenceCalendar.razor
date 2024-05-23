@@ -1,0 +1,303 @@
+﻿@page "/user/{calendarId}/{userId}"
+@rendermode InteractiveServer
+
+@inject ICalendarService CalendarService
+@inject IDayPeriodService DayPeriodService
+@inject IUserService UserService
+@inject IPreferenceService PreferenceService
+
+<h3>Kalender van @(user?.Name) voor het jaar @(calendar?.Start.ToString("(yyyy)"))</h3>
+@if (calendar != null && calendar.Days != null)
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="table-responsive">
+                    <table class="table table-bordered" style="border-color:black">
+                        <thead>
+                            <tr>
+                                <th>Dag/Periode</th>
+                                @foreach (var period in periodNames)
+                                {
+                                    <th>@period</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var day in calendar.Days.OrderBy(d => d.Date))
+                            {
+                                @if (day.IsOpen)
+                                {
+                                    <tr>
+                                        <td>
+                                            <p @onclick="@(e => OnCellClick(day))">
+                                                @day.Date.ToString("ddd d/M")
+                                            </p>
+                                        </td>
+                                        @foreach (var period in day.DayPeriods.OrderBy(dp => dp.Name))
+                                        {
+                                            <td style="@(GetCellStyle(period))" @onclick="@(e => OnCellClick(day, period))">
+                                                @if (period.IsOpen)
+                                                {
+                                                    var jobs = GetJobsForUser(day, period.Name);
+                                                    if (jobs.Any())
+                                                    {
+                                                        foreach (var job in jobs)
+                                                        {
+                                                            if (user.Preferences.Any(p => p.JobId == job.Id && p.DayPeriodId == period.Id))
+															{
+																<p style="color: red">@job.Name</p>
+															}
+															else
+															{
+																<p>@job.Name</p>
+															}
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>Geen jobs beschikbaar</p>
+                                                    }
+                                                }
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Gegevens worden geladen of kalender bevat geen dagen.</p>
+}
+<div class="col-md-4">
+    <p>
+        @if(selectedDay != null)
+        {
+            <span>Geselecteerde dag: @selectedDay.Name @selectedDay.Date.Date.ToString("dd/MM")</span>
+        }
+        <br />
+        @if(selectedPeriod != null)
+        {
+                <span>periode: @selectedPeriod.Name</span>
+        }
+    </p>
+    <label>Diensten</label>
+    <ul>
+		@foreach (var option in jobOptions)
+		{
+            <li><input type="checkbox" value="@selectedJobs.Contains(option)" checked="@selectedJobs.Contains(option)" @onchange="@(e => OnJobSelected(e, option))"/><label>@option.Name</label></li>
+		}
+    </ul>
+    <input type="checkbox" value="@IsAvailable" checked="@IsAvailable" @onchange="SetAvailability"/><label>Beschikbaar</label>
+    <button @onclick="SavePreferences" class="btn btn-primary" disabled="@twoWeekThresHoldReached">Voeg voorkeur toe</button>
+</div>
+
+@code {
+    [Parameter]
+    public string calendarId { get; set; }
+    [Parameter]
+    public string userId { get; set; }
+
+    private User user;
+    private ApplicationCalendar calendar;
+    private List<DayPeriod> dayPeriods;
+    private List<string> periodNames;
+    private List<UserPermission> userPermissions = new List<UserPermission>();
+    private List<Job> jobOptions = new List<Job>();
+    private List<Job> selectedJobs = new List<Job>();
+    private DayPeriod selectedPeriod;
+    private Day selectedDay;
+    private bool IsAvailable = true;
+    private bool twoWeekThresHoldReached = true;
+
+    protected async override Task OnInitializedAsync()
+    {
+        var calendarResult = await CalendarService.GetByIdAsync(Guid.Parse(calendarId));
+        if (calendarResult.IsSucces)
+        {
+            calendar = calendarResult.Value;
+            await GetUniquePeriodNames();
+            if (DateTime.Now.Date <= calendar.Start.Date.AddDays(-14))
+            {
+                twoWeekThresHoldReached = false;
+            }
+        }
+        var userResult = await UserService.GetByIdAsync(Guid.Parse(userId));
+        if (userResult.IsSucces)
+        {
+            user = userResult.Value;
+        }
+        var userPermissionsResult = await UserService.GetUserPermissionsAsync(Guid.Parse(userId));
+        if (userPermissionsResult.IsSucces)
+        {
+            userPermissions = userPermissionsResult.Value.ToList();
+        }
+    }
+
+    private async Task GetUniquePeriodNames()
+    {
+        var dayPeriods = await DayPeriodService.GetAllAsync();
+        if (dayPeriods.IsSucces)
+        {
+            periodNames = dayPeriods.Value.Select(p => p.Name).Distinct().OrderBy(name => name).ToList();
+        }
+    }
+
+    private IEnumerable<Job> GetJobsForUser(Day day, string periodName)
+    {
+        var period = day.DayPeriods.FirstOrDefault(dp => dp.Name == periodName);
+        if (period == null) return Enumerable.Empty<Job>();
+
+        var jobs = period.Jobs.Where(job =>
+            userPermissions.Any(up => up.Permission.Name == job.PermissionName && up.Experience >= job.Experience)).ToList();
+        return jobs;
+    }
+
+    private void OnCellClick(Day day)
+    {
+        var dayPrefs = new List<Preference>();
+        if (day.Preferences != null)
+        {
+            dayPrefs = day.Preferences.Where(p => p.UserId.ToString() == userId).ToList();
+        }
+        IsAvailable = dayPrefs.Select(p => p.Available).DefaultIfEmpty(true).FirstOrDefault();
+        if (DateTime.Now.Date <= calendar.Start.Date.AddDays(-14))
+        {
+            selectedDay = day;
+            selectedPeriod = null;
+            jobOptions.Clear();
+        }
+    }
+
+    private void OnCellClick(Day day, DayPeriod period)
+    {
+        var periodPrefs = period.Preferences.Where(p => p.UserId.ToString() == userId).ToList();
+        selectedJobs = periodPrefs.Where(p => p.Job != null).Select(p => p.Job).ToList();
+        IsAvailable = periodPrefs.Select(p => p.Available).DefaultIfEmpty(true).FirstOrDefault();
+        if (DateTime.Now.Date <= calendar.Start.Date.AddDays(-14))
+        {
+            jobOptions = GetJobsForUser(day, period.Name).ToList();
+            selectedPeriod = period;
+            selectedDay = day;
+        }
+    }
+
+    private void OnJobSelected(ChangeEventArgs e, Job job)
+    {
+        var isChecked = bool.Parse(e.Value.ToString());
+        if (isChecked && !selectedJobs.Contains(job))
+        {
+            selectedJobs.Add(job);
+        }
+        if (!isChecked && selectedJobs.Contains(job)) {
+            selectedJobs.Remove(job);
+        }
+        StateHasChanged();
+    }
+
+    private void SetAvailability(ChangeEventArgs e)
+    {
+        var isChecked = bool.Parse(e.Value.ToString());
+        if (isChecked)
+        {
+            IsAvailable = true;
+        }
+        else
+        {
+            IsAvailable = false;
+        }
+        StateHasChanged();
+    }
+
+    private async Task SavePreferences()
+    {
+        var result = await PreferenceService.GetAllAsync();
+        if (!result.IsSucces)
+        {
+            return;
+        }
+        var preferences = result.Value.Where(p => p.DayPeriod == selectedPeriod).ToList();
+        if(selectedPeriod != null)
+        {
+            var periodPrefs = preferences.Where(p => p.DayPeriod == selectedPeriod).ToList();
+            foreach (var preference in periodPrefs)
+            {
+                if ((preference.Job != null && !selectedJobs.Contains(preference.Job)) || preference.Available != IsAvailable)
+                {
+                    await PreferenceService.DeleteAsync(preference.Id);
+                }
+            }
+            if (selectedJobs != null && selectedJobs.Count > 0)
+            {
+                foreach (var job in selectedJobs)
+                {
+                    var requestModel = new PreferenceCreateRequestModel
+                        {
+                            Name = $"{user.Name} - {job.Name} - {selectedPeriod.Name}",
+                            Available = IsAvailable,
+                            JobId = job.Id,
+                            UserId = user.Id,
+                            DayPeriodId = selectedPeriod.Id,
+                            DayId = selectedDay.Id
+                        };
+                    if (!periodPrefs.Any(p => p.JobId == job.Id && p.UserId == user.Id))
+                    {
+                        await PreferenceService.AddAsync(requestModel);
+                    }
+                }
+            }
+            else
+            {
+                var requestModel = new PreferenceCreateRequestModel
+                    {
+                        Name = $"{user.Name} - {selectedPeriod.Name}",
+                        Available = IsAvailable,
+                        UserId = user.Id,
+                        DayPeriodId = selectedPeriod.Id,
+                        DayId = selectedDay.Id
+                    };
+                if (!periodPrefs.Any(p => p.UserId == user.Id))
+                {
+                    await PreferenceService.AddAsync(requestModel);
+                }
+            }
+        }
+        else if (selectedPeriod == null && selectedDay != null && !preferences.Any(p => p.UserId == user.Id))
+        {
+            foreach (var period in selectedDay.DayPeriods)
+            {
+                var requestModel = new PreferenceCreateRequestModel
+                {
+                    Name = $"{user.Name} - {period.Name}",
+                    Available = IsAvailable,
+                    UserId = user.Id,
+                    DayId = selectedDay.Id,
+                    DayPeriodId = period.Id
+                };
+                await PreferenceService.AddAsync(requestModel);
+            }
+        }
+        selectedJobs.Clear();
+        IsAvailable = true;
+        StateHasChanged();
+    }
+
+    private string GetCellStyle(DayPeriod period)
+    {
+        if (user.Preferences != null && user.Preferences.Any(p => p.DayPeriod == period && p.Available))
+        {
+            return "background-color: lime";
+        }
+        else if (user.Preferences != null && user.Preferences.Any(p => p.DayPeriod == period && !p.Available))
+        {
+            return "background-color: tomato";
+        }
+        return "background-color: lightgreen";
+    }
+}
