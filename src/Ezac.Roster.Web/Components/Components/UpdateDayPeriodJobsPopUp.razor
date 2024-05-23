@@ -67,5 +67,26 @@
 </div>
 
 @code {
+    private List<string> _Jobs { get; set; } = new List<string>();
+    private List<Job> _dayPeriodJobs { get; set; } = new List<Job>();
+    private string selectedJob { get; set; }
+    private Job selectedDayPeriodJob { get; set; }
+    private string feedback = string.Empty;
+    private double weight;
+    private int experience;
+    private double updateWeight;
+    private int updateExperience;
+
+    [Parameter]
+    public EventCallback OnAddJob { get; set; }
+    [Parameter]
+    public EventCallback OnDeleteJob { get; set; }
+    [Parameter]
+    public bool TogglePopUp { get; set; }
+    [Parameter]
+    public DayPeriod DayPeriod { get; set; }
+    [Parameter]
+    public Day Day { get; set; }
+
     
 }
