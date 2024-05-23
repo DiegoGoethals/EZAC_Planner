@@ -12,11 +12,11 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<p>Bent u zeker dat u deze kalender wilt verwijderen?</p>
+				<p>Bent u zeker dat u dit lid wilt verwijderen?</p>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" @onclick="CloseDialog">Annuleren</button>
-				<button type="button" class="btn btn-danger" @onclick="DeleteCalendar" disabled="@isDeleting">Verwijderen</button>
+				<button type="button" class="btn btn-danger" @onclick="DeleteUser" disabled="@isDeleting">Verwijderen</button>
 			</div>
 		</div>
 	</div>
@@ -25,16 +25,16 @@
 @code {
 	private ElementReference dialog;
 
-	private Guid calendarId;
+	private Guid userId;
 
 	private bool isDeleting = false;
 
 	[Parameter]
-	public Func<Guid, Task> deleteCalendar { get; set; }
+	public Func<Guid, Task> deleteUser { get; set; }
 
-	public async Task Show(Guid calendarId)
+	public async Task Show(Guid userId)
 	{
-		this.calendarId = calendarId;
+		this.userId = userId;
 		await JSRuntime.InvokeVoidAsync("openDialog", dialog);
 	}
 
@@ -43,10 +43,10 @@
 		await JSRuntime.InvokeVoidAsync("closeDialog", dialog);
 	}
 
-	private async Task DeleteCalendar()
+	private async Task DeleteUser()
 	{
 		isDeleting = true;
-		await deleteCalendar(calendarId);
+		await deleteUser(userId);
 		await CloseDialog();
 		isDeleting = false;
 	}
