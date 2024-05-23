@@ -17,11 +17,11 @@
             }
             <div>
                 <label>Gewicht:</label>
-                <input type="text" required @bind-value="weight">
+                <input type="number" required @bind-value="weight">
             </div>
             <div>
                 <label>Ervaring:</label>
-                <input type="text" required @bind-value="experience">
+                <input type="number" required @bind-value="experience">
             </div>
             <div class="mb-3">
                 <select class="form-select" @onchange="e => SetSelectedJob(e)">
@@ -50,11 +50,11 @@
             </div>
             <div>
                 <label>Gewicht:</label>
-                <input type="text" required @bind-value="updateWeight">
+                <input type="number" min="1" max="10" required @bind-value="updateWeight">
             </div>
             <div>
                 <label>Ervaring:</label>
-                <input type="text" required @bind-value="updateExperience">
+                <input type="number" min="1" max="10" required @bind-value="updateExperience">
             </div>
             <div>
                 <button class="btn btn-primary" @onclick="DeleteJob">Dienst verwijderen</button>
