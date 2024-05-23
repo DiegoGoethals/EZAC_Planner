@@ -28,6 +28,10 @@ namespace Ezac.Roster.Infrastructure.Data
                 .WithOne(day => day.Calendar)
                 .HasForeignKey(day => day.CalendarId);
 
+            modelBuilder.Entity<ApplicationCalendar>()
+                .HasMany(calendar => calendar.Users)
+				.WithMany(user => user.ApplicationCalendars);
+
             modelBuilder.Entity<Day>()
                 .HasMany(day => day.Preferences)
                 .WithOne(preference => preference.Day)
