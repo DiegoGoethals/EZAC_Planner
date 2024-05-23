@@ -67,7 +67,6 @@ namespace Ezac.Roster.Domain.Services
 							Created = DateTime.Now,
 							Email = email,
 							Scaling = scaling,
-							IsAdmin = false,
 							Preferences = new List<Preference>(),
 							UserPermissions = new List<UserPermission>(),
 							Jobs = new List<Job>()
