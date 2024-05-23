@@ -41,12 +41,14 @@ namespace Ezac.Roster.Domain.Services
                 // Create the header
                 var headers = new List<string> { $"Periode {year}" };
 
-                // add the jobs to the header grouped by day periods
+                // Add the jobs to the header grouped by day periods
                 var dayPeriodNames = calendar.Days.SelectMany(d => d.DayPeriods)
                     .Select(dp => dp.Name)
                     .Distinct()
                     .OrderBy(name => name)
                     .ToList();
+
+                var jobPeriodCount = new Dictionary<string, int>();
 
                 foreach (var period in dayPeriodNames)
                 {
@@ -60,13 +62,20 @@ namespace Ezac.Roster.Domain.Services
 
                     foreach (var jobName in jobNames)
                     {
-                        
-                        headers.Add($"{jobName} ({period})");
+                        int count = calendar.Days.SelectMany(d => d.DayPeriods)
+                            .Where(dp => dp.Name == period)
+                            .SelectMany(dp => dp.Jobs)
+                            .Count(j => j.Name == jobName);
+
+                        jobPeriodCount[$"{jobName} ({period})"] = count;
+                        for (int i = 1; i <= count; i++)
+                        {
+                            headers.Add($"{jobName} ({period}) {i}");
+                        }
                     }
                 }
 
-
-                // add the headers to the first row
+                // Add the headers to the first row
                 for (int i = 0; i < headers.Count; i++)
                 {
                     worksheet.Cell(1, i + 1).Value = headers[i];
@@ -78,10 +87,10 @@ namespace Ezac.Roster.Domain.Services
 
                 foreach (var day in sortedDays)
                 {
-                    // dd the date to the first column (once per day)
+                    // Add the date to the first column (once per day)
                     worksheet.Cell(row, 1).Value = day.Date.ToString("dddd dd MMM yyyy", CultureInfo.CurrentCulture);
 
-                    var jobAssignments = new Dictionary<string, string>();
+                    var jobAssignments = new Dictionary<string, List<string>>();
 
                     foreach (var dayPeriod in day.DayPeriods)
                     {
@@ -90,21 +99,21 @@ namespace Ezac.Roster.Domain.Services
                             string key = $"{job.Name} ({dayPeriod.Name})";
                             if (!jobAssignments.ContainsKey(key))
                             {
-                                jobAssignments[key] = job.User.Name ?? "";
+                                jobAssignments[key] = new List<string>();
                             }
-                            else
-                            {
-                                jobAssignments[key] += $", {job.User.Name ?? ""}";
-                            }
+                            jobAssignments[key].Add(job.User.Name ?? "");
                         }
                     }
 
                     for (int i = 1; i < headers.Count; i++)
                     {
-                        if (jobAssignments.TryGetValue(headers[i], out string userName))
+                        string header = headers[i];
+                        string jobKey = header.Substring(0, header.LastIndexOf(' '));
+                        int occurrence = int.Parse(header.Substring(header.LastIndexOf(' ') + 1));
+
+                        if (jobAssignments.TryGetValue(jobKey, out List<string> userNames) && userNames.Count >= occurrence)
                         {
-                            // add the user name to the cell
-                            worksheet.Cell(row, i + 1).Value = userName;
+                            worksheet.Cell(row, i + 1).Value = userNames[occurrence - 1];
                         }
                         else
                         {
@@ -115,7 +124,26 @@ namespace Ezac.Roster.Domain.Services
                     row++;
                 }
 
+                // Hide empty columns
+                for (int col = 2; col <= worksheet.LastColumnUsed().ColumnNumber(); col++)
+                {
+                    bool isEmpty = true;
+                    for (int r = 2; r <= worksheet.LastRowUsed().RowNumber(); r++)
+                    {
+                        if (!string.IsNullOrEmpty(worksheet.Cell(r, col).GetString()))
+                        {
+                            isEmpty = false;
+                            break;
+                        }
+                    }
+                    if (isEmpty)
+                    {
+                        worksheet.Column(col).Hide();
+                    }
+                }
+
                 worksheet.Columns().AdjustToContents();
+
                 // Save the workbook to a memory stream
                 var stream = new MemoryStream();
                 workbook.SaveAs(stream);
@@ -124,5 +152,7 @@ namespace Ezac.Roster.Domain.Services
                 return stream;
             }
         }
+
+
     }
 }
