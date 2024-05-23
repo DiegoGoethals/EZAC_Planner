@@ -41,24 +41,27 @@ namespace Ezac.Roster.Domain.Services
                 // Create the header
                 var headers = new List<string> { $"Periode {year}" };
 
-                // Add the jobs to the header
-                var jobsNames = calendar.Days.SelectMany(d => d.DayPeriods)
-                    .SelectMany(dp => dp.Jobs)
-                    .Select(j => j.Name)
+                // add the jobs to the header grouped by day periods
+                var dayPeriodNames = calendar.Days.SelectMany(d => d.DayPeriods)
+                    .Select(dp => dp.Name)
                     .Distinct()
+                    .OrderBy(name => name)
                     .ToList();
 
-                if (jobsNames != null)
+                foreach (var period in dayPeriodNames)
                 {
-                    headers.AddRange(jobsNames);
-                }
+                    var jobNames = calendar.Days.SelectMany(d => d.DayPeriods)
+                        .Where(dp => dp.Name == period)
+                        .SelectMany(dp => dp.Jobs)
+                        .Select(j => j.Name)
+                        .Distinct()
+                        .OrderBy(name => name)
+                        .ToList();
 
-                // get the maximum number of jobs per day period to add additional headers if necessary
-                int maxJobsPerDayPeriod = calendar.Days.SelectMany(d => d.DayPeriods).Max(dp => dp.Jobs.Count());
-
-                while (headers.Count < maxJobsPerDayPeriod + 1)
-                {
-                    headers.Add("");  // add empty headers to fill the row
+                    foreach (var jobName in jobNames)
+                    {
+                        headers.Add($"{jobName} ({period})");
+                    }
                 }
 
                 // add the headers to the first row
@@ -67,35 +70,47 @@ namespace Ezac.Roster.Domain.Services
                     worksheet.Cell(1, i + 1).Value = headers[i];
                 }
 
+                // Sort days by date
+                var sortedDays = calendar.Days.OrderBy(d => d.Date).ToList();
                 int row = 2;
-                foreach (var day in calendar.Days)
+
+                foreach (var day in sortedDays)
                 {
+                    // dd the date to the first column (once per day)
+                    worksheet.Cell(row, 1).Value = day.Date.ToString("dddd dd MMM yyyy", CultureInfo.CurrentCulture);
+
+                    var jobAssignments = new Dictionary<string, string>();
+
                     foreach (var dayPeriod in day.DayPeriods)
                     {
-                        // add the date to the first column
-                        worksheet.Cell(row, 1).Value = day.Date.ToString("dddd dd MMM yyyy", CultureInfo.CurrentCulture);
-                        //worksheet.Cell(row, 1).Value = day.Date.ToString("dddd dd MMM yyyy", new CultureInfo("nl-NL"));
-
-                        // create a dictionary with the job names as keys and the user names as values
-                        var jobDict = dayPeriod.Jobs
-                            .Where(job => job.User != null) 
-                            .ToDictionary(job => job.Name, job => job.User.Name ?? "");
-
-                        for (int i = 1; i < headers.Count; i++)
+                        foreach (var job in dayPeriod.Jobs.Where(j => j.User != null))
                         {
-                            if (jobDict.TryGetValue(headers[i], out string userName))
+                            string key = $"{job.Name} ({dayPeriod.Name})";
+                            if (!jobAssignments.ContainsKey(key))
                             {
-                                // add the user name to the cell
-                                worksheet.Cell(row, i + 1).Value = userName;
+                                jobAssignments[key] = job.User.Name ?? "";
                             }
                             else
                             {
-                                // add an empty cell
-                                worksheet.Cell(row, i + 1).Value = "Er is geen gebruiker in database";
+                                jobAssignments[key] += $", {job.User.Name ?? ""}";
                             }
                         }
-                        row++;
                     }
+
+                    for (int i = 1; i < headers.Count; i++)
+                    {
+                        if (jobAssignments.TryGetValue(headers[i], out string userName))
+                        {
+                            // add the user name to the cell
+                            worksheet.Cell(row, i + 1).Value = userName;
+                        }
+                        else
+                        {
+                            // add an empty cell
+                            worksheet.Cell(row, i + 1).Value = "";
+                        }
+                    }
+                    row++;
                 }
 
                 // Save the workbook to a memory stream

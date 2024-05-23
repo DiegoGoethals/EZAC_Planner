@@ -1,11 +1,15 @@
 ﻿@page "/calendarslist"
 @rendermode InteractiveServer
 
+@using MudBlazor
+
 @inject ICalendarService CalendarService
 @inject IUserService UserService
 @inject EmailService EmailService
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject Ezac.Roster.Domain.Interfaces.Services.IExportService ExportService
+
 
 <h3>Alle kalenders</h3>
 
@@ -34,7 +38,10 @@
                         <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
                         <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
                         <button class="btn btn-info btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
-                        <button class="btn btn-success btn-sm" @onclick="() => DownloadCalendar(calendar.Id)">Download Excel</button>
+                        <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" 
+                                   @onclick="@(async () => await DownloadCalendar(calendar.Id))">
+                            Download Excel
+                        </MudButton>
                     </td>
                 </tr>
             }
@@ -67,7 +74,8 @@ else
 
     private ConfirmDeletePopUp DeletePopUp;
 
-
+    [Parameter]
+    public string calendarId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -130,18 +138,20 @@ else
 
     private async Task DownloadCalendar(Guid calendarId)
     {
-        //try
-        //{
-        //    var stream = await ExportService.ExportCalendarToExcel(calendarId);
-        //    var fileName = "Calendar.xlsx";
-        //    stream.Position = 0;
+        var calendar = calendars.FirstOrDefault(c => c.Id == calendarId);
+        if (calendar == null)
+        {
+            return;
+        }
 
-        //    using var streamRef = new DotNetStreamReference(stream: stream);
-        //    await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
-        //}
-        //catch (Exception ex)
-        //{
-        //    Console.WriteLine($"Error: {ex.Message}");
-        //}
+        var startMonthYear = $"{calendar.Start.Month}/{calendar.Start.Year}";
+        var endMonthYear = $"{calendar.End.Month}/{calendar.End.Year}";
+
+        var stream = await ExportService.ExportCalendarToExcel(calendarId);
+        var fileName = $"kalender voor {startMonthYear} tot {endMonthYear}.xlsx";
+        stream.Position = 0;
+
+        using var streamRef = new DotNetStreamReference(stream: stream);
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 }
