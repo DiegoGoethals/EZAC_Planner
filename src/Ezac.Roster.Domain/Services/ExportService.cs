@@ -22,13 +22,13 @@ namespace Ezac.Roster.Domain.Services
             _exportRepository = exportRepository;
         }
 
-        public async Task<Stream> ExportCalendarToExcel(string calendarId)
+        public async Task<Stream> ExportCalendarToExcel(Guid calendarId)
         {
             using (var workbook = new XLWorkbook())
             {
                 var worksheet = workbook.Worksheets.Add("Calendar");
 
-                var calendar = await _exportRepository.GetCalendarForExportAsync(Guid.Parse(calendarId));
+                var calendar = await _exportRepository.GetCalendarForExportAsync(calendarId);
 
                 if (calendar == null)
                 {
@@ -42,9 +42,9 @@ namespace Ezac.Roster.Domain.Services
                 var headers = new List<string> { $"Periode {year}" };
 
                 // Add the jobs to the header
-                var jobsNames = calendar.Days.SelectMany(d => d.DayPeriods
-                .SelectMany(dp => dp.Jobs
-                .Select(j => j.Name)))
+                var jobsNames = calendar.Days.SelectMany(d => d.DayPeriods)
+                    .SelectMany(dp => dp.Jobs)
+                    .Select(j => j.Name)
                     .Distinct()
                     .ToList();
 
@@ -54,9 +54,9 @@ namespace Ezac.Roster.Domain.Services
                 }
 
                 // get the maximum number of jobs per day period to add additional headers if necessary
-                int maxJobsPerDayperiod = calendar.Days.SelectMany(d => d.DayPeriods).Max(dp => dp.Jobs.Count());
+                int maxJobsPerDayPeriod = calendar.Days.SelectMany(d => d.DayPeriods).Max(dp => dp.Jobs.Count());
 
-                while (headers.Count < maxJobsPerDayperiod + 1)
+                while (headers.Count < maxJobsPerDayPeriod + 1)
                 {
                     headers.Add("");  // add empty headers to fill the row
                 }
@@ -77,7 +77,9 @@ namespace Ezac.Roster.Domain.Services
                         //worksheet.Cell(row, 1).Value = day.Date.ToString("dddd dd MMM yyyy", new CultureInfo("nl-NL"));
 
                         // create a dictionary with the job names as keys and the user names as values
-                        var jobDict = dayPeriod.Jobs.ToDictionary(job => job.Name, job => job.User.Name ?? "");
+                        var jobDict = dayPeriod.Jobs
+                            .Where(job => job.User != null) 
+                            .ToDictionary(job => job.Name, job => job.User.Name ?? "");
 
                         for (int i = 1; i < headers.Count; i++)
                         {
@@ -89,12 +91,11 @@ namespace Ezac.Roster.Domain.Services
                             else
                             {
                                 // add an empty cell
-                                worksheet.Cell(row, i + 1).Value = "";
+                                worksheet.Cell(row, i + 1).Value = "Er is geen gebruiker in database";
                             }
                         }
                         row++;
                     }
-
                 }
 
                 // Save the workbook to a memory stream
@@ -103,9 +104,7 @@ namespace Ezac.Roster.Domain.Services
                 stream.Position = 0;
 
                 return stream;
-
             }
-
         }
     }
 }

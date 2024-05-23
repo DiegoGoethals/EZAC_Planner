@@ -12,6 +12,7 @@
 @inject IUserService UserService
 @inject EmailService EmailService
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <h3>Alle kalenders</h3>
 
@@ -40,6 +41,7 @@
                         <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
                         <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
                         <button class="btn btn-info btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
+                        <button class="btn btn-success btn-sm" @onclick="() => DownloadCalendar(calendar.Id)">Download Excel</button>
                     </td>
                 </tr>
             }
@@ -51,6 +53,20 @@ else
 {
     <p>Geen kalenders gevonden.</p>
 }
+
+<script>
+    window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+        const arrayBuffer = await contentStreamReference.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(blob);
+        const anchorElement = document.createElement('a');
+        anchorElement.href = url;
+        anchorElement.download = fileName ?? '';
+        anchorElement.click();
+        anchorElement.remove();
+        URL.revokeObjectURL(url);
+    }
+</script>
 
 
 @code {
@@ -117,5 +133,22 @@ else
                 await EmailService.SendEmailAsync("goethalsdiego@gmail.com", subject, body);
             }
         }
+    }
+
+    private async Task DownloadCalendar(Guid calendarId)
+    {
+        //try
+        //{
+        //    var stream = await ExportService.ExportCalendarToExcel(calendarId);
+        //    var fileName = "Calendar.xlsx";
+        //    stream.Position = 0;
+
+        //    using var streamRef = new DotNetStreamReference(stream: stream);
+        //    await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        //}
+        //catch (Exception ex)
+        //{
+        //    Console.WriteLine($"Error: {ex.Message}");
+        //}
     }
 }

@@ -10,6 +10,6 @@ namespace Ezac.Roster.Domain.Interfaces.Services
 {
     public interface IExportService
     {
-        Task<Stream> ExportCalendarToExcel(string calendarId);
+        Task<Stream> ExportCalendarToExcel(Guid calendarId);
     }
 }
