@@ -14,7 +14,8 @@ namespace Ezac.Roster.Domain.Entities
         public ICollection<Job>? Jobs { get; set; }
         public ICollection<UserPermission> UserPermissions { get; set; }
         public ApplicationCalendar ApplicationCalendar { get; set; }
-        public int OriginalId { get; set; }
+		public Guid CalendarId { get; set; }
+		public int OriginalId { get; set; }
 
     }
 }
