@@ -60,7 +60,9 @@ namespace Ezac.Roster.Domain.Services
 
                     foreach (var jobName in jobNames)
                     {
-                        headers.Add($"{jobName} ({period})");
+                        int count = 1;
+                        headers.Add($"{jobName} ({period}) {count}");
+                        count++;
                     }
                 }
 
