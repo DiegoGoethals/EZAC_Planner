@@ -35,7 +35,7 @@
                     <td>@calendar.Start.ToString("dd/MM/yyyy") tot @calendar.End.ToString("dd/MM/yyyy")</td>
                     <td>
                         <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
-                        <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">bewerken</button>
+                        <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">Bewerken</button>
                         <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
                         <button class="btn btn-success btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
                         <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Disabled="@isLoading"
@@ -50,11 +50,7 @@
                                 <span>Download Excel</span>
                             }
                         </MudButton>
-                        <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
-                        <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">Bewerken</button>
-                        <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
-                        <button class="btn btn-info btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
-                        <button class="btn btn-info btn-sm" @onclick="() => ImportUsers(calendar.Id)">Leden Importeren</button>
+                        <<button class="btn btn-info btn-sm" @onclick="() => ImportUsers(calendar.Id)">Leden Importeren</button>
                         <button class="btn btn-info btn-sm" @onclick="() => MemberOverview(calendar.Id)">Leden Kalender</button>
                     </td>
                 </tr>
@@ -182,7 +178,6 @@ else
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
 
         isLoading = false;
-    }
     }
 
     private void MemberOverview(Guid calendarId)
