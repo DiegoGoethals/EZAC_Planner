@@ -84,7 +84,7 @@
             {
                 <div class="col-lg-3">
                     <div class="position-fixed" style="top: 100px; right: 20px;">
-                        <Ezac.Roster.Web.Components.Components.SchedulerPopUp @rendermode="InteractiveServer"
+                        <SchedulerPopUp @rendermode="InteractiveServer"
                                                                               OnGetStaff="(e) => GetStaff(e)"
                                                                               Staff="Staff"
                                                                               OnCancel="CancelPopUp"
@@ -92,7 +92,7 @@
                                                                               Day="selectedDay"
                                                                               DayPeriod="selectedDayPeriod"
                                                                               OnUpdate="(dayPeriod) =>ToggleDayPeriodPopUp(dayPeriod)">
-                        </Ezac.Roster.Web.Components.Components.SchedulerPopUp>
+                        </SchedulerPopUp>
                     </div>
                 </div>
             }
@@ -101,12 +101,12 @@
             {
                 <div class="col-lg-2">
                     <div class="position-fixed" style="top: 100px; right: 20px;">
-                        <Ezac.Roster.Web.Components.Components.UpdateDayPeriodsPopUp @rendermode="InteractiveServer"
+                        <UpdateDayPeriodsPopUp @rendermode="InteractiveServer"
                                                                                      OnAddDayPeriod="AddDayPeriod"
                                                                                      Day="selectedDay"
                                                                                      OnDelete="(dayPeriod) => DeletePeriod(dayPeriod)"
                                                                                      OnUpdate="UpdatePeriod">
-                        </Ezac.Roster.Web.Components.Components.UpdateDayPeriodsPopUp>
+                        </UpdateDayPeriodsPopUp>
                     </div>
                 </div>
             }
@@ -114,12 +114,12 @@
             {
                 <div class="col-lg-2">
                     <div class="position-fixed" style="top: 100px; right: 20px;">
-                        <Ezac.Roster.Web.Components.Components.UpdateDayPeriodJobsPopUp @rendermode="InteractiveServer"
+                        <UpdateDayPeriodJobsPopUp @rendermode="InteractiveServer"
                                                                                         Day="selectedDay"
                                                                                         DayPeriod="selectedDayPeriod"
                                                                                         OnAddJob="UpdatePeriod"
                                                                                         OnDeleteJob="UpdatePeriod">
-                        </Ezac.Roster.Web.Components.Components.UpdateDayPeriodJobsPopUp>
+                        </UpdateDayPeriodJobsPopUp>
                     </div>
                 </div>
             }
@@ -176,15 +176,16 @@ else
             await GetUniquePeriodNames();
         }
 
-        var usersResult = await _userService.GetAllAsync();
+        var usersResult = await _userService.GetUsersByCalendarIdAsync(Guid.Parse(Id));
         if (usersResult.IsSucces)
         {
-            _users = usersResult.Value.Select(p => new Ezac.Roster.Domain.Models.UserListModel
+            _users = usersResult.Value.Select(p => new UserListModel
                 {
                     Id = p.Id,
                     Name = p.Name,
                     Permissions = p.UserPermissions,
                     Scaling = p.Scaling,
+                    Preferences = p.Preferences
                 }).ToList();
         }
 
@@ -327,7 +328,7 @@ else
 
         foreach (var user in _users)
         {
-            if (user.Permissions.Any(p => p.Name == e.Value?.ToString()))
+            if (user.Permissions.Any(p => p.Name == e.Value?.ToString() && p.Experience > 0) && (user.Preferences.Any(p => p.Available && p.DayPeriod == selectedDayPeriod) || !user.Preferences.Any(p => p.DayPeriod == selectedDayPeriod)))
             {
                 Staff.Add(user);
             }
