@@ -30,9 +30,9 @@ namespace Ezac.Roster.Domain.Services
 				{
 					var worksheet = package.Workbook.Worksheets[0];
 					var rows = worksheet.Dimension.End.Row;
-
+                    
 					await ImportPermissions(worksheet);
-
+                    
 					for (int row = 2; row <= rows; row++)
 					{
 						var importResult = await ProcessUserImportRow(worksheet, row, calendarId);
@@ -72,22 +72,28 @@ namespace Ezac.Roster.Domain.Services
 			if (!double.TryParse(worksheet.Cells[row, 7].Value?.ToString(), out double scaling) || scaling < 0)
 				return ImportFailed(row, 7);
 
-			var user = new User
+			
+
+			var existingUser = await _userRepository.GetByEmailNameCalendarAsync(email, name, calendarId);
+			if (existingUser == null)
 			{
-				Id = Guid.NewGuid(),
-				Name = name,
-				Created = DateTime.Now,
-				Email = email,
-				Scaling = scaling,
-				Preferences = new List<Preference>(),
-				UserPermissions = new List<UserPermission>(),
-				Jobs = new List<Job>(),
-				CalendarId = calendarId
-			};
+                var user = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Name = name,
+                    Created = DateTime.Now,
+                    Email = email,
+                    Scaling = scaling,
+                    Preferences = new List<Preference>(),
+                    UserPermissions = new List<UserPermission>(),
+                    Jobs = new List<Job>(),
+                    CalendarId = calendarId
+                };
 
-			await _userRepository.AddAsync(user);
+                await _userRepository.AddAsync(user);
 
-			await ProcessUserPermissions(worksheet, row, user);
+                await ProcessUserPermissions(worksheet, row, user);
+            }
 
 			return null;
 		}

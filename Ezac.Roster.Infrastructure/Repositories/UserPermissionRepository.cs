@@ -6,17 +6,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Ezac.Roster.Infrastructure.Repositories
 {
-    public class UserPermissionRepository : BaseRepository<UserPermission>, IUserPermissionRepository
-    {
-        public UserPermissionRepository(ApplicationDbContext applicationDbContext, ILogger<IBaseRepository<UserPermission>> logger) : base(applicationDbContext, logger)
-        {
-        }
+	public class UserPermissionRepository : BaseRepository<UserPermission>, IUserPermissionRepository
+	{
+		public UserPermissionRepository(ApplicationDbContext applicationDbContext, ILogger<IBaseRepository<UserPermission>> logger) : base(applicationDbContext, logger)
+		{
+		}
 
-        public async Task<IEnumerable<UserPermission>> GetAllByUserAsync(Guid userId)
-        {
-            return await _table.Where(up => up.UserId == userId).Include(up => up.Permission).ToListAsync();
-        }
-    }
+		public async Task<IEnumerable<UserPermission>> GetAllByUserAsync(Guid userId)
+		{
+			return await _table.Where(up => up.UserId == userId).Include(up => up.Permission).ToListAsync();
+		}
 
 		public override async Task<IEnumerable<UserPermission>> GetAllAsync()
 		{

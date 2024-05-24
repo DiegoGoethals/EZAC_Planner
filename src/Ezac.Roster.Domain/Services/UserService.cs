@@ -69,7 +69,8 @@ namespace Ezac.Roster.Domain.Services
                 Scaling = userCreateRequestModel.Scaling,
                 UserPermissions = userCreateRequestModel.Permissions.ToList(),
                 Preferences = userCreateRequestModel.Preferences.ToList(),
-                Jobs = userCreateRequestModel.Jobs.ToList()
+                Jobs = userCreateRequestModel.Jobs.ToList(),
+                CalendarId = userCreateRequestModel.CalendarId
             };
 
 			foreach (var permission in user.UserPermissions)
@@ -219,7 +220,6 @@ namespace Ezac.Roster.Domain.Services
 				}
 			};
 		}
-	}
 
         public async Task<ResultModel<IEnumerable<UserPermission>>> GetUserPermissionsAsync(Guid userId)
         {

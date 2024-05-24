@@ -31,7 +31,7 @@ else
 
 	private async Task LoadMembers()
 	{
-		var result = await UserService.GetAllAsync();
+		var result = await UserService.GetUsersByCalendarIdAsync(Guid.Parse(calendarId));
 		if (result.IsSucces)
 		{
 			members = result.Value.Select(user => new MemberViewModel
@@ -98,7 +98,8 @@ else
 			Scaling = userInfo.Scaling,
 			Jobs = new List<Job>(),
 			Preferences = new List<Preference>(),
-			Permissions = userPermissions
+			Permissions = userPermissions,
+			CalendarId = Guid.Parse(calendarId)
 		};
 
 		var result = await UserService.AddAsync(user);
