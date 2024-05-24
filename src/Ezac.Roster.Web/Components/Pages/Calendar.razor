@@ -10,6 +10,12 @@
 @inject IPreferenceService _preferenceService
 @inject IDayService _dayService
 
+@if (string.IsNullOrWhiteSpace(feedback) == false)
+{
+    <Feedback Message="@feedback">
+    </Feedback>
+}
+
 @if (calendar != null && calendar.Days != null)
 {
     <button class="btn btn-info" @onclick="AutoFillCalendar">automatisch kalender genereren</button>
@@ -136,7 +142,7 @@ else
 
 <style>
     .table-hover tbody tr td:hover {
-        background-color: cornflowerblue !important;
+        background-color: lawngreen !important;
         cursor: pointer;
     }
 </style>
@@ -164,63 +170,92 @@ else
     private bool ToggleUpdateDatePeriodJobs { get; set; }
     private bool ToggleUpdateDatePeriod { get; set; }
 
-    private List<Preference> dayPeriodJobAvailableUsers = new List<Preference>();
-    private List<Preference> dayPeriodAvailableUsers = new List<Preference>();
+    private List<User> jobAvailableUsers = new List<User>();
+    private List<User> dayPeriodavailableUsers = new List<User>();
+    private List<User> dayAvailableUsers = new List<User>();
+    private string feedback = string.Empty;
 
     private async void AutoFillCalendar()
     {
-        foreach (var dayperiod in calendar.Days)
+        if (calendar != null || calendar.Days.Count() > 0)
         {
-            if (dayperiod.Preferences.Count() > 0)
+            foreach (var day in calendar.Days)
             {
-                foreach (var preference in dayperiod.Preferences)
+                foreach (var dayPeriod in day.DayPeriods)
                 {
-                    if (preference.Job != null)
+                    foreach (var job in dayPeriod.Jobs)
                     {
-                        dayPeriodJobAvailableUsers.Add(preference);
-                    }
-                    else
-                    {
-                        dayPeriodAvailableUsers.Add(preference);
-                    }
-                }
+                        foreach (var preference in job.Preferences)
+                        {
+                            if (preference.Available)
+                            {
+                                if (preference.JobId != null)
+                                    if(dayPeriod.Jobs.Any(j => j.UserId != preference.UserId))
+                                        jobAvailableUsers.Add(preference.User);
+                                    else
+                                        if (dayPeriod.Jobs.Any(j => j.UserId != preference.UserId))
+                                        dayPeriodavailableUsers.Add(preference.User);
+                            }
+                        }
 
-                Preference dayPeriodJobPreference = new Preference();
-                if (dayPeriodJobAvailableUsers.Count() > 0)
-                {
-                    dayPeriodJobPreference = dayPeriodJobAvailableUsers.FirstOrDefault();
-                }
-                else
-                {
-                    dayPeriodJobPreference = dayPeriodAvailableUsers.FirstOrDefault();
-                }
+                        var users = await _userService.GetAllAsync();
+                        var usersWithPermission = users.Value.Where(u => u.Preferences.Count() < 1 && u.UserPermissions.Any(permission => permission.Name == job.PermissionName)).ToList();
+                        dayAvailableUsers.AddRange(usersWithPermission);
 
+                        var user = new User();
+                        if (jobAvailableUsers.Count() > 0)
+                            user = jobAvailableUsers.FirstOrDefault();
+                        else if (dayPeriodavailableUsers.Count() < 0)
+                            user = dayPeriodavailableUsers.FirstOrDefault();
+                        else
+                            user = dayAvailableUsers.FirstOrDefault();
 
-                //get the job
-                var result = await JobService.GetByIdAsync(dayPeriodJobPreference.Job.Id);
-                if (result.IsSucces)
-                {
-                    var job = new JobUpdateRequestModel
-                    {
-                        Id = dayPeriodJobPreference.Job.Id,
-                        Name = result.Value.Name,
-                        Weight = result.Value.Weight,
-                        UserId = dayPeriodJobPreference.UserId,
-                        DayPeriodId = result.Value.DayPeriodId,
-                        PermissionName = result.Value.PermissionName,
-                        Preferences = result.Value.Preferences,
-                    };
-                    //update job in db
-                    var updateResult = await JobService.UpdateAsync(job);
-                    if (updateResult.IsSucces)
-                    {
-                        dayPeriodJobAvailableUsers = new List<Preference>();
-                        dayPeriodAvailableUsers = new List<Preference>();
+                        if (user != null)
+                        {
+                            var result = await JobService.GetByIdAsync(job.Id);
+                            if (result.IsSucces)
+                            {
+                                var newJob = new JobUpdateRequestModel
+                                {
+                                    Id = job.Id,
+                                    Name = result.Value.Name,
+                                    Weight = result.Value.Weight,
+                                    UserId = user.Id,
+                                    DayPeriodId = result.Value.DayPeriodId,
+                                    PermissionName = result.Value.PermissionName,
+                                    Preferences = result.Value.Preferences,
+                                };
+
+                                var updateResult = await JobService.UpdateAsync(newJob);
+                                if (updateResult.IsSucces)
+                                {
+                                    dayAvailableUsers.Remove(user);
+                                    //if (jobAvailableUsers.Contains(user))
+                                    //    jobAvailableUsers.Remove(user);
+                                    //if (dayPeriodavailableUsers.Contains(user))
+                                    //    dayPeriodavailableUsers.Remove(user);
+                                    //if (dayAvailableUsers.Contains(user))
+                                    //    dayAvailableUsers.Remove(user);
+                                }
+                            }
+                        }
                     }
                 }
+                jobAvailableUsers.Clear();
+                dayPeriodavailableUsers.Clear();
+                dayAvailableUsers.Clear();
             }
+            await InvokeAsync(StateHasChanged);
+            feedback = "Kalender succesvol automatisch ingevuld";
+            StateHasChanged();
+            await Task.Delay(2000);
+            feedback = string.Empty;
         }
-        await InvokeAsync(StateHasChanged);
+        else
+            feedback = "Kalender bestaat niet of bevat geen beschikbare dagen!";
+        StateHasChanged();
+        await Task.Delay(2000);
+        feedback = string.Empty;
     }
 
 
@@ -241,12 +276,12 @@ else
         if (usersResult.IsSucces)
         {
             _users = usersResult.Value.Select(p => new Ezac.Roster.Domain.Models.UserListModel
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Permissions = p.UserPermissions,
-                    Scaling = p.Scaling,
-                }).ToList();
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Permissions = p.UserPermissions,
+                Scaling = p.Scaling,
+            }).ToList();
         }
     }
 
