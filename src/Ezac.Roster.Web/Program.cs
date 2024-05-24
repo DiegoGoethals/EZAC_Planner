@@ -54,6 +54,9 @@ namespace Ezac.Roster.Web
             builder.Services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
             builder.Services.AddScoped<IFileService, FileService>();
 
+            builder.Services.AddScoped<IExportService, ExportService>();
+            builder.Services.AddScoped<IExportRepository, ExportRepository>();
+
 			//add MudBlazor services
 			builder.Services.AddMudServices();
 
