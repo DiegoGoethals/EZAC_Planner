@@ -26,7 +26,17 @@
             <MudIcon Icon="@(showPassword ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)" Size="Size.Medium" @onclick="TogglePasswordVisibility" />
         </MudCardContent>
         <MudCardActions>
-            <MudButton OnClick="Login">Login</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@isLoading" @onclick="@(async () => await Login())">
+                @if (isLoading)
+                {
+                    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+                    <span class="ml-2">Logging in...</span>
+                }
+                else
+                {
+                    <span>Login</span>
+                }
+            </MudButton>
         </MudCardActions>
     </MudCard>
 </div>
@@ -38,11 +48,13 @@
     private string Password;
     private string Message = "Gelieve in te loggen";
     private bool showPassword;
+    private bool isLoading = false;
 
     private const string HardcodedPassword = "ezac";
 
     private async Task Login()
     {
+        isLoading = true;
         if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password))
         {
             Message = "Gebruikersnaam en wachtwoord zijn verplicht";
@@ -60,13 +72,14 @@
             }
             else
             {
-                Message = "Gebruiker bestaat niet";
+                Message = "Gebruikersnaam of/en wachtwoord zijn niet juist";
             }
         }
         else
         {
             Message = "Gebruikersnaam of/en wachtwoord zijn niet juist";
         }
+        isLoading = false;
     }
 
     private void TogglePasswordVisibility()

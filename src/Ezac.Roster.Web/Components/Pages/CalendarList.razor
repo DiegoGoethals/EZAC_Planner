@@ -37,19 +37,7 @@
                         <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
                         <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">bewerken</button>
                         <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
-                        @*<button class="btn btn-success btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>*@
-                        <MudButton Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" Disabled="@isLoading"
-                                   @onclick="@(async () => await GenerateUniqueLink(calendar.Id))">
-                            @if (isLoading)
-                            {
-                                <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
-                                <span class="ml-2">Bezig met versturen...</span>
-                            }
-                            else
-                            {
-                                <span>Link Versturen</span>
-                            }
-                        </MudButton>
+                        <button class="btn btn-success btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
                         <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Disabled="@isLoading"
                                    @onclick="@(async () => await DownloadCalendar(calendar.Id))">
                             @if (isLoading)
