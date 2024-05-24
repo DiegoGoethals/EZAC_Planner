@@ -5,11 +5,11 @@
     </div>
     <div class="form-group">
         <label for="startDate">Start datum</label>
-        <input type="date" class="form-control" id="startDate" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@Calendar.End" required value="@Calendar.Start.ToString("yyyy-MM-dd")" @onchange="UpdateStartDate">
+        <input type="date" class="form-control" id="startDate" min="@DateTime.Now.AddDays(14).ToString("yyyy-MM-dd")" max="@Calendar.End" required value="@Calendar.Start.ToString("yyyy-MM-dd")" @onchange="UpdateStartDate">
     </div>
     <div class="form-group">
         <label for="endDate">Eind datum</label>
-        <input type="date" class="form-control" id="endDate" min="@Calendar.Start" max="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")" required value="@Calendar.End.ToString("yyyy-MM-dd")" @onchange="UpdateEndDate">
+        <input type="date" class="form-control" id="endDate" min="@Calendar.Start" required value="@Calendar.End.ToString("yyyy-MM-dd")" @onchange="UpdateEndDate">
     </div>
     <div>
         <div class="form-group">
@@ -51,7 +51,7 @@
 
     protected override void OnInitialized()
     {
-        dateToAdd = DateTime.Now;
+        dateToAdd = DateTime.Now.AddDays(14);
     }
 
     private void CheckDateToAdd()
@@ -64,6 +64,13 @@
         {
             dateToAdd = DateTime.Now;
         }
+		{
+			dateToAdd = result;
+		}
+		else
+		{
+			dateToAdd = Calendar.Start;
+		}
     }
 
     private void HandleClick(MouseEventArgs e)

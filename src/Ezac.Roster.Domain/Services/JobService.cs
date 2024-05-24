@@ -37,7 +37,7 @@ namespace Ezac.Roster.Domain.Services
 
         public async Task<ResultModel<Job>> GetByIdAsync(Guid id)
         {
-            var job =  await _jobRepository.GetByIdAsync(id);
+            var job = await _jobRepository.GetByIdAsync(id);
             if (job != null)
             {
                 return new ResultModel<Job>
@@ -162,6 +162,26 @@ namespace Ezac.Roster.Domain.Services
             };
         }
 
+        public async Task<ResultModel<IEnumerable<Job>>> GetJobsByCalendarIdAsync(Guid calendarId)
+        {
+			var jobs = await _jobRepository.GetJobsByCalendarIdAsync(calendarId);
+			if (jobs != null)
+            {
+				return new ResultModel<IEnumerable<Job>>
+                {
+					IsSucces = true,
+					Value = jobs
+				};
+			}
+			return new ResultModel<IEnumerable<Job>>
+            {
+				IsSucces = false,
+				Errors = new List<string>
+                {
+					"Geen jobs gevonden!"
+				}
+			};
+		}
         public async Task<ResultModel<IEnumerable<Job>>> GetAllJobsByDayPeriodId(Guid id)
         {
             var jobs = await _jobRepository.GetAllJobsByDayPeriodIdAsync(id);

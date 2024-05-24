@@ -48,6 +48,10 @@
                         <MudButton Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" @onclick="() => GenerateUniqueLink(calendar.Id)">
                             <MudIcon Icon="@Icons.Material.Filled.Link" />
                         </MudButton>
+                        <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
+                        <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">Bewerken</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
+                        <button class="btn btn-success btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
                         <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Disabled="@isLoading"
                                    @onclick="@(async () => await DownloadCalendar(calendar.Id))">
                             @if (isLoading)
@@ -60,6 +64,8 @@
                                 <MudIcon Icon="@Icons.Material.Filled.Download" />
                             }
                         </MudButton>
+                        <button class="btn btn-info btn-sm" @onclick="() => ImportUsers(calendar.Id)">Leden Importeren</button>
+                        <button class="btn btn-info btn-sm" @onclick="() => MemberOverview(calendar.Id)">Leden Kalender</button>
                     </td>
                 </tr>
             }
@@ -138,10 +144,19 @@ else
     {
         Navigation.NavigateTo($"calendar/{calendarId}");
     }
+    private void  GoToCalendarOverviewStatistics(Guid calendarId)
+    {
+        Navigation.NavigateTo($"calendarstatistics/{calendarId}");
+    }
+
+    private void ImportUsers(Guid calendarId)
+    {
+        Navigation.NavigateTo($"/import/{calendarId}");
+    }
 
     private async Task GenerateUniqueLink(Guid calendarId)
     {
-        var baseUrl = "https://localhost:44375/userpreferencecalendar";
+        var baseUrl = "https://localhost:44375/user";
         var usersResult = await UserService.GetAllAsync();
 
         if (usersResult.IsSucces)
@@ -178,4 +193,9 @@ else
 
         isLoading = false;
     }
+
+    private void MemberOverview(Guid calendarId)
+	{
+		Navigation.NavigateTo($"members/{calendarId}");
+	}
 }

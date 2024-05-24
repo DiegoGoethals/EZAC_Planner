@@ -56,6 +56,7 @@
     private bool showPassword;
     private bool isLoading = false;
 
+    private const string HardcodeUserName = "Roosteraar";
     private const string HardcodedPassword = "ezac";
 
     private async Task Login()
@@ -68,9 +69,7 @@
         }
         if (Password == HardcodedPassword)
         {
-            var users = await UserService.GetAllAsync();
-            var user = users.Value.FirstOrDefault(u => u.Name == UserName);
-            if (user != null)
+            if (UserName == HardcodeUserName)
             {
                 Message = "Logging in";
                 LogInBooLService.IsLoggedIn = true;
@@ -78,12 +77,12 @@
             }
             else
             {
-                Message = "Gebruikersnaam of/en wachtwoord zijn niet juist";
+                Message = "Gebruikersnaam is niet juist";
             }
         }
         else
         {
-            Message = "Gebruikersnaam of/en wachtwoord zijn niet juist";
+            Message = "Wachtwoord is niet juist";
         }
         isLoading = false;
     }
@@ -92,7 +91,6 @@
     {
         showPassword = !showPassword;
     }
-    //await ProtectedLocalStore.SetAsync("IsLoggedIn", IsLoggedIn);
 }
 
 

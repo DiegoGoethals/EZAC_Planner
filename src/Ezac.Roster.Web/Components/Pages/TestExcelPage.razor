@@ -1,4 +1,4 @@
-﻿@page "/excelTest"
+﻿@page "/import/{calendarId}"
 @rendermode InteractiveServer
 
 @inject IFileService FileService;
@@ -21,9 +21,12 @@
 }
 
 @code {
-    private IBrowserFile file;
-    private string errorMessage;
-    private bool isLoading = false;
+	[Parameter]
+	public string calendarId { get; set; }
+
+	private IBrowserFile file;
+	private string errorMessage;
+	private bool isLoading = false;
 
     private void LoadFile(InputFileChangeEventArgs e)
     {
@@ -50,9 +53,9 @@
             using var stream = file.OpenReadStream();
             isLoading = true;
 
-            errorMessage = await FileService.ImportUsers(stream);
-            isLoading = false;
-        }
-    }
+			errorMessage = await FileService.ImportUsers(stream, Guid.Parse(calendarId));
+			isLoading = false;
+		}
+	}
 }
 
