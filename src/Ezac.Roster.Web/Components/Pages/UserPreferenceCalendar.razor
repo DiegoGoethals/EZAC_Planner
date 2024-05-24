@@ -222,7 +222,7 @@ else
         {
             return;
         }
-        var preferences = result.Value.Where(p => p.DayPeriod == selectedPeriod).ToList();
+        var preferences = result.Value.Where(p => p.Day == selectedDay).ToList();
         if(selectedPeriod != null)
         {
             var periodPrefs = preferences.Where(p => p.DayPeriod == selectedPeriod).ToList();
@@ -268,10 +268,15 @@ else
                 }
             }
         }
-        else if (selectedPeriod == null && selectedDay != null && !preferences.Any(p => p.UserId == user.Id))
+        else if (selectedPeriod == null && selectedDay != null)
         {
             foreach (var period in selectedDay.DayPeriods)
             {
+                var existingPrefs = preferences.Where(p => p.DayPeriod == period).ToList();
+                foreach (var preference in existingPrefs)
+				{
+					await PreferenceService.DeleteAsync(preference.Id);
+				}
                 var requestModel = new PreferenceCreateRequestModel
                 {
                     Name = $"{user.Name} - {period.Name}",
