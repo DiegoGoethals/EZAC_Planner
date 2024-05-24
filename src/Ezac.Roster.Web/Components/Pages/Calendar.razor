@@ -84,7 +84,7 @@
             {
                 <div class="col-lg-3">
                     <div class="position-fixed" style="top: 100px; right: 20px;">
-                        <Ezac.Roster.Web.Components.Components.SchedulerPopUp @rendermode="InteractiveServer"
+                        <SchedulerPopUp @rendermode="InteractiveServer"
                                                                               OnGetStaff="(e) => GetStaff(e)"
                                                                               Staff="Staff"
                                                                               OnCancel="CancelPopUp"
@@ -92,7 +92,7 @@
                                                                               Day="selectedDay"
                                                                               DayPeriod="selectedDayPeriod"
                                                                               OnUpdate="(dayPeriod) =>ToggleDayPeriodPopUp(dayPeriod)">
-                        </Ezac.Roster.Web.Components.Components.SchedulerPopUp>
+                        </SchedulerPopUp>
                     </div>
                 </div>
             }
@@ -101,12 +101,12 @@
             {
                 <div class="col-lg-2">
                     <div class="position-fixed" style="top: 100px; right: 20px;">
-                        <Ezac.Roster.Web.Components.Components.UpdateDayPeriodsPopUp @rendermode="InteractiveServer"
+                        <UpdateDayPeriodsPopUp @rendermode="InteractiveServer"
                                                                                      OnAddDayPeriod="AddDayPeriod"
                                                                                      Day="selectedDay"
                                                                                      OnDelete="(dayPeriod) => DeletePeriod(dayPeriod)"
                                                                                      OnUpdate="UpdatePeriod">
-                        </Ezac.Roster.Web.Components.Components.UpdateDayPeriodsPopUp>
+                        </UpdateDayPeriodsPopUp>
                     </div>
                 </div>
             }
@@ -114,12 +114,12 @@
             {
                 <div class="col-lg-2">
                     <div class="position-fixed" style="top: 100px; right: 20px;">
-                        <Ezac.Roster.Web.Components.Components.UpdateDayPeriodJobsPopUp @rendermode="InteractiveServer"
+                        <UpdateDayPeriodJobsPopUp @rendermode="InteractiveServer"
                                                                                         Day="selectedDay"
                                                                                         DayPeriod="selectedDayPeriod"
                                                                                         OnAddJob="UpdatePeriod"
                                                                                         OnDeleteJob="UpdatePeriod">
-                        </Ezac.Roster.Web.Components.Components.UpdateDayPeriodJobsPopUp>
+                        </UpdateDayPeriodJobsPopUp>
                     </div>
                 </div>
             }
