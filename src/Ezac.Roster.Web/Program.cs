@@ -28,7 +28,9 @@ namespace Ezac.Roster.Web
                 .AddInteractiveServerComponents();
 
 			builder.Services.AddSingleton<LogInBooLService>();
-			builder.Services.AddSingleton<EmailService>();
+            builder.Services.AddSingleton<EmailService>();
+
+			builder.Services.AddScoped<WorkloadService>();
 
 			builder.Services.AddScoped<ICalendarService, CalendarService>();
             builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
@@ -53,6 +55,9 @@ namespace Ezac.Roster.Web
 
             builder.Services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
             builder.Services.AddScoped<IFileService, FileService>();
+
+            builder.Services.AddScoped<IExportService, ExportService>();
+            builder.Services.AddScoped<IExportRepository, ExportRepository>();
 
 			//add MudBlazor services
 			builder.Services.AddMudServices();

@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Ezac.Roster.Domain.Interfaces.Repositories
 {
-    public interface IJobRepository : IBaseRepository<Job>
+    public interface IExportRepository
     {
-        Task<IEnumerable<Job>> GetAllJobsByDayPeriodIdAsync(Guid id);
-		Task<IEnumerable<Job>> GetJobsByCalendarIdAsync(Guid calendarId);
-	}
+        Task<ApplicationCalendar> GetCalendarForExportAsync(Guid calendarId);
+    }
 }

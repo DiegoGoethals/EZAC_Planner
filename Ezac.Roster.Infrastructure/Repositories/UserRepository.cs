@@ -37,5 +37,25 @@ namespace Ezac.Roster.Infrastructure.Repositories
                 .Include(u => u.Preferences)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
+
+		public async Task<IEnumerable<User>> GetUsersByCalendarIdAsync(Guid calendarId)
+		{
+			return await _table.Where(u => u.CalendarId == calendarId)
+                .Include(u => u.UserPermissions)
+                .ThenInclude(up => up.Permission)
+                .Include(u => u.Jobs)
+                .Include(u => u.Preferences).ToListAsync();
+		}
+
+        public async Task<User> GetByEmailNameCalendarAsync(string email, string name, Guid calendarId)
+        {
+            return await _table
+                .Include(u => u.UserPermissions)
+                .ThenInclude(up => up.Permission)
+                .Include(u => u.Jobs)
+                .Include(u => u.Preferences)
+                .FirstOrDefaultAsync(u => u.Email == email && u.Name == name && u.CalendarId == calendarId);
+        }
+
     }
 }

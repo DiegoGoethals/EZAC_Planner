@@ -1,0 +1,51 @@
+﻿@page "/export/{calendarId}"
+@rendermode InteractiveServer
+@inject Ezac.Roster.Domain.Interfaces.Services.IExportService ExportService
+@inject IJSRuntime JS
+
+<PageTitle>Export Calendar</PageTitle>
+
+<h1>Export Calendar to Excel</h1>
+
+<button @onclick="@(async () => await DownloadCalendar())">Download Excel</button>
+
+<!-- wwwroot/index.html or _Host.cshtml -->
+<script>
+    window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+        const arrayBuffer = await contentStreamReference.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(blob);
+        const anchorElement = document.createElement('a');
+        anchorElement.href = url;
+        anchorElement.download = fileName ?? '';
+        anchorElement.click();
+        anchorElement.remove();
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+
+@code {
+    [Parameter]
+    public string calendarId { get; set; }
+
+    private async Task DownloadCalendar()
+    {
+        try
+        {
+            // Parse calendarId from string to Guid
+            Guid.TryParse(calendarId, out Guid parsedCalendarId);
+
+            var stream = await ExportService.ExportCalendarToExcel(parsedCalendarId);
+            var fileName = "Calendar.xlsx";
+            stream.Position = 0;
+
+            using var streamRef = new DotNetStreamReference(stream: stream);
+            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

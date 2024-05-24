@@ -14,8 +14,8 @@
         _calendar = new CalenderViewModel()
         {
             Id = Guid.NewGuid(),
-            Start = DateTime.Now,
-            End = DateTime.Now,
+            Start = DateTime.Now.AddDays(14),
+            End = DateTime.Now.AddDays(14),
             Days = new List<Day>()
         };
     }
