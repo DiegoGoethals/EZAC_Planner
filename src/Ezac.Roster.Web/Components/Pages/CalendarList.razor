@@ -48,10 +48,6 @@
                         <MudButton Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" @onclick="() => GenerateUniqueLink(calendar.Id)">
                             <MudIcon Icon="@Icons.Material.Filled.Link" />
                         </MudButton>
-                        <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
-                        <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">Bewerken</button>
-                        <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
-                        <button class="btn btn-success btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
                         <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Disabled="@isLoading"
                                    @onclick="@(async () => await DownloadCalendar(calendar.Id))">
                             @if (isLoading)
@@ -64,8 +60,13 @@
                                 <MudIcon Icon="@Icons.Material.Filled.Download" />
                             }
                         </MudButton>
-                        <button class="btn btn-info btn-sm" @onclick="() => ImportUsers(calendar.Id)">Leden Importeren</button>
-                        <button class="btn btn-info btn-sm" @onclick="() => MemberOverview(calendar.Id)">Leden Kalender</button>
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" @onclick="() => ImportUsers(calendar.Id)">
+                            <MudIcon Icon="@Icons.Material.Filled.Upload" />
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Surface" Size="Size.Small" @onclick="() => MemberOverview(calendar.Id)">
+                            <MudIcon Icon="@Icons.Material.Filled.CardMembership" />
+                        </MudButton>
+
                     </td>
                 </tr>
             }
