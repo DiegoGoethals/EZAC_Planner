@@ -7,9 +7,18 @@
 @inject IDayPeriodService DayPeriodService
 @inject IPermissionsService PermissionService
 @inject IUserService _userService
+@inject IPreferenceService _preferenceService
+@inject IDayService _dayService
+
+@if (string.IsNullOrWhiteSpace(feedback) == false)
+{
+    <Feedback Message="@feedback">
+    </Feedback>
+}
 
 @if (calendar != null && calendar.Days != null)
 {
+    <button class="btn btn-info" @onclick="AutoFillCalendar" disabled="@IsFilling">automatisch kalender genereren</button>
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-9">
@@ -104,7 +113,7 @@
                         <UpdateDayPeriodsPopUp @rendermode="InteractiveServer"
                                                                                      OnAddDayPeriod="AddDayPeriod"
                                                                                      Day="selectedDay"
-                                                                                     OnDelete="(dayPeriod) => DeletePeriod(dayPeriod)"
+                                                                                     OnDelete="UpdatePeriod"
                                                                                      OnUpdate="UpdatePeriod">
                         </UpdateDayPeriodsPopUp>
                     </div>
@@ -133,11 +142,9 @@ else
 
 <style>
     .table-hover tbody tr td:hover {
-        background-color: cornflowerblue !important;
+        background-color: lawngreen !important;
         cursor: pointer;
     }
-
-
 </style>
 
 
@@ -162,6 +169,91 @@ else
     private DayPeriod selectedDayPeriod;
     private bool ToggleUpdateDatePeriodJobs { get; set; }
     private bool ToggleUpdateDatePeriod { get; set; }
+
+    private List<User> jobAvailableUsers = new List<User>();
+    private List<User> dayPeriodavailableUsers = new List<User>();
+    private List<User> dayAvailableUsers = new List<User>();
+    private string feedback = string.Empty;
+    private bool IsFilling = false;
+
+    private async void AutoFillCalendar()
+    {
+        if (calendar != null || calendar.Days.Count() > 0)
+        {
+            IsFilling = true;
+            foreach (var day in calendar.Days)
+            {
+                foreach (var dayPeriod in day.DayPeriods)
+                {
+                    var users = await _userService.GetUsersByCalendarIdAsync(calendar.Id);
+
+                    foreach (var job in dayPeriod.Jobs)
+                    {
+                        foreach (var preference in job.Preferences)
+                        {
+                            if (preference.Available)
+                            {
+                                if (preference.JobId != null)
+                                    if(dayPeriod.Jobs.Any(j => j.UserId != preference.UserId))
+                                        jobAvailableUsers.Add(preference.User);
+                                    else
+                                        if (dayPeriod.Jobs.Any(j => j.UserId != preference.UserId))
+                                        dayPeriodavailableUsers.Add(preference.User);
+                            }
+                        }
+
+                        var usersWithPermission = users.Value.Where(u => u.Preferences.Count() < 1 && u.UserPermissions.Any(permission => permission.Name == job.PermissionName)).ToList();
+                        dayAvailableUsers.AddRange(usersWithPermission);
+
+                        var user = new User();
+                        if (jobAvailableUsers.Count() > 0)
+                            user = jobAvailableUsers.FirstOrDefault();
+                        else if (dayPeriodavailableUsers.Count() < 0)
+                            user = dayPeriodavailableUsers.FirstOrDefault();
+                        else
+                            user = dayAvailableUsers.FirstOrDefault();
+
+                        if (user != null)
+                        {
+                            var result = await JobService.GetByIdAsync(job.Id);
+                            if (result.IsSucces)
+                            {
+                                var newJob = new JobUpdateRequestModel
+                                {
+                                    Id = job.Id,
+                                    Name = result.Value.Name,
+                                    Weight = result.Value.Weight,
+                                    UserId = user.Id,
+                                    DayPeriodId = result.Value.DayPeriodId,
+                                    PermissionName = result.Value.PermissionName,
+                                    Preferences = result.Value.Preferences,
+                                };
+
+                                var updateResult = await JobService.UpdateAsync(newJob);
+                                if (updateResult.IsSucces)
+                                    dayAvailableUsers.Remove(user);
+                            }
+                        }
+                    }
+                }
+                jobAvailableUsers.Clear();
+                dayPeriodavailableUsers.Clear();
+                dayAvailableUsers.Clear();
+            }
+            await InvokeAsync(StateHasChanged);
+            feedback = "Kalender succesvol automatisch ingevuld";
+            StateHasChanged();
+            await Task.Delay(2000);
+            feedback = string.Empty;
+            IsFilling = false;
+        }
+        else
+            feedback = "Kalender bestaat niet of bevat geen beschikbare dagen!";
+        StateHasChanged();
+        await Task.Delay(2000);
+        feedback = string.Empty;
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -188,7 +280,6 @@ else
                     Preferences = p.Preferences
                 }).ToList();
         }
-
     }
 
     private async void ToggleDayPeriodPopUp(DayPeriod dayPeriod)
@@ -215,21 +306,6 @@ else
             DayId = selectedDay.Id,
             IsOpen = true,
         });
-
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task DeletePeriod(DayPeriod dayPeriod)
-    {
-        var result = await DayPeriodService.DeleteAsync(dayPeriod.Id);
-
-        if (result.IsSucces)
-        {
-            foreach (var job in dayPeriod.Jobs)
-            {
-                await JobService.DeleteAsync(job.Id);
-            }
-        }
 
         await InvokeAsync(StateHasChanged);
     }
