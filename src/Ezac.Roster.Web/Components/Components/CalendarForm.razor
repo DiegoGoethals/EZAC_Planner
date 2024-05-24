@@ -17,6 +17,7 @@
             <input type="date" class="form-control" id="extraDays" @oninput="CheckDateToAdd" @bind="dateToAdd" min="@Calendar.Start" max="@Calendar.End" />
             <button type="button" class="btn btn-primary" @onclick="(e) => HandleClick(e)">Voeg toe</button>
         </div>
+        <button type="submit" class="btn btn-primary" disabled="@isSubmitting">Bewerk kalender</button>
     </div>
 
 </form>
