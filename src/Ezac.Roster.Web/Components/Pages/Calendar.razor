@@ -328,7 +328,7 @@ else
 
         foreach (var user in _users)
         {
-            if (user.Permissions.Any(p => p.Name == e.Value?.ToString()) && (user.Preferences.Any(p => p.Available && p.DayPeriod == selectedDayPeriod) || !user.Preferences.Any(p => p.DayPeriod == selectedDayPeriod)))
+            if (user.Permissions.Any(p => p.Name == e.Value?.ToString() && p.Experience > 0) && (user.Preferences.Any(p => p.Available && p.DayPeriod == selectedDayPeriod) || !user.Preferences.Any(p => p.DayPeriod == selectedDayPeriod)))
             {
                 Staff.Add(user);
             }
