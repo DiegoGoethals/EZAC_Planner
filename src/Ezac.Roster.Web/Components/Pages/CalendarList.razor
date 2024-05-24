@@ -32,7 +32,7 @@
             {
                 <tr>
                     <td>@calendar.Name</td>
-                    <td>@calendar.Start.ToString("yyyy/MM") tot @calendar.End.ToString("yyyy/MM")</td>
+                    <td>@calendar.Start.ToString("dd/MM/yyyy") tot @calendar.End.ToString("dd/MM/yyyy")</td>
                     <td>
                         <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">bewerken</button>
                         <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
