@@ -1,4 +1,4 @@
-﻿@page "/members"
+﻿@page "/members/{calendarId}"
 @rendermode InteractiveServer
 
 @inject IUserService UserService
@@ -16,6 +16,9 @@ else
 }
 
 @code {
+	[Parameter]
+	public string calendarId { get; set; }
+
 	private List<MemberViewModel> members;
 	private List<Permission> permissions;
 	private Dictionary<Guid, int> PermissionValues { get; set; } = new Dictionary<Guid, int>();

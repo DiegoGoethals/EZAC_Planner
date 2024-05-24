@@ -33,7 +33,8 @@
                         <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">Bewerken</button>
                         <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
                         <button class="btn btn-info btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
-                        <button class="btn btn-info btn-sm" @onclick="() => ImportUsers(calendar.Id)">Leden importeren</button>
+                        <button class="btn btn-info btn-sm" @onclick="() => ImportUsers(calendar.Id)">Leden Importeren</button>
+                        <button class="btn btn-info btn-sm">Leden Kalender</button>
                     </td>
                 </tr>
             }
@@ -117,4 +118,9 @@ else
             }
         }
     }
+
+    private void MemberOverview(Guid calendarId)
+	{
+		Navigation.NavigateTo($"members/{calendarId}");
+	}
 }
