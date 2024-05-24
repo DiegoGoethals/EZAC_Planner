@@ -306,21 +306,6 @@ else
         await InvokeAsync(StateHasChanged);
     }
 
-    //private async Task DeletePeriod(DayPeriod dayPeriod)
-    //{
-    //    var result = await DayPeriodService.DeleteAsync(dayPeriod.Id);
-
-    //    if (result.IsSucces)
-    //    {
-    //        foreach (var job in dayPeriod.Jobs)
-    //        {
-    //            await JobService.DeleteAsync(job.Id);
-    //        }
-    //    }
-
-    //    await InvokeAsync(StateHasChanged);
-    //}
-
     private async void CancelUserDropZone(Guid dropzoneId)
     {
         Dropzones[dropzoneId.ToString()] = null;
