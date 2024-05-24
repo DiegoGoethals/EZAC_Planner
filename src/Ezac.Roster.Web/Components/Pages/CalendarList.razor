@@ -13,7 +13,9 @@
 
 <h3>Alle kalenders</h3>
 
-<button class="btn btn-primary" @onclick="CreateCalendar">Maak een nieuwe kalender</button>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="CreateCalendar">
+    <MudIcon Icon="@Icons.Material.Filled.Add" /> Maak een Nieuwe Kalender
+</MudButton>
 
 <ConfirmDeletePopUp @ref="DeletePopUp" deleteCalendar="@DeleteCalendar" />
 
@@ -34,8 +36,12 @@
                     <td>@calendar.Name</td>
                     <td>@calendar.Start.ToString("dd/MM/yyyy") tot @calendar.End.ToString("dd/MM/yyyy")</td>
                     <td>
-                        <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
-                        <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">bewerken</button>
+                        <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" @onclick="() => OverviewCalendar(calendar.Id)">
+                            <MudIcon Icon="@Icons.Material.Filled.Info" /> Overzicht
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" @onclick="() => UpdateCalendar(calendar.Id)">
+                            <MudIcon Icon="@Icons.Material.Filled.Edit" /> Bewerken
+                        </MudButton>
                         <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
                         <button class="btn btn-success btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
                         <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Disabled="@isLoading"
