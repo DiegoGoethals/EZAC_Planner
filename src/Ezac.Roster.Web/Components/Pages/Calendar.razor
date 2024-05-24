@@ -113,7 +113,7 @@
                         <Ezac.Roster.Web.Components.Components.UpdateDayPeriodsPopUp @rendermode="InteractiveServer"
                                                                                      OnAddDayPeriod="AddDayPeriod"
                                                                                      Day="selectedDay"
-                                                                                     OnDelete="(dayPeriod) => DeletePeriod(dayPeriod)"
+                                                                                     OnDelete="UpdatePeriod"
                                                                                      OnUpdate="UpdatePeriod">
                         </Ezac.Roster.Web.Components.Components.UpdateDayPeriodsPopUp>
                     </div>
@@ -183,6 +183,8 @@ else
             {
                 foreach (var dayPeriod in day.DayPeriods)
                 {
+                    var users = await _userService.GetUsersByCalendarIdAsync(calendar.Id);
+
                     foreach (var job in dayPeriod.Jobs)
                     {
                         foreach (var preference in job.Preferences)
@@ -198,7 +200,6 @@ else
                             }
                         }
 
-                        var users = await _userService.GetAllAsync();
                         var usersWithPermission = users.Value.Where(u => u.Preferences.Count() < 1 && u.UserPermissions.Any(permission => permission.Name == job.PermissionName)).ToList();
                         dayAvailableUsers.AddRange(usersWithPermission);
 
@@ -228,15 +229,7 @@ else
 
                                 var updateResult = await JobService.UpdateAsync(newJob);
                                 if (updateResult.IsSucces)
-                                {
                                     dayAvailableUsers.Remove(user);
-                                    //if (jobAvailableUsers.Contains(user))
-                                    //    jobAvailableUsers.Remove(user);
-                                    //if (dayPeriodavailableUsers.Contains(user))
-                                    //    dayPeriodavailableUsers.Remove(user);
-                                    //if (dayAvailableUsers.Contains(user))
-                                    //    dayAvailableUsers.Remove(user);
-                                }
                             }
                         }
                     }
@@ -313,20 +306,20 @@ else
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task DeletePeriod(DayPeriod dayPeriod)
-    {
-        var result = await DayPeriodService.DeleteAsync(dayPeriod.Id);
+    //private async Task DeletePeriod(DayPeriod dayPeriod)
+    //{
+    //    var result = await DayPeriodService.DeleteAsync(dayPeriod.Id);
 
-        if (result.IsSucces)
-        {
-            foreach (var job in dayPeriod.Jobs)
-            {
-                await JobService.DeleteAsync(job.Id);
-            }
-        }
+    //    if (result.IsSucces)
+    //    {
+    //        foreach (var job in dayPeriod.Jobs)
+    //        {
+    //            await JobService.DeleteAsync(job.Id);
+    //        }
+    //    }
 
-        await InvokeAsync(StateHasChanged);
-    }
+    //    await InvokeAsync(StateHasChanged);
+    //}
 
     private async void CancelUserDropZone(Guid dropzoneId)
     {
