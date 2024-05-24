@@ -20,10 +20,14 @@
                 <input type="number" min="0" max="10" class="form-control" @bind="userPermission.Experience" />
             </td>
         }
-        <td>
-            <button type="button" class="btn btn-success" @onclick="UpdateMember">Aanpassen</button>
-            <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Annuleren</button>
-        </td>
+<td>
+    <MudButton Variant="Variant.Filled" Color="Color.Warning" @onclick="UpdateMember">
+        <MudIcon Icon="@Icons.Material.Filled.Update"></MudIcon>
+    </MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Dark" @onclick="CancelEdit">
+        <MudIcon Icon="@Icons.Material.Filled.Cancel"></MudIcon>
+    </MudButton>
+</td>
     }
     else
     {
@@ -36,10 +40,14 @@
                 @(member.UserPermissions.FirstOrDefault(up => up.PermissionId == permission.Id)?.Experience ?? 0)
             </td>
         }
-        <td>
-            <button type="button" class="btn btn-primary" @onclick="EditMember">Aanpassen</button>
-            <button type="button" class="btn btn-danger" @onclick="DeleteMember">Verwijderen</button>
-        </td>
+<td>
+    <MudButton Variant="Variant.Filled" Color="Color.Warning" @onclick="EditMember" Margin="Margin.BottomSmall">
+        <MudIcon Icon="@Icons.Material.Filled.Edit"></MudIcon>
+    </MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="DeleteMember">
+        <MudIcon Icon="@Icons.Material.Filled.Delete"></MudIcon>
+    </MudButton>
+</td>
     }
 </tr>
 

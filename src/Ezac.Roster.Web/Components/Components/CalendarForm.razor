@@ -17,8 +17,9 @@
             <input type="date" class="form-control" id="extraDays" @oninput="CheckDateToAdd" @bind="dateToAdd" min="@Calendar.Start" max="@Calendar.End" />
             <button type="button" class="btn btn-primary" @onclick="(e) => HandleClick(e)">Voeg toe</button>
         </div>
+        <button type="submit" class="btn btn-primary" disabled="@isSubmitting">Bewerk kalender</button>
     </div>
-    <button type="submit" class="btn btn-primary" disabled="@isSubmitting">Bewerk kalender</button>
+
 </form>
 
 @code {
@@ -41,6 +42,8 @@
 
     private bool isSubmitting = false;
 
+    private bool isLoading = false;
+
     protected override void OnInitialized()
     {
         dateToAdd = DateTime.Now.AddDays(14);
@@ -49,13 +52,13 @@
     private void CheckDateToAdd()
     {
         if (DateTime.TryParse(dateToAdd.ToString(), out DateTime result) && result <= Calendar.End && result >= Calendar.Start)
-		{
-			dateToAdd = result;
-		}
-		else
-		{
-			dateToAdd = Calendar.Start;
-		}
+        {
+            dateToAdd = result;
+        }
+        else
+        {
+            dateToAdd = Calendar.Start;
+        }
     }
 
     private void HandleClick(MouseEventArgs e)
@@ -67,6 +70,7 @@
     {
         try
         {
+            isLoading = true;
             isSubmitting = true;
 
             await FormHandler();
@@ -80,6 +84,7 @@
         finally
         {
             isSubmitting = false;
+            isLoading = false;
         }
     }
 
