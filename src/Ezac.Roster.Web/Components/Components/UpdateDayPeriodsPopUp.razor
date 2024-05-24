@@ -1,4 +1,11 @@
 ﻿@inject IDayPeriodService DayPeriodService
+@inject IJobService JobService
+
+@if (string.IsNullOrWhiteSpace(feedback) == false)
+{
+    <Feedback Message="@feedback">
+    </Feedback>
+}
 
 <div class="container">
     <div class="row">
@@ -24,7 +31,7 @@
                     <input type="datetime" @bind-value="endTime">
                 </div>
                 <button class="btn btn-primary" @onclick="UpdatePeriod">Update dagdeel</button>
-                <button class="btn btn-primary" @onclick="e => OnDelete.InvokeAsync(selectedPeriod)">Dagdeel verwijderen</button>
+                <button class="btn btn-primary" @onclick="DeletePeriod">Dagdeel verwijderen</button>
             </div>
 
 
@@ -53,6 +60,7 @@
     private DayPeriod selectedPeriod;
     private DateTime startTime;
     private DateTime endTime;
+    private string feedback = string.Empty;
 
     private void HandleSelectChanged(ChangeEventArgs e)
     {
@@ -72,18 +80,47 @@
 
     private async Task UpdatePeriod()
     {
-        selectedPeriod.Start = startTime;
-        selectedPeriod.End = endTime;
-
-        var result = await DayPeriodService.UpdateAsync(new DayPeriodUpdateRequestModel
+        if (selectedPeriod != null)
         {
-            Id = selectedPeriod.Id,
-            Name = selectedPeriod.Name,
-            IsOpen = selectedPeriod.IsOpen,
-            Start = startTime,
-            End =  endTime,
-        });
+            var result = await DayPeriodService.UpdateAsync(new DayPeriodUpdateRequestModel
+            {
+                Id = selectedPeriod.Id,
+                Name = selectedPeriod.Name,
+                IsOpen = selectedPeriod.IsOpen,
+                Start = startTime,
+                End = endTime,
+            });
 
-        await OnUpdate.InvokeAsync();
+            await OnUpdate.InvokeAsync();
+        }
+        else
+            feedback = "Gelieve een dagdeel te selecteren!";
+        StateHasChanged();
+        await Task.Delay(2000);
+        feedback = string.Empty;
+    }
+
+    private async Task DeletePeriod()
+    {
+        if (selectedPeriod != null)
+        {
+            var result = await DayPeriodService.DeleteAsync(selectedPeriod.Id);
+
+            if (result.IsSucces)
+            {
+                foreach (var job in selectedPeriod.Jobs)
+                {
+                    await JobService.DeleteAsync(job.Id);
+                }
+            }
+
+            await InvokeAsync(StateHasChanged);
+            await OnUpdate.InvokeAsync();
+        }
+        else
+            feedback = "Gelieve een dagdeel te selecteren!";
+            StateHasChanged();
+            await Task.Delay(2000);
+            feedback = string.Empty;
     }
 }
