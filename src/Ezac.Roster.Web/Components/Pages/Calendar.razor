@@ -18,7 +18,7 @@
 
 @if (calendar != null && calendar.Days != null)
 {
-    <button class="btn btn-info" @onclick="AutoFillCalendar">automatisch kalender genereren</button>
+    <button class="btn btn-info" @onclick="AutoFillCalendar" disabled="@IsFilling">automatisch kalender genereren</button>
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-9">
@@ -174,11 +174,13 @@ else
     private List<User> dayPeriodavailableUsers = new List<User>();
     private List<User> dayAvailableUsers = new List<User>();
     private string feedback = string.Empty;
+    private bool IsFilling = false;
 
     private async void AutoFillCalendar()
     {
         if (calendar != null || calendar.Days.Count() > 0)
         {
+            IsFilling = true;
             foreach (var day in calendar.Days)
             {
                 foreach (var dayPeriod in day.DayPeriods)
@@ -243,6 +245,7 @@ else
             StateHasChanged();
             await Task.Delay(2000);
             feedback = string.Empty;
+            IsFilling = false;
         }
         else
             feedback = "Kalender bestaat niet of bevat geen beschikbare dagen!";
