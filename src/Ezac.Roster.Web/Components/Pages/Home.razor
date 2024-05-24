@@ -27,14 +27,10 @@
         </MudCardContent>
         <MudCardActions>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@isLoading" @onclick="@(async () => await Login())">
+                <MudIcon Icon="@Icons.Material.Filled.Login" />
                 @if (isLoading)
                 {
                     <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
-                    <span class="ml-2">Logging in...</span>
-                }
-                else
-                {
-                    <span>Login</span>
                 }
             </MudButton>
         </MudCardActions>
