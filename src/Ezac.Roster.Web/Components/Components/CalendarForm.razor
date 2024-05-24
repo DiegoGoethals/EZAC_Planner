@@ -21,9 +21,10 @@
         </div>
 
         <div class="form-group" style="margin-top: 10px;">
-            <MudButton Type="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@isSubmitting">
-                <MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon>Kalender periode aanmaken
-            </MudButton>
+            <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
+                <MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon>Kanelnder aanmaken
+            </button>
+
         </div>
     </div>
 
@@ -49,6 +50,8 @@
 
     private bool isSubmitting = false;
 
+    private bool isLoading = false;
+
     protected override void OnInitialized()
     {
         dateToAdd = DateTime.Now.AddDays(14);
@@ -60,10 +63,10 @@
         {
             dateToAdd = result;
         }
-		else
-		{
-			dateToAdd = Calendar.Start;
-		}
+        else
+        {
+            dateToAdd = Calendar.Start;
+        }
     }
 
     private void HandleClick(MouseEventArgs e)
@@ -75,6 +78,7 @@
     {
         try
         {
+            isLoading = true;
             isSubmitting = true;
 
             await FormHandler();
@@ -88,6 +92,7 @@
         finally
         {
             isSubmitting = false;
+            isLoading = false;
         }
     }
 
