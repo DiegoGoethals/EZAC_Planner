@@ -14,7 +14,7 @@
     <div>
         <div class="form-group">
             <label for="extraDays">Extra dagen beschikbaar zetten</label>
-            <input type="date" class="form-control" id="extraDays" @oninput="CheckDateToAdd" @bind="dateToAdd" min="@Calendar.Start.ToString("yyyy-MM-dd")" max="@Calendar.End.ToString("yyyy-MM-dd")" />
+            <input type="date" class="form-control" id="extraDays" @oninput="CheckDateToAdd" @bind="dateToAdd" min="@Calendar.Start" max="@Calendar.End" />
             <button type="button" class="btn btn-primary" @onclick="(e) => HandleClick(e)">Voeg toe</button>
         </div>
     </div>
