@@ -35,6 +35,10 @@
 
     private void SetDays()
     {
+        if (Calendar.Start > Calendar.End)
+        {
+            return;
+        }
         var allDays = Enumerable.Range(0, (Calendar.End - Calendar.Start).Days + 2)
                                 .Select(offset => Calendar.Start.AddDays(offset));
         foreach (var day in allDays)
@@ -138,7 +142,7 @@
 
     private void UpdateStartDate(ChangeEventArgs e)
     {
-        if (DateTime.TryParse(e.Value.ToString(), out DateTime startDate) && startDate <= Calendar.End)
+        if (DateTime.TryParse(e.Value.ToString(), out DateTime startDate))
         {
             Calendar.Start = startDate;
             SetDays();
