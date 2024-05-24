@@ -199,5 +199,26 @@ namespace Ezac.Roster.Domain.Services
                 }
             };
         }
+
+        public async Task<ResultModel<IEnumerable<UserPermission>>> GetUserPermissionsAsync(Guid userId)
+        {
+            var userPermissions = await _userPermissionRepository.GetAllByUserAsync(userId);
+            if (userPermissions != null)
+            {
+                return new ResultModel<IEnumerable<UserPermission>>
+                {
+                    IsSucces = true,
+                    Value = userPermissions
+                };
+            }
+            return new ResultModel<IEnumerable<UserPermission>>
+            {
+                IsSucces = false,
+                Errors = new List<string>
+                {
+                    "Geen bevoegdheden gevonden!"
+                }
+            };
+        }
     }
 }

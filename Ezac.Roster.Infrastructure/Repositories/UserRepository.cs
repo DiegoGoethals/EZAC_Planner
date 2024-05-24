@@ -19,6 +19,7 @@ namespace Ezac.Roster.Infrastructure.Repositories
                 .Include(u => u.UserPermissions)
                 .ThenInclude(up => up.Permission)
                 .Include(u => u.Jobs)
+                .Include(u => u.Preferences)
                 .ToListAsync();
         }
 
@@ -33,6 +34,7 @@ namespace Ezac.Roster.Infrastructure.Repositories
                 .Include(u => u.UserPermissions)
                 .ThenInclude(up => up.Permission)
                 .Include(u => u.Jobs)
+                .Include(u => u.Preferences)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
     }

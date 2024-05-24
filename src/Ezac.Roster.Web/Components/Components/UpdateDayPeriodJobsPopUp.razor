@@ -1,4 +1,5 @@
 ﻿@inject IJobService _jobService
+@inject IPermissionsService PermissionService
 
 @if (string.IsNullOrWhiteSpace(feedback) == false)
 {
@@ -126,7 +127,12 @@
     {
         if (selectedJob != null)
         {
-
+            var permissionResult = await PermissionService.GetAllAsync();
+            var permissions = new List<Permission>();
+            if (permissionResult.IsSucces)
+            {
+                permissions = permissionResult.Value.ToList();
+            }
             if (weight < 1 || weight > 10 || experience < 1 || experience > 10)
             {
                 feedback = "gewicht en ervaring moet tussen 1 en 10 zijn!";
@@ -134,15 +140,15 @@
             else
             {
                 var result = await _jobService.AddAsync(new JobCreateRequestModel
-                {
-                    Name = selectedJob,
-                    Weight = weight,
-                    UserId = null,
-                    DayPeriodId = DayPeriod.Id,
-                    Preferences = new List<Preference>(),
-                    PermissionName = selectedJob,
-                    Experience = experience,
-                });
+                    {
+                        Name = selectedJob,
+                        Weight = weight,
+                        UserId = null,
+                        DayPeriodId = DayPeriod.Id,
+                        Preferences = new List<Preference>(),
+                        PermissionName = permissions.FirstOrDefault(p => selectedJob.ToLower().Contains(p.Name.ToLower())).Name,
+                        Experience = experience,
+                    });
 
                 if (result.IsSucces)
                 {
