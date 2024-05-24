@@ -8,7 +8,7 @@ namespace Ezac.Roster.Infrastructure.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
-        private readonly ApplicationDbContext _applicationDbContext;
+        public readonly ApplicationDbContext _applicationDbContext;
         private readonly ILogger<IBaseRepository<T>> _logger;
         protected readonly DbSet<T> _table;
 

@@ -11,5 +11,6 @@ namespace Ezac.Roster.Domain.Services.Models
         public IEnumerable<UserPermission> Permissions { get; set; }
         public IEnumerable<Preference> Preferences { get; set; }
         public IEnumerable<Job> Jobs { get; set; }
+        public Guid CalendarId { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "/members"
+﻿@page "/members/{calendarId}"
 @rendermode InteractiveServer
 
 @inject IUserService UserService
@@ -16,6 +16,9 @@ else
 }
 
 @code {
+	[Parameter]
+	public string calendarId { get; set; }
+
 	private List<MemberViewModel> members;
 	private List<Permission> permissions;
 	private Dictionary<Guid, int> PermissionValues { get; set; } = new Dictionary<Guid, int>();
@@ -28,7 +31,7 @@ else
 
 	private async Task LoadMembers()
 	{
-		var result = await UserService.GetAllAsync();
+		var result = await UserService.GetUsersByCalendarIdAsync(Guid.Parse(calendarId));
 		if (result.IsSucces)
 		{
 			members = result.Value.Select(user => new MemberViewModel
@@ -40,7 +43,7 @@ else
 				UserPermissions = user.UserPermissions,
 				Preferences = user.Preferences,
 				Jobs = user.Jobs
-			}).ToList();
+			}).OrderBy(user => user.Name).ToList();
 		}
 		else
 		{
@@ -65,22 +68,39 @@ else
 		}
 	}
 
-	private async Task CreateUser((string Name, string Email, double Scaling) userInfo)
+	private async Task<IEnumerable<UserPermission>> GetUserPermissions()
 	{
-		var user = new UserCreateRequestModel
+		var userPermissions = new List<UserPermission>();
+		foreach(var pv in PermissionValues)
+		{
+			var nameResult = await PermissionsService.GetByIdAsync(pv.Key);
+			if (nameResult.IsSucces)
 			{
-				Name = userInfo.Name,
-				Email = userInfo.Email,
-				Scaling = userInfo.Scaling,
-				Jobs = new List<Job>(),
-				Preferences = new List<Preference>(),
-				Permissions = PermissionValues.Select(pv => new UserPermission
+				userPermissions.Add(new UserPermission
 				{
 					Id = Guid.NewGuid(),
 					PermissionId = pv.Key,
-					Experience = pv.Value
-				}).ToList()
-			};
+					Experience = pv.Value,
+					Name = nameResult.Value.Name
+				});
+			}
+		}
+		return userPermissions;
+	}
+
+	private async Task CreateUser((string Name, string Email, double Scaling) userInfo)
+	{
+		var userPermissions = await GetUserPermissions();
+		var user = new UserCreateRequestModel
+		{
+			Name = userInfo.Name,
+			Email = userInfo.Email,
+			Scaling = userInfo.Scaling,
+			Jobs = new List<Job>(),
+			Preferences = new List<Preference>(),
+			Permissions = userPermissions,
+			CalendarId = Guid.Parse(calendarId)
+		};
 
 		var result = await UserService.AddAsync(user);
 		if (result.IsSucces)

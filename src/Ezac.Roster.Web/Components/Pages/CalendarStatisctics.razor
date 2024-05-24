@@ -1,0 +1,49 @@
+﻿@page  "/calendarstatistics/{id}"
+
+@inject IUserService UserService
+@inject IJobService JobService
+@inject WorkloadService WorkloadService
+
+<h1>Calendar Statistics</h1>
+
+<table class="table table-bordered" style="border-color:black">
+    <thead>
+        <tr>
+            <th>Naam</th>
+            <th>Email</th>
+            <th>Totale werklast</th>
+            <th>Ingevulde werklast</th>
+            <th>Percentage</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in users)
+        {
+            <tr>
+                <td>@user.Name</td>
+                <td>@user.Email</td>
+                <td>@user.TotalWorkload</td>
+                <td>@user.UserWorkload</td>
+                <td>@user.Percentage</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+    @code {
+        [Parameter]
+        public Guid Id { get; set; }
+
+        public List<UserStatisticsViewModel> users { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+        }
+        public async void GetUserStatisctics()
+        {
+             var totalWorkload = await WorkloadService.CalculateTotalWorkload(Id);
+
+             
+        }
+
+    }
