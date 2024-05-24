@@ -12,7 +12,6 @@ namespace Ezac.Roster.Infrastructure.Data.Seeding
 	{
 		public static void Seed(ModelBuilder modelBuilder)
 		{
-
 		}
 	}
 }
