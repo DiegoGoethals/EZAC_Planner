@@ -38,9 +38,17 @@
                         <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">bewerken</button>
                         <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
                         <button class="btn btn-success btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
-                        <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" 
+                        <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Disabled="@isLoading"
                                    @onclick="@(async () => await DownloadCalendar(calendar.Id))">
-                            Download Excel
+                            @if (isLoading)
+                            {
+                                <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+                                <span class="ml-2">Bezig met downloaden...</span>
+                            }
+                            else
+                            {
+                                <span>Download Excel</span>
+                            }
                         </MudButton>
                     </td>
                 </tr>
@@ -73,6 +81,8 @@ else
     private List<ApplicationCalendar> calendars;
 
     private ConfirmDeletePopUp DeletePopUp;
+
+    private bool isLoading = false;
 
     [Parameter]
     public string calendarId { get; set; }
@@ -138,6 +148,8 @@ else
 
     private async Task DownloadCalendar(Guid calendarId)
     {
+        isLoading = true;
+
         var calendar = calendars.FirstOrDefault(c => c.Id == calendarId);
         if (calendar == null)
         {
@@ -153,5 +165,7 @@ else
 
         using var streamRef = new DotNetStreamReference(stream: stream);
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+
+        isLoading = false;
     }
 }
