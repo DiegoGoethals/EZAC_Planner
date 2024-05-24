@@ -176,15 +176,16 @@ else
             await GetUniquePeriodNames();
         }
 
-        var usersResult = await _userService.GetAllAsync();
+        var usersResult = await _userService.GetUsersByCalendarIdAsync(Guid.Parse(Id));
         if (usersResult.IsSucces)
         {
-            _users = usersResult.Value.Select(p => new Ezac.Roster.Domain.Models.UserListModel
+            _users = usersResult.Value.Select(p => new UserListModel
                 {
                     Id = p.Id,
                     Name = p.Name,
                     Permissions = p.UserPermissions,
                     Scaling = p.Scaling,
+                    Preferences = p.Preferences
                 }).ToList();
         }
 
@@ -327,7 +328,7 @@ else
 
         foreach (var user in _users)
         {
-            if (user.Permissions.Any(p => p.Name == e.Value?.ToString()))
+            if (user.Permissions.Any(p => p.Name == e.Value?.ToString()) && (user.Preferences.Any(p => p.Available && p.DayPeriod == selectedDayPeriod) || !user.Preferences.Any(p => p.DayPeriod == selectedDayPeriod)))
             {
                 Staff.Add(user);
             }

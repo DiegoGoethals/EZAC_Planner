@@ -11,5 +11,6 @@ namespace Ezac.Roster.Domain.Models
     {
         public double Scaling { get; set; }
         public IEnumerable<UserPermission> Permissions { get; set; }
+        public IEnumerable<Preference> Preferences { get; set; }
     }
 }
