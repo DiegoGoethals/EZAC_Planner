@@ -1,10 +1,15 @@
 ﻿@page "/calendarslist"
 @rendermode InteractiveServer
 
+@using MudBlazor
+
 @inject ICalendarService CalendarService
 @inject IUserService UserService
 @inject EmailService EmailService
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject Ezac.Roster.Domain.Interfaces.Services.IExportService ExportService
+
 
 <h3>Alle kalenders</h3>
 
@@ -27,8 +32,24 @@
             {
                 <tr>
                     <td>@calendar.Name</td>
-                    <td>@calendar.Start.ToString("yyyy/MM") tot @calendar.End.ToString("yyyy/MM")</td>
+                    <td>@calendar.Start.ToString("dd/MM/yyyy") tot @calendar.End.ToString("dd/MM/yyyy")</td>
                     <td>
+                        <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
+                        <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">bewerken</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
+                        <button class="btn btn-success btn-sm" @onclick="() => GenerateUniqueLink(calendar.Id)">Link Versturen</button>
+                        <MudButton Variant="Variant.Filled" Color="Color.Info" Size="Size.Small" Disabled="@isLoading"
+                                   @onclick="@(async () => await DownloadCalendar(calendar.Id))">
+                            @if (isLoading)
+                            {
+                                <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+                                <span class="ml-2">Bezig met downloaden...</span>
+                            }
+                            else
+                            {
+                                <span>Download Excel</span>
+                            }
+                        </MudButton>
                         <button class="btn btn-info btn-sm" @onclick="() => OverviewCalendar(calendar.Id)">Overzicht</button>
                         <button class="btn btn-warning btn-sm" @onclick="() => UpdateCalendar(calendar.Id)">Bewerken</button>
                         <button class="btn btn-danger btn-sm" @onclick="() => ShowDeletePopUp(calendar.Id)">Verwijderen</button>
@@ -47,13 +68,30 @@ else
     <p>Geen kalenders gevonden.</p>
 }
 
+<script>
+    window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+        const arrayBuffer = await contentStreamReference.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(blob);
+        const anchorElement = document.createElement('a');
+        anchorElement.href = url;
+        anchorElement.download = fileName ?? '';
+        anchorElement.click();
+        anchorElement.remove();
+        URL.revokeObjectURL(url);
+    }
+</script>
+
 
 @code {
     private List<ApplicationCalendar> calendars;
 
     private ConfirmDeletePopUp DeletePopUp;
 
+    private bool isLoading = false;
 
+    [Parameter]
+    public string calendarId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -117,10 +155,34 @@ else
             {
                 var uniqueLink = $"{baseUrl}/{calendarId}/{user.Id}";
                 var subject = "Kalender link";
-                var body = $"Hello {user.Name},<br/><br/>Here is your unique calendar link: <a href=\"{uniqueLink}\">Klik hier</a>. <br/><br/> De Zweefvliegers";
+                var body = $"Hallo {user.Name},<br/><br/>Hier is uw unieke kalenderlink: <a href=\"{uniqueLink}\">Klik hier</a>. <br/><br/> De Zweefvliegers";
                 await EmailService.SendEmailAsync("goethalsdiego@gmail.com", subject, body);
             }
         }
+    }
+
+    private async Task DownloadCalendar(Guid calendarId)
+    {
+        isLoading = true;
+
+        var calendar = calendars.FirstOrDefault(c => c.Id == calendarId);
+        if (calendar == null)
+        {
+            return;
+        }
+
+        var startMonthYear = $"{calendar.Start.Month}/{calendar.Start.Year}";
+        var endMonthYear = $"{calendar.End.Month}/{calendar.End.Year}";
+
+        var stream = await ExportService.ExportCalendarToExcel(calendarId);
+        var fileName = $"kalender voor {startMonthYear} tot {endMonthYear}.xlsx";
+        stream.Position = 0;
+
+        using var streamRef = new DotNetStreamReference(stream: stream);
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+
+        isLoading = false;
+    }
     }
 
     private void MemberOverview(Guid calendarId)
