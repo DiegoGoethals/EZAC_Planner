@@ -43,7 +43,7 @@ else
 				UserPermissions = user.UserPermissions,
 				Preferences = user.Preferences,
 				Jobs = user.Jobs
-			}).ToList();
+			}).OrderBy(user => user.Name).ToList();
 		}
 		else
 		{
