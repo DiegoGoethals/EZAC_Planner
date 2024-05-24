@@ -46,16 +46,20 @@ namespace Ezac.Roster.Domain.Services
 
 		private async Task ImportPermissions(ExcelWorksheet worksheet)
 		{
-			await _permissionRepository.DeleteAllAsync();
+			var existingPermissions = await _permissionRepository.GetAllAsync();
 			for (int col = 3; col <= 6; col++)
 			{
-				var permission = new Permission
+				var permissionName = worksheet.Cells[1, col].Value?.ToString();
+                if (!existingPermissions.Any(p => p.Name == permissionName))
 				{
-					Id = Guid.NewGuid(),
-					Name = worksheet.Cells[1, col].Value?.ToString(),
-					UserPermissions = new List<UserPermission>()
-				};
-				await _permissionRepository.AddAsync(permission);
+                    var permission = new Permission
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = permissionName,
+                        UserPermissions = new List<UserPermission>()
+                    };
+                    await _permissionRepository.AddAsync(permission);
+                }
 			}
 		}
 
@@ -71,8 +75,6 @@ namespace Ezac.Roster.Domain.Services
 
 			if (!double.TryParse(worksheet.Cells[row, 7].Value?.ToString(), out double scaling) || scaling < 0)
 				return ImportFailed(row, 7);
-
-			
 
 			var existingUser = await _userRepository.GetByEmailNameCalendarAsync(email, name, calendarId);
 			if (existingUser == null)
