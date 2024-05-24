@@ -108,7 +108,7 @@ else
 
     private async Task GenerateUniqueLink(Guid calendarId)
     {
-        var baseUrl = "https://localhost:44375/userpreferencecalendar";
+        var baseUrl = "https://localhost:44375/user";
         var usersResult = await UserService.GetAllAsync();
 
         if (usersResult.IsSucces)
