@@ -16,7 +16,7 @@
             <label for="extraDays">Extra dagen beschikbaar zetten</label>
             <input type="date" class="form-control" id="extraDays" @oninput="CheckDateToAdd" @bind="dateToAdd" min="@Calendar.Start.ToString("yyyy-MM-dd")" max="@Calendar.End.ToString("yyyy-MM-dd")" />
             <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="HandleClick" Margin="Margin.BottomSmall">
-                <MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon>Voeg toe
+                <MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon>Voeg dag toe
             </MudButton>
         </div>
 
