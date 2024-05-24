@@ -15,10 +15,18 @@
         <div class="form-group">
             <label for="extraDays">Extra dagen beschikbaar zetten</label>
             <input type="date" class="form-control" id="extraDays" @oninput="CheckDateToAdd" @bind="dateToAdd" min="@Calendar.Start.ToString("yyyy-MM-dd")" max="@Calendar.End.ToString("yyyy-MM-dd")" />
-            <button type="button" class="btn btn-primary" @onclick="(e) => HandleClick(e)">Voeg toe</button>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="HandleClick" Margin="Margin.BottomSmall">
+                <MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon>Voeg toe
+            </MudButton>
+        </div>
+
+        <div class="form-group" style="margin-top: 10px;">
+            <MudButton Type="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@isSubmitting">
+                <MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon>Kalender periode aanmaken
+            </MudButton>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary" disabled="@isSubmitting">Bewerk kalender</button>
+
 </form>
 
 @code {
@@ -49,13 +57,13 @@
     private void CheckDateToAdd()
     {
         if (DateTime.TryParse(dateToAdd.ToString(), out DateTime result) && result <= Calendar.End && result >= Calendar.Start)
-		{
-			dateToAdd = result;
-		}
-		else
-		{
-			dateToAdd = DateTime.Now;
-		}
+        {
+            dateToAdd = result;
+        }
+        else
+        {
+            dateToAdd = DateTime.Now;
+        }
     }
 
     private void HandleClick(MouseEventArgs e)
