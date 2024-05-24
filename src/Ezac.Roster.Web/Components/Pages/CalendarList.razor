@@ -96,6 +96,10 @@ else
     {
         Navigation.NavigateTo($"calendar/{calendarId}");
     }
+    private void  GoToCalendarOverviewStatistics(Guid calendarId)
+    {
+        Navigation.NavigateTo($"calendarstatistics/{calendarId}");
+    }
 
     private void ImportUsers(Guid calendarId)
     {

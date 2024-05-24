@@ -37,5 +37,10 @@ namespace Ezac.Roster.Infrastructure.Repositories
                 .Include(u => u.Preferences)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
-    }
+
+		public async Task<IEnumerable<User>> GetUsersByCalendarIdAsync(Guid calendarId)
+		{
+			return await _table.Where(u => u.CalendarId == calendarId).ToListAsync();
+		}
+	}
 }
